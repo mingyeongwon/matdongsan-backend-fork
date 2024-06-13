@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+	
+<configuration>
+	<settings>
+      <setting name="jdbcTypeForNull" value="NULL"/>
+      <setting name="mapUnderscoreToCamelCase" value="true"/>
+   </settings>
+	<typeAliases>
+		<typeAlias alias="member" type="com.mycompany.matdongsan.dto.Member"/>
+		<typeAlias alias="favorite" type="com.mycompany.matdongsan.dto.Favorite"/>
+		<typeAlias alias="comment" type="com.mycompany.matdongsan.dto.Comment" />
+		<typeAlias alias="answer" type="com.mycompany.matdongsan.dto.Answer" />
+		<typeAlias alias="agent" type="com.mycompany.matdongsan.dto.Agent" />
+		<typeAlias alias="agent_review" type="com.mycompany.matdongsan.dto.Agent_Review" />
+		<typeAlias alias="agent_detail" type="com.mycompany.matdongsan.dto.Agent_Detail" />
+		<typeAlias alias="notice" type="com.mycompany.matdongsan.dto.Notice" />
+		<typeAlias alias="report" type="com.mycompany.matdongsan.dto.Report" />
+		<typeAlias alias="question" type="com.mycompany.matdongsan.dto.Question" />
+		<typeAlias alias="property" type="com.mycompany.matdongsan.dto.Property" />
+		<typeAlias alias="property_service" type="com.mycompany.matdongsan.dto.Property_Service" />
+		<typeAlias alias="property_photo" type="com.mycompany.matdongsan.dto.Property_Photo" />
+		<typeAlias alias="property_detail" type="com.mycompany.matdongsan.dto.Property_Detail" />
+		<typeAlias alias="pager" type="com.mycompany.matdongsan.dto.Pager" />
+	</typeAliases>
+</configuration>
