@@ -9,6 +9,6 @@ public class Answer {
    private int anumber;
    private String acontent;
    private Date adate;
-   private int a_qnumber;
+   private int aQnumber;
 }
 

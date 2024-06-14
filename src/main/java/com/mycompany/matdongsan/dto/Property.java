@@ -24,7 +24,7 @@ public class Property {
    private String ptitle;
    private String pcategory;
    private boolean proletype;
-   private String p_email;
+   private String pEmail;
 
    private MultipartFile pthumbnail;
 }

@@ -5,12 +5,12 @@ import java.sql.Date;
 import lombok.Data;
 
 @Data
-public class Property_Service {
+public class PropertyService {
    private int psnumber;
    private int psprice;
    private Date psdate;
    private int psquantity;
    private boolean psroletype;
-   private String ps_email;
+   private String psEmail;
 }
 

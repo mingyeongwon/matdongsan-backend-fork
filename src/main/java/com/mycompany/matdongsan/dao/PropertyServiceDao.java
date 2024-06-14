@@ -3,6 +3,6 @@ package com.mycompany.matdongsan.dao;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface Property_DetailDao {
+public interface PropertyServiceDao {
 
 }

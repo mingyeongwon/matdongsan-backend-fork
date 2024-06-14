@@ -5,12 +5,12 @@ import java.sql.Date;
 import lombok.Data;
 
 @Data
-public class Agent_Review {
+public class AgentReview {
    private int arnumber;
    private String arcontent;
    private int arrate;
    private Date ardate;
-   private String ar_aemail;
-   private String ar_memail;
+   private String arAemail;
+   private String arMemail;
 }
 

@@ -16,7 +16,7 @@ public class Question {
    private String qattachtype;
    private Date qdate;
    private boolean qroletype;
-   private String q_email;
+   private String qEmail;
    
    private MultipartFile qattach;
 }

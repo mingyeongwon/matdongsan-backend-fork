@@ -5,12 +5,12 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.Data;
 
 @Data
-public class Property_Photo {
+public class PropertyPhoto {
    private int ppnumber;
    private String ppattachoname;
    private byte[] ppattachdata;
    private String ppattachtype;
-   private int pp_pnumber;
+   private int ppPnumber;
 
    private MultipartFile ppattach;
 }

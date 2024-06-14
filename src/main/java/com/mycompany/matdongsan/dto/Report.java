@@ -10,7 +10,7 @@ public class Report {
    private String rcontent;
    private Date rdate;
    private boolean rroletype;
-   private String r_email;
-   private int r_pnumber;
+   private String rEmail;
+   private int rPnumber;
 }
 

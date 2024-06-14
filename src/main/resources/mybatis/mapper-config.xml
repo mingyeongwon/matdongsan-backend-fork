@@ -14,15 +14,15 @@
 		<typeAlias alias="comment" type="com.mycompany.matdongsan.dto.Comment" />
 		<typeAlias alias="answer" type="com.mycompany.matdongsan.dto.Answer" />
 		<typeAlias alias="agent" type="com.mycompany.matdongsan.dto.Agent" />
-		<typeAlias alias="agent_review" type="com.mycompany.matdongsan.dto.Agent_Review" />
-		<typeAlias alias="agent_detail" type="com.mycompany.matdongsan.dto.Agent_Detail" />
+		<typeAlias alias="agentReview" type="com.mycompany.matdongsan.dto.AgentReview" />
+		<typeAlias alias="agentDetail" type="com.mycompany.matdongsan.dto.AgentDetail" />
 		<typeAlias alias="notice" type="com.mycompany.matdongsan.dto.Notice" />
 		<typeAlias alias="report" type="com.mycompany.matdongsan.dto.Report" />
 		<typeAlias alias="question" type="com.mycompany.matdongsan.dto.Question" />
 		<typeAlias alias="property" type="com.mycompany.matdongsan.dto.Property" />
-		<typeAlias alias="property_service" type="com.mycompany.matdongsan.dto.Property_Service" />
-		<typeAlias alias="property_photo" type="com.mycompany.matdongsan.dto.Property_Photo" />
-		<typeAlias alias="property_detail" type="com.mycompany.matdongsan.dto.Property_Detail" />
+		<typeAlias alias="propertyService" type="com.mycompany.matdongsan.dto.PropertyService" />
+		<typeAlias alias="propertyPhoto" type="com.mycompany.matdongsan.dto.PropertyPhoto" />
+		<typeAlias alias="propertyDetail" type="com.mycompany.matdongsan.dto.PropertyDetail" />
 		<typeAlias alias="pager" type="com.mycompany.matdongsan.dto.Pager" />
 	</typeAliases>
 </configuration>

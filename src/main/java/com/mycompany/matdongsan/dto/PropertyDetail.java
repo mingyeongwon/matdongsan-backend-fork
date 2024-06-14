@@ -3,7 +3,7 @@ package com.mycompany.matdongsan.dto;
 import lombok.Data;
 
 @Data
-public class Property_Detail {
+public class PropertyDetail {
    private int pdnumber;
    private String pdaddress;
    private String pdmoveindate;
@@ -25,6 +25,6 @@ public class Property_Detail {
    private boolean pdtable;
    private boolean pdwasher;
    private boolean pdinduction;
-   private int pd_pnumber;
+   private int pdPnumber;
 }
 

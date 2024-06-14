@@ -11,7 +11,7 @@ public class Comment {
    private Date cdate;
    private int cparentnumber;
    private boolean croletype;
-   private String c_email;
-   private int c_pnumber;
+   private String cEmail;
+   private int cPnumber;
 }
 

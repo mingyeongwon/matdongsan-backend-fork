@@ -5,14 +5,14 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.Data;
 
 @Data
-public class Agent_Detail {
+public class AgentDetail {
    private int adnumber;
    private String adname;
    private String adattachoname;
    private byte[] adattachdata;
    private String adattachtype;
    private String adbrandnumber;
-   private String ad_aemail;
+   private String adAemail;
    
    private MultipartFile adattach;
 }
