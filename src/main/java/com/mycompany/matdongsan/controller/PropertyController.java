@@ -7,5 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class PropertyController {
-
+	//부동산
+	//매물
+	
 }
