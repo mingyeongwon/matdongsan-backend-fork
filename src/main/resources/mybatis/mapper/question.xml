@@ -2,4 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.QuestionDao">
 
+	<insert id="insert" parameterType="question">
+		<selectKey keyProperty="qnumber" resultType="int" order="BEFORE">
+			select SEQ_QNUMBER.nextval from dual
+		</selectKey>
+		insert into question(
+			qnumber, qcategory, qtitle, qcontent, qattachoname, qattachdata, 
+			qattachtype, qdate, q_email, qroletype 
+		) values(
+			#{qnumber}, #{qcategory}, #{qtitle}, #{qcontent}, #{qattachoname},
+			#{qattachdata}, #{qattachtype}, sysdate, #{ qEmail }, #{qroletype}
+		)
+	</insert>
+
 </mapper>
