@@ -1,12 +1,14 @@
 package com.mycompany.matdongsan.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
 public class PropertyDetail {
    private int pdnumber;
    private String pdaddress;
-   private String pdmoveindate;
+   private Date pdmoveindate;
    private String pdcontent;
    private String pdlongitude;
    private String pdlatitude;
@@ -14,6 +16,7 @@ public class PropertyDetail {
    private boolean pdlift;
    private boolean pdlot;
    private boolean pdcooling;
+   private boolean pdheating;
    private boolean pdmicrowave;
    private boolean pdburner;
    private boolean pdbed;
