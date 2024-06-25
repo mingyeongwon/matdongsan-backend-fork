@@ -8,4 +8,6 @@ import com.mycompany.matdongsan.dto.Question;
 public interface QuestionDao {
 	
 	public int insert(Question question);
+	
+	public Question getQuestion(int qnumber);
 }

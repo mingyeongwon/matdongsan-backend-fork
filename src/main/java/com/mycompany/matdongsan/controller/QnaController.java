@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ public class QnaController {
 	@Autowired 
 	private QnaService qnaService;
 	
+	// 고객 문의 생성
 	@PostMapping("/CustomerInquiryForm")
 	public Question create(Question question) {
 		if(question.getQattach() != null && !question.getQattach().isEmpty()) {
@@ -52,4 +55,10 @@ public class QnaController {
 		question.setQattachdata(null);
 		return question;
 	}
+	
+//	@GetMapping("/MyPage/CustomerInquiry")
+//	public Question read(@PathVariable int qnumber) {
+//		
+//		return ;
+//	}
 }
