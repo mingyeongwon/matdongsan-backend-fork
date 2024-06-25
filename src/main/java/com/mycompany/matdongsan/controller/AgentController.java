@@ -9,21 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
-import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserEmail;
 import com.mycompany.matdongsan.service.AgentService;
 
@@ -52,46 +48,65 @@ public class AgentController {
 
 	// 부동산 등록
 	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
+	// ObjectNode란?
+	@Transactional
 	@PostMapping("/Signup/AgentSignup")
-	public UserEmail createAgentAccount(@RequestBody ObjectNode agentData) throws JsonProcessingException {
+	public AgentDetail createAgentAccount(
+	    @RequestParam("abrand") String abrand,
+	    @RequestParam("aphone") String aphone,
+	    @RequestParam("aaddress") String aaddress,
+	    @RequestParam("alatitude") String alatitude,
+	    @RequestParam("alongitude") String alongitude,
+	    @RequestParam("addressdetail") String addressdetail,
+	    @RequestParam("adname") String adname,
+	    @RequestParam("adbrandnumber") String adbrandnumber,
+	    @RequestParam(value = "adattach", required = true) MultipartFile adattach,
+	    @RequestParam("uemail") String uemail,
+	    @RequestParam("urole") String urole,
+	    @RequestParam("upassword") String upassword,
+	    @RequestParam("uremoved") boolean uremoved                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+	) throws IOException {
+	    // 객체 생성 및 데이터 설정
+	    Agent agent = new Agent();
+	    agent.setAbrand(abrand);
+	    agent.setAphone(aphone);
+	    agent.setAaddress(aaddress);
+	    agent.setAlatitude(alatitude);
+	    agent.setAlongitude(alongitude);
+	    agent.setAaddressdetail(addressdetail);
 
-		ObjectMapper mapper = new ObjectMapper();
-		Agent agent = mapper.treeToValue(agentData.get("agent"), Agent.class);
-		AgentDetail agentDetail = mapper.treeToValue(agentData.get("agentDetail"), AgentDetail.class);
-		UserEmail userEmail = mapper.treeToValue(agentData.get("userEmail"), UserEmail.class);
+	    AgentDetail agentDetail = new AgentDetail();
+	    agentDetail.setAdname(adname);
+	    agentDetail.setAdbrandnumber(adbrandnumber);
 
-		// 비밀번호 암호화
-		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
+	    UserEmail userEmail = new UserEmail();
+	    userEmail.setUemail(uemail);
+	    userEmail.setUrole(urole);
+	    userEmail.setUpassword(upassword);
+	    userEmail.setUremoved(uremoved);
 
-		// 아이디 활성화
-		userEmail.setUremoved(false);
+	    // 비밀번호 암호화
+	    PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	    userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
 
-		// 첨부가 넘어왔을 경우 처리
-		if (agentDetail.getAdattach() != null && !agentDetail.getAdattach().isEmpty()) {
-			MultipartFile mf = agentDetail.getAdattach();
-			// 파일 이름을 설정
-			agentDetail.setAdattachoname(mf.getOriginalFilename());
-			// 파일 종류를 설정
-			agentDetail.setAdattachtype(mf.getContentType());
-			try {
-				// 파일 데이터를 설정
-				agentDetail.setAdattachdata(mf.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		agentService.joinByAgent(agent);
-		agentService.joinByUserEmail(userEmail);
-		userEmail.setUpassword(null);
-		// DB에 저장
-		agentService.insertAgentData(agent, agentDetail);
-		// JSON으로 변환되지 않는 필드(attach,attach data등)는 null 처리
-		agentDetail.setAdattach(null);
-		agentDetail.setAdattachdata(null);
+	    // 첨부 파일 처리
+	    log.info("실행");
+	    if (adattach != null && !adattach.isEmpty()) {
+	        agentDetail.setAdattachoname(adattach.getOriginalFilename());
+	        agentDetail.setAdattachtype(adattach.getContentType());
+	        agentDetail.setAdattachdata(adattach.getBytes());
+	        log.info(agentDetail.getAdattachoname());
+	    }
 
-		return userEmail;
+	    // 데이터베이스에 저장
+	    agentService.joinByAgent(agent);
+	    agentService.joinByUserEmail(userEmail);
+	    agentService.insertAgentData(agent, agentDetail);
+	    userEmail.setUpassword(null);
+
+	    return agentDetail;
 	}
+
 
 	// 매물 상세
 	@GetMapping("/Agent/{aid}")
