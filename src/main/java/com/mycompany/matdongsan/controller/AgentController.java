@@ -109,18 +109,18 @@ public class AgentController {
 
 
 	// 매물 상세
-	@GetMapping("/Agent/{aid}")
-	public Agent readAgentInfo(@PathVariable int aid) {
+	@GetMapping("/Agent/{anumber}")
+	public Agent readAgentInfo(@PathVariable int anumber) {
 		// Agent agent = agentService.getAgentData(aid);
 		// agent.setAattachdata(null);
-
+		log.info("실행",anumber);
 		// 부동산 후기
 
 		return null;
 	}
 
 	// 부동산 검색
-	@GetMapping("/Agent/{aid}/{sort}")
+	@GetMapping("/Agent/{anumber}/{sort}")
 	public Agent readAgentInfo(@PathVariable int aid, @PathVariable String sort) {
 		// Agent agent = agentService.getAgentData(aid);
 		// agent.setAattachdata(null);
@@ -136,17 +136,6 @@ public class AgentController {
 		return null;
 	}
 
-	// 부동산 수정
-	@PreAuthorize("hasAuthority('ROLE_USER')") // 유저일 경우에만 등록 가능
-	@PutMapping("/Mypage/ManageMyProperty/{aid}")
-	public Agent updateMypagePropertyInfo(@PathVariable int aid) {
-		// 매물 정보 수정
-
-		// 매물 비활성화
-
-		// 매물 거래완료
-		return null;
-	}
 
 	// 검색
 	@GetMapping("/Agent/{keyword}")
