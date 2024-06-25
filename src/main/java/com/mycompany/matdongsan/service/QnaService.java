@@ -15,4 +15,10 @@ public class QnaService {
 	public int insert(Question question) {
 		return questionDao.insert(question);
 	}
+	
+	// 고객 문의 읽기
+	public Question getQuestion(int qnumber) {
+		Question question =  questionDao.getQuestion(qnumber);
+		return question;
+	}
 }

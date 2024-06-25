@@ -45,7 +45,7 @@ public class QnaController {
 		}
 		
 //		question.setQEmail(authentication.getName());
-		question.setQEmail("user");
+		question.setQUnumber(1);
 		log.info(question.toString()); // postman으로 볼 수 없는 multipartfile이나 byte배열을 확인 
 		
 		qnaService.insert(question);
@@ -56,9 +56,9 @@ public class QnaController {
 		return question;
 	}
 	
-//	@GetMapping("/MyPage/CustomerInquiry")
-//	public Question read(@PathVariable int qnumber) {
-//		
-//		return ;
-//	}
+	@GetMapping("/MyPage/CustomerInquiry") // MyPage 컨트롤러 생성해야 할 것 같음 추후 옮길예정
+	public Question read(@PathVariable int qnumber) {
+		Question question = qnaService.getQuestion(qnumber);
+		return question;
+	}
 }
