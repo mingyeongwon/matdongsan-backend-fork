@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,8 @@ public class PropertyController {
 		return null;
 	}
 	
-	// 읽기
+//	읽기
+//	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/Property/{pnumber}")
 	public Property readProperty(@PathVariable int pnumber) {
 		Property property = propertyService.getPropertyDetail(pnumber);
@@ -45,6 +47,7 @@ public class PropertyController {
 	@PostMapping("/createProperty")
 	public Property createProperty(Property property, PropertyDetail propertyDetail, 
 			PropertyPhoto propertyPhoto, UserEmail userEmail, Authentication authentication) throws IOException {
+		
 		if(property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
 			MultipartFile mf = property.getPthumbnail();
 			property.setPthumbnailoname(mf.getOriginalFilename());
@@ -61,7 +64,23 @@ public class PropertyController {
 		return property;
 	}
 	
-	// 수정
+//	수정
+//	@PreAuthorize("hasAuthority('ROLE_USER')")
+	@PutMapping("/updateProperty")
+	public Property updateProperty(Property property) throws IOException {
+		if(property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
+			MultipartFile mf = property.getPthumbnail();
+			property.setPthumbnailoname(mf.getOriginalFilename());
+			property.setPthumbnailtype(mf.getContentType());
+			property.setPthumbnaildata(mf.getBytes());
+		}
+		propertyService.updateProperty(property);
+		
+		// 수정된 내용의 property 객체 얻기
+		property = propertyService.getPropertyDetail(property.getPnumber());
+		property.setPthumbnail(null);
+		return property;
+	}
 	
 	// 삭제
 }
