@@ -7,6 +7,9 @@ import com.mycompany.matdongsan.dto.Member;
 @Mapper
 public interface MemberDao {
 
-	Member selectByMid(String username);
+	public Member selectByMid(String username);
+	
+	// 일반 유저 회원가입
+	public int joinByMember(Member member);
 
 }

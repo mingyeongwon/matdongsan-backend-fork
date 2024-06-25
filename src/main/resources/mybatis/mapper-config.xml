@@ -24,5 +24,6 @@
 		<typeAlias alias="propertyPhoto" type="com.mycompany.matdongsan.dto.PropertyPhoto" />
 		<typeAlias alias="propertyDetail" type="com.mycompany.matdongsan.dto.PropertyDetail" />
 		<typeAlias alias="pager" type="com.mycompany.matdongsan.dto.Pager" />
+		<typeAlias alias="userEmail" type="com.mycompany.matdongsan.dto.UserEmail" />
 	</typeAliases>
 </configuration>

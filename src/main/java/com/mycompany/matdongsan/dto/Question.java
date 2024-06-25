@@ -17,6 +17,7 @@ public class Question {
    private Date qdate;
    private boolean qroletype;
    private String qEmail;
+   private String qcontent;
    
    private MultipartFile qattach;
 }
