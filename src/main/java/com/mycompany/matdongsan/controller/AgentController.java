@@ -7,17 +7,23 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
+import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserEmail;
 import com.mycompany.matdongsan.service.AgentService;
 
@@ -29,24 +35,39 @@ public class AgentController {
 
 	@Autowired
 	private AgentService agentService;
+
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
-	public Map<String,Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,@RequestParam(defaultValue = "agnet") String page) {
+	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
+			@RequestParam(defaultValue = "agnet") String page) {
 		log.info("실행");
 		// 무한 스크롤
 		List<Agent> list = agentService.getAgentList();
-		
-		Map<String,Object> map = new HashMap<>();
+
+		Map<String, Object> map = new HashMap<>();
 		map.put("agent", list);
-		//무한 스크롤을 리턴값으로 넘겨야함
+		// 무한 스크롤을 리턴값으로 넘겨야함
 		return null;
 	}
 
 	// 부동산 등록
 	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
 	@PostMapping("/Signup/AgentSignup")
-	public AgentDetail createAgentAccount(AgentDetail agentDetail,Agent agent,UserEmail userEmail, Authentication authentication) {
-		//첨부가 넘어왔을 경우 처리
+	public UserEmail createAgentAccount(@RequestBody ObjectNode agentData) throws JsonProcessingException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		Agent agent = mapper.treeToValue(agentData.get("agent"), Agent.class);
+		AgentDetail agentDetail = mapper.treeToValue(agentData.get("agentDetail"), AgentDetail.class);
+		UserEmail userEmail = mapper.treeToValue(agentData.get("userEmail"), UserEmail.class);
+
+		// 비밀번호 암호화
+		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
+
+		// 아이디 활성화
+		userEmail.setUremoved(false);
+
+		// 첨부가 넘어왔을 경우 처리
 		if (agentDetail.getAdattach() != null && !agentDetail.getAdattach().isEmpty()) {
 			MultipartFile mf = agentDetail.getAdattach();
 			// 파일 이름을 설정
@@ -60,14 +81,16 @@ public class AgentController {
 				e.printStackTrace();
 			}
 		}
+		agentService.joinByAgent(agent);
+		agentService.joinByUserEmail(userEmail);
+		userEmail.setUpassword(null);
 		// DB에 저장
-		userEmail.setUemail(authentication.getName());
-		agentService.insertAgentData(agent,agentDetail);
+		agentService.insertAgentData(agent, agentDetail);
 		// JSON으로 변환되지 않는 필드(attach,attach data등)는 null 처리
 		agentDetail.setAdattach(null);
 		agentDetail.setAdattachdata(null);
 
-		return agentDetail;
+		return userEmail;
 	}
 
 	// 매물 상세
@@ -80,19 +103,21 @@ public class AgentController {
 
 		return null;
 	}
+
 	// 부동산 검색
 	@GetMapping("/Agent/{aid}/{sort}")
-	public Agent readAgentInfo(@PathVariable int aid,@PathVariable String sort) {
+	public Agent readAgentInfo(@PathVariable int aid, @PathVariable String sort) {
 		// Agent agent = agentService.getAgentData(aid);
 		// agent.setAattachdata(null);
 
 		return null;
 	}
+
 	// 마이페이지 부동산 중개업자 정보 수정
 	@PreAuthorize("hasAuthority('ROLE_USER')") // 중개인일 경우에만 등록 가능
 	@GetMapping("/Mypage/MyInfomation")
 	public Agent getMypagePropertyInfoList(@PathVariable int aid) {
-		
+
 		return null;
 	}
 

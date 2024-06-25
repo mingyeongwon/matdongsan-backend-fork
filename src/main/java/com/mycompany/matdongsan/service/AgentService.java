@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
+import com.mycompany.matdongsan.dto.UserEmail;
 
 @Service
 public class AgentService {
@@ -22,6 +23,16 @@ public class AgentService {
 	}
 
 	public void insertAgentData(Agent agent,AgentDetail agentDetail) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void joinByAgent(Agent agent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void joinByUserEmail(UserEmail userEmail) {
 		// TODO Auto-generated method stub
 		
 	}
