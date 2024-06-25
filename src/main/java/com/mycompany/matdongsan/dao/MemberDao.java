@@ -8,6 +8,8 @@ import com.mycompany.matdongsan.dto.Member;
 public interface MemberDao {
 
 	// 일반 유저 회원가입
-	public int joinByMember(Member member);
+//	public int joinByMember(Member member);
+
+	public int insertMemberData(Member member);
 
 }

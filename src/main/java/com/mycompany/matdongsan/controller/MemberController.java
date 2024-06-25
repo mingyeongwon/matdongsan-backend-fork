@@ -30,14 +30,13 @@ public class MemberController {
 	// 참고 블로그
 	// https://velog.io/@tjddnths0223/%ED%8C%81-RequestBody%EB%A1%9C-%EC%97%AC%EB%9F%AC-%EA%B0%9D%EC%B2%B4-%EB%B0%9B%EA%B8%B0
 
-	@PostMapping("/joinByMember")
+	@PostMapping("/Signup/MemberSignup")
 	public UserEmail joinByMember(@RequestBody ObjectNode memberData) throws JsonProcessingException {
 
 		ObjectMapper mapper = new ObjectMapper();
-
 		Member member = mapper.treeToValue(memberData.get("member"), Member.class);
-
 		UserEmail userEmail = mapper.treeToValue(memberData.get("userEmail"), UserEmail.class);
+		
 		// 비밀번호 암호화
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
@@ -47,8 +46,9 @@ public class MemberController {
 
 		// 권한 설정
 
+		memberService.joinUserByMember(userEmail);
 		memberService.joinByMember(member);
-		memberService.joinByUserEmail(userEmail);
+		
 		userEmail.setUpassword(null);
 		return userEmail;
 	}

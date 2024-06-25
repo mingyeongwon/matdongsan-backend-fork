@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserEmail {
    private int unumber;
    private String uemail;
-   private String utype;
+   private String urole;
    private String upassword;
    private boolean uremoved;
 }

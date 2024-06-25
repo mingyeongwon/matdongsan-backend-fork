@@ -6,9 +6,12 @@ import com.mycompany.matdongsan.dto.UserEmail;
 
 @Mapper
 public interface UserEmailDao {
+	
+	// 회원가입
+//	public int joinByUserEmail(UserEmail userEmail);
 
-	UserEmail selectByUnumber(String username);
+	public int insertUserDataByMember(UserEmail userEmail);
 
-	void joinByUserEmail(UserEmail userEmail);
-
+	public UserEmail selectByUnumber(String username);
+	
 }

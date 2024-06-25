@@ -15,15 +15,12 @@ public class MemberService {
 	@Autowired
 	private UserEmailDao userEmailDao;
 	
-	public void joinByMember(Member member) {
-		memberDao.joinByMember(member);
-		
+	public void joinUserByMember(UserEmail userEmail) {
+		userEmailDao.insertUserDataByMember(userEmail);
 	}
-
-	public void joinByUserEmail(UserEmail userEmail) {
-		// TODO Auto-generated method stub
-		userEmailDao.joinByUserEmail(userEmail);
-		
+	
+	public void joinByMember(Member member) {
+		memberDao.insertMemberData(member);
 	}
 
 }
