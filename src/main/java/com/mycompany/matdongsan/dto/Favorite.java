@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class Favorite {
    private int fPnumber;
-   private String fMemail;
+   private int fMnumber;
 }
 

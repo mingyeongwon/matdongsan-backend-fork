@@ -12,7 +12,7 @@ public class AgentDetail {
    private byte[] adattachdata;
    private String adattachtype;
    private String adbrandnumber;
-   private String adAemail;
+   private int adAnumber;
    
    private MultipartFile adattach;
 }

@@ -11,13 +11,12 @@ public class Question {
    private int qnumber;
    private String qcategory;
    private String qtitle;
+   private String qcontent;
    private String qattachoname;
    private byte[] qattachdata;
    private String qattachtype;
    private Date qdate;
-   private boolean qroletype;
-   private String qEmail;
-   private String qcontent;
+   private int qUnumber;
    
    private MultipartFile qattach;
 }

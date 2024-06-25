@@ -9,8 +9,7 @@ public class Report {
    private int rnumber;
    private String rcontent;
    private Date rdate;
-   private boolean rroletype;
-   private String rEmail;
    private int rPnumber;
+   private int rUnumber;
 }
 

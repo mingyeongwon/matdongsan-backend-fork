@@ -7,4 +7,6 @@ public class UserEmail {
    private int unumber;
    private String uemail;
    private String utype;
+   private String upassword;
+   private boolean uremoved;
 }

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
+import com.mycompany.matdongsan.dto.UserEmail;
 import com.mycompany.matdongsan.service.AgentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class AgentController {
 	// 부동산 등록
 	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
 	@PostMapping("/Signup/AgentSignup")
-	public AgentDetail createAgentAccount(AgentDetail agentDetail,Agent agent, Authentication authentication) {
+	public AgentDetail createAgentAccount(AgentDetail agentDetail,Agent agent,UserEmail userEmail, Authentication authentication) {
 		//첨부가 넘어왔을 경우 처리
 		if (agentDetail.getAdattach() != null && !agentDetail.getAdattach().isEmpty()) {
 			MultipartFile mf = agentDetail.getAdattach();
@@ -60,7 +61,7 @@ public class AgentController {
 			}
 		}
 		// DB에 저장
-		agent.setAemail(authentication.getName());
+		userEmail.setUemail(authentication.getName());
 		agentService.insertAgentData(agent,agentDetail);
 		// JSON으로 변환되지 않는 필드(attach,attach data등)는 null 처리
 		agentDetail.setAdattach(null);

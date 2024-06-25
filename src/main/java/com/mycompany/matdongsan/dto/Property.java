@@ -11,8 +11,8 @@ public class Property {
    private int pnumber;
    private int pdeposite;
    private int prentalfee;
-   private String pthumbnailoname;
    private byte[] pthumbnaildata;
+   private String pthumbnailoname;
    private String pthumbnailtype;
    private String pfloortype;
    private String pfloor;
@@ -23,8 +23,12 @@ public class Property {
    private String pstatus;
    private String ptitle;
    private String pcategory;
-   private boolean proletype;
-   private String pEmail;
+   private String paddress;
+   private String paddressdetail;
+   private String ppostcode;
+   private String platitude;
+   private String plongitude;
+   private int pUnumber;
 
    private MultipartFile pthumbnail;
 }

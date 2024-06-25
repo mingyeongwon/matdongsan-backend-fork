@@ -10,7 +10,6 @@ public class PropertyService {
    private int psprice;
    private Date psdate;
    private int psquantity;
-   private boolean psroletype;
-   private String psEmail;
+   private int psUnumber;
 }
 

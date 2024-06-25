@@ -6,14 +6,13 @@ import lombok.Data;
 
 @Data
 public class Member {
-   private String memail;
+   private int mnumber;
    private String mname;
-   private String mprofileoname;
    private byte[] mprofiledata;
+   private String mprofileoname;
    private String mprofiletype;
    private String mphone;
-   private String mpassword;
-   private boolean mremoved;
+   private int mUnumber;
    
    private MultipartFile mprofile;
 

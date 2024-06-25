@@ -6,17 +6,18 @@ import lombok.Data;
 
 @Data
 public class Agent {
-   private String aemail;
-   private String abrand;
-   private String aaddress;
-   private String aprofileoname;
-   private byte[] aprofiledata;
-   private String aprofiletype;
-   private String aphone;
-   private String apassword;
-   private boolean aremoved;
-   private String alongitude;
-   private String alatitude;
-   
-   private MultipartFile aprofile;
+	private int anumber;
+	private String abrand;
+	private String aphone;
+	private String aaddress;
+	private byte[] aprofiledata;
+	private String aprofileoname;
+	private String aprofiletype;
+	private String alongitude;
+	private String alatitude;
+	private String apostcode;
+	private String aaddressdetail;
+	private int aUnumber;
+	
+	private MultipartFile aprofile;
 }

@@ -4,17 +4,18 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import com.mycompany.matdongsan.dto.Member;
+
+import com.mycompany.matdongsan.dto.UserEmail;
 
 public class AppUserDetails extends User {
-   private Member member;
+   private UserEmail userEmail;
 
-   public AppUserDetails(Member member, List<GrantedAuthority> authorities) {
-      super(member.getMemail(), member.getMpassword(), member.isMremoved(), true, true, true, authorities);
-      this.member = member;
+   public AppUserDetails(UserEmail userEmail, List<GrantedAuthority> authorities) {
+      super(userEmail.getUemail(), userEmail.getUpassword(), userEmail.isUremoved(), true, true, true, authorities);
+      this.userEmail = userEmail;
    }
 
-   public Member getMember() {
-      return member;
+   public UserEmail getUser() {
+      return userEmail;
    }
 }

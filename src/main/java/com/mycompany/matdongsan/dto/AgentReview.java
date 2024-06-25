@@ -10,7 +10,7 @@ public class AgentReview {
    private String arcontent;
    private int arrate;
    private Date ardate;
-   private String arAemail;
-   private String arMemail;
+   private int arAnumber;
+   private int arMnumber;
 }
 
