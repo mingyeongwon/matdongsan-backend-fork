@@ -35,8 +35,8 @@ public class AgentController {
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
 	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
-			@RequestParam(defaultValue = "agnet") String page) {
-		log.info("실행");
+			@RequestParam(defaultValue = "agent") String page) {
+		log.info("실행123123 " + pageNo +" " + page);
 		// 무한 스크롤
 		List<Agent> list = agentService.getAgentList();
 
@@ -90,7 +90,7 @@ public class AgentController {
 	    userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
 
 	    // 첨부 파일 처리
-	    log.info("실행");
+	    log.info("실행123");
 	    if (adattach != null && !adattach.isEmpty()) {
 	        agentDetail.setAdattachoname(adattach.getOriginalFilename());
 	        agentDetail.setAdattachtype(adattach.getContentType());
@@ -101,32 +101,30 @@ public class AgentController {
 	    // 데이터베이스에 저장
 	    agentService.joinByAgent(agent);
 	    agentService.joinByUserEmail(userEmail);
-	    agentService.insertAgentData(agent, agentDetail);
+	    agentService.insertAgentData(agentDetail);
 	    userEmail.setUpassword(null);
 
 	    return agentDetail;
 	}
 
 
-	// 매물 상세
-	@GetMapping("/Agent/{anumber}")
-	public Agent readAgentInfo(@PathVariable int anumber) {
-		// Agent agent = agentService.getAgentData(aid);
-		// agent.setAattachdata(null);
-		log.info("실행",anumber);
-		// 부동산 후기
+    // 부동산 상세 정보 조회
+    @GetMapping("/Agent/{anumber}")
+    public Agent readAgentInfoByNumber(@PathVariable int anumber) {
+        log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
+        // 실제 구현은 agentService를 통해 데이터를 가져와야 합니다.
+        return null;//agentService.getAgentByNumber(anumber);
+    }
 
-		return null;
-	}
-
-	// 부동산 검색
-	@GetMapping("/Agent/{anumber}/{sort}")
-	public Agent readAgentInfo(@PathVariable int aid, @PathVariable String sort) {
-		// Agent agent = agentService.getAgentData(aid);
-		// agent.setAattachdata(null);
-
-		return null;
-	}
+	/*
+	 * // 부동산 상세 정보 조회 with Sort
+	 * 
+	 * @GetMapping("/Agent/{anumber}") public Agent
+	 * readAgentInfoByNumberWithSort(@PathVariable int anumber, @RequestParam String
+	 * sort) { log.info("readAgentInfoByNumberWithSort 실행, anumber={}, sort={}",
+	 * anumber, sort); // 실제 구현은 agentService를 통해 데이터를 가져와야 합니다. return
+	 * null;//agentService.getAgentByNumberWithSort(anumber, sort); }
+	 */
 
 	// 마이페이지 부동산 중개업자 정보 수정
 	@PreAuthorize("hasAuthority('ROLE_USER')") // 중개인일 경우에만 등록 가능
@@ -138,7 +136,7 @@ public class AgentController {
 
 
 	// 검색
-	@GetMapping("/Agent/{keyword}")
+	@GetMapping("/Agent/search/{keyword}")
 	public Agent getAgentByKeyword(@PathVariable String keyword) {
 		return null;
 	}

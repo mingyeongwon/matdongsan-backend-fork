@@ -13,5 +13,7 @@ public interface UserEmailDao {
 	public int insertUserDataByMember(UserEmail userEmail);
 
 	public UserEmail selectByUnumber(String username);
+
+	public void joinByUserEmail(UserEmail userEmail);
 	
 }
