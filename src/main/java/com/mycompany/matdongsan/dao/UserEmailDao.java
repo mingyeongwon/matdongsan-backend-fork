@@ -9,4 +9,6 @@ public interface UserEmailDao {
 
 	UserEmail selectByUnumber(String username);
 
+	void joinByUserEmail(UserEmail userEmail);
+
 }
