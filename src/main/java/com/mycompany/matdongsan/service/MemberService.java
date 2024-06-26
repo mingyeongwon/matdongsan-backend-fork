@@ -16,7 +16,7 @@ public class MemberService {
 	private UserEmailDao userEmailDao;
 	
 	public void joinUserByMember(UserEmail userEmail) {
-		userEmailDao.insertUserDataByMember(userEmail);
+		userEmailDao.insertUserDataByUser(userEmail);
 	}
 	
 	public void joinByMember(Member member) {
