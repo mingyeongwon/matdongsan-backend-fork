@@ -21,4 +21,9 @@ public class PropertyService {
 		return null;
 	}
 
+	public void updateProperty(Property property) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
