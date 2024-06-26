@@ -33,16 +33,45 @@ public class PropertyService {
         propertyPhotoDao.createPropertyByPropertyPhoto(propertyPhoto);
 	}
 	
-	// 읽기
-	public Property getPropertyDetail(int pnumber) {
-		Property property = propertyDao.selectByPnumber(pnumber);
-		return null;
+	// 수정
+	public void updateProperty(Property property, PropertyDetail propertyDetail, PropertyPhoto propertyPhoto) {
+		propertyDao.updatePropertyByProperty(property);
+		propertyDetailDao.updatePropertyByPropertyDetail(propertyDetail);
+		if (propertyPhoto.getPpattachdata() != null && propertyPhoto.getPpattachdata().length > 0) {
+			propertyPhotoDao.updatePropertyByPropertyPhoto(propertyPhoto);
+		}
+		
 	}
 	
-	// 수정
-	public void updateProperty(Property property) {
-		// TODO Auto-generated method stub
-		
+	// 읽기 - property
+	public Property getProperty(int pnumber) {
+		Property property = propertyDao.selectByPnumber(pnumber);
+		propertyDao.updatePhitcount(pnumber);
+		return property;
+	}
+	
+	// 읽기 - propertyDetail
+	public PropertyDetail getPropertyDetail(int pdnumber) {
+		PropertyDetail propertyDetail = propertyDetailDao.selectByPdnumber(pdnumber);
+		return propertyDetail;
+	}
+	
+	// 읽기 - propertyPhoto
+	public PropertyPhoto getPropertyPhoto(int ppnumber) {
+		PropertyPhoto propertyPhoto = propertyPhotoDao.selectByPpnumber(ppnumber);
+		return propertyPhoto;
+	}
+	
+	// pk 값 가져오기 - propertyDetail
+	public int getPdnumber(int pdPnumber) {
+		int pdnumber = propertyDetailDao.selectPdnumberByPnumber(pdPnumber);
+		return pdnumber;
+	}
+
+	// pk 값 가져오기 - propertyDetail
+	public int getPpnumber(int ppPnumber) {
+		int ppnumber = propertyPhotoDao.selectPpnumberByPnumber(ppPnumber);
+		return ppnumber;
 	}
 
 }
