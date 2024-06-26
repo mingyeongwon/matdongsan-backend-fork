@@ -147,7 +147,7 @@ public class AgentController {
 		Agent agent = agentSignupData.getAgent();
 		AgentDetail agentDetail = agentSignupData.getAgentDetail();
 		UserEmail userEmail = agentSignupData.getUserEmail();
-		// 프로필사진
+		// 프로필사진 & 등록증 사진
 		MultipartFile agentProfile = agent.getAprofile();
 		MultipartFile agentDetailFile = agentDetail.getAdattach();
 		
@@ -165,14 +165,14 @@ public class AgentController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		int userNum = agentService.getUserIdByUserName(userEmail.getUemail()); //유저 번호
+		int Anumber = agentService.getAgentNumberByUserNumber(userNum); //중개인 번호
+		agent.setAnumber(Anumber);
+		agentDetail.setAdAnumber(Anumber);
 		// 수정하기
 		agentService.updateAgentData(agent,agentDetail);
-		// 수정된 내용의 Board 객체 얻기
-//		board = boardService.getBoard(board.getBno());
-//		// JSON으로 변환되지 않는 필드는 null처리
-//		board.setBattachdata(null);
 	}
 
 	// 댓글 정렬
+	
 }

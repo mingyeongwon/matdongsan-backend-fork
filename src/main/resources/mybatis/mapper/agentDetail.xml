@@ -26,6 +26,6 @@
 		,adattachtype=#{adattachtype},
 		adbrandnumber=#{adbrandnumber},
 		where
-		adnumber=#{adnumber}
+		ad_anumber=#{adAnumber}
 	</update>
 </mapper>

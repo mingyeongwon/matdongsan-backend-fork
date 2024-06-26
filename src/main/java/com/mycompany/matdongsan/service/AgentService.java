@@ -84,4 +84,9 @@ public class AgentService {
 		agentDetailDao.updateAgentDetailData(agentDetail);
 	}
 
+	public int getAgentNumberByUserNumber(int userNum) {
+		// TODO Auto-generated method stub
+		return agentDao.getAgentDataByAgentNumber(userNum).getAnumber();
+	}
+
 }

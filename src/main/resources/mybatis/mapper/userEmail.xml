@@ -11,4 +11,10 @@
 	<select id="getUserIdByUsername" parameterType="String" resultType="int">
 		select unumber from user_email where uemail = #{uemail}
 	</select>
+	
+	<select id="selectByUnumber" parameterType="String" resultType="UserEmail">
+		select unumber, uemail, upassword, urole, ujoindate,uremoved
+		from user_email
+		where uemail = #{uemail}
+	</select>
 </mapper>
