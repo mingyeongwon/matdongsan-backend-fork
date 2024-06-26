@@ -172,7 +172,8 @@ public class AgentController {
 		// 수정하기
 		agentService.updateAgentData(agent,agentDetail);
 	}
-
+	
+	
 	// 댓글 정렬
 	
 }

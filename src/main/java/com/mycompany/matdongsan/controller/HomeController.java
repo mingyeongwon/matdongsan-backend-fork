@@ -11,8 +11,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mycompany.matdongsan.dto.UserEmail;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
@@ -41,6 +43,8 @@ public class HomeController {
 		// 비밀번호 체크
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		boolean checkResult = passwordEncoder.matches(upassword, userDetails.getUser().getUpassword());
+		//비활성화 되었는지 확인해야함
+		boolean checkActivation;
 		// Spring security 인증 처리
 		if (checkResult) {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
@@ -63,5 +67,10 @@ public class HomeController {
 		return map;
 
 	}
-
+	
+	@PutMapping("/MyPage/DeleteAccount")
+	public UserEmail activateAccount() {
+		UserEmail userEmail = new UserEmail();
+		return userEmail;
+	}
 }
