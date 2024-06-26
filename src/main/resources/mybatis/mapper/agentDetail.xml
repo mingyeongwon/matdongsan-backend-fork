@@ -2,4 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.AgentDetailDao">
 
+<insert id="insertNewAgentDetailData" parameterType="AgentDetail">
+		<selectKey keyProperty="adnumber" resultType="int"
+			order="BEFORE">
+			select seq_adnumber.nextval from dual
+		</selectKey>
+		insert into agent_detail(adnumber, adname, ADATTACHONAME,
+		ADATTACHDATA,ADATTACHTYPE,ADBRANDNUMBER,AD_ANUMBER)
+		values
+		(#{adnumber}, #{adname}, #{adattachoname}, #{adattachdata},
+		#{adattachtype},#{adbrandnumber},#{adAnumber})
+	</insert>
 </mapper>

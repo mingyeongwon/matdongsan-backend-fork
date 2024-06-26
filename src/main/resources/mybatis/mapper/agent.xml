@@ -2,4 +2,53 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.AgentDao">
 
+	<!-- 중개인 회원가입 -->
+	<insert id="joinByAgent" parameterType="Agent">
+		<selectKey keyProperty="anumber" resultType="int"
+			order="BEFORE">
+			select seq_anumber.nextval from dual
+		</selectKey>
+		insert into agent(anumber, abrand, aphone,
+		aaddress,APROFILEDATA,APROFILEONAME,APROFILETYPE,
+		ALATITUDE,ALONGITUDE,APOSTCODE,AADDRESSDETAIL,A_UNUMBER)
+		values
+		(#{anumber}, #{abrand}, #{aphone}, #{aaddress},
+		#{aprofiledata},#{aprofileoname},#{aprofiletype},#{alatitude},#{alongitude},#{apostcode},#{aaddressdetail},#{aUnumber})
+	</insert>
+
+	<!-- 전체 중개인 수 -->
+	<select id="getAllAgentCount" resultType="int">
+		select
+		count(*)
+		from
+		agent
+	</select>
+
+	<!-- 전체 중개인 리스트 -->
+<select id="getAgentListByKeyword"  resultType="Agent">
+    <![CDATA[
+    SELECT *
+    FROM (
+        SELECT a.*, ROW_NUMBER() OVER (ORDER BY 1) AS rnum
+        FROM Agent a  ]]>
+        <if test="keyword != null and keyword != ''">
+        WHERE a.abrand LIKE '%' || #{keyword} || '%'
+        </if>   <![CDATA[
+    )
+    WHERE rnum BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    ]]>
+</select>
+
+	<!-- 전체 중개인 리스트 -->
+	<select id="getAgentList" parameterType="map" resultType="Agent">
+	<![CDATA[
+    SELECT *
+    FROM (
+        SELECT a.*, ROW_NUMBER() OVER (ORDER BY 1) AS rnum
+        FROM Agent a
+    )
+    WHERE rnum BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    ]]>
+	</select>
+	<!-- <select id="getAgentList" resultType="Agent"> select * from agent </select> -->
 </mapper>

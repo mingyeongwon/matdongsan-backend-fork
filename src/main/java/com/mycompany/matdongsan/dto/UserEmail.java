@@ -1,5 +1,7 @@
 package com.mycompany.matdongsan.dto;
 
+import java.sql.Date;
+
 import lombok.Data;
 
 @Data
@@ -9,4 +11,5 @@ public class UserEmail {
    private String urole;
    private String upassword;
    private boolean uremoved;
+   private Date ujoindate;
 }

@@ -27,10 +27,16 @@ public class AgentService {
 	}
 
 	// Agent 데이터 리스트 가져오기
-	public List<Agent> getAgentList() {
-		List<Agent> agentList = agentDao.getAgentList();
+	public List<Agent> getAgentList(int offset, int limit) {
+		List<Agent> agentList = agentDao.getAgentList(offset,limit);
 		return agentList;
 	}
+
+	public List<Agent> getAgentList(int offset, int limit, String keyword) {
+		List<Agent> agentList = agentDao.getAgentListByKeyword(offset,limit,keyword);
+		return agentList;
+	}
+
 	//중개인 상세 데이터 추가
 	public void insertAgentData(AgentDetail agentDetail) {
 		agentDetailDao.insertNewAgentDetailData(agentDetail);
@@ -44,5 +50,12 @@ public class AgentService {
 		userEmailDao.insertUserDataByUser(userEmail);
 
 	}
+
+	public int getAllAgentCount() {
+	int totalAgentRows= agentDao.getAllAgentCount();
+		return totalAgentRows;
+	}
+
+
 
 }

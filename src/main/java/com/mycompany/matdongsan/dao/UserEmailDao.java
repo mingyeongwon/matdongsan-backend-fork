@@ -12,7 +12,7 @@ public interface UserEmailDao {
 	
 	//회원가입
 	public int insertUserDataByUser(UserEmail userEmail);
-
+	
 	public UserEmail selectByUnumber(String username);
 
 }
