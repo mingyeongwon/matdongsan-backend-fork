@@ -1,28 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.QuestionDao">
-
-	<insert id="insert" parameterType="question">
+	<!-- 고객 문의 생성 -->
+	<insert id="insertQuestion" parameterType="question">
 		<selectKey keyProperty="qnumber" resultType="int" order="BEFORE">
 			select SEQ_QNUMBER.nextval from dual
 		</selectKey>
 		insert into question(
 			qnumber, qcategory, qtitle, qcontent, qattachoname, qattachdata, 
-			qattachtype, qdate, q_email, qroletype 
+			qattachtype, qdate, q_unumber 
 		) values(
 			#{qnumber}, #{qcategory}, #{qtitle}, #{qcontent}, #{qattachoname},
-			#{qattachdata}, #{qattachtype}, sysdate, #{ qEmail }, #{qroletype}
+			#{qattachdata}, #{qattachtype}, sysdate, #{ qUnumber }
 		)
 	</insert>
 	
 	<!-- 이미지 데이터는 빼고 가져 온다. -->
-	<select id="getQuestion" parameterType="int" resultType="question">
+	<select id="getQuestionByQnumber" parameterType="int" resultType="question">
 		select qnumber, qcategory, qtitle, qcontent, qattachoname,  
-			qattachtype, qdate, q_email, qroletype 
+			qattachtype, qdate, q_unumber 
 		from question
 		where qnumber = #{qnumber}
 	</select>
 	
+	<!-- 문의 수정하기 -->
+	<update id="updateQuestion" parameterType="question">
+		update question set qcategory = #{qcategory}, qtitle = #{qtitle}, 
+		qcontent = #{qcontent}, qdate = sysdate
+		<if test="qattachdata != null">
+		, qattachoname = #{qattachoname}
+		, qattachtype = #{qattachtype}
+		, qattachdata = #{qattachdata}
+		</if>
+		where qnumber = #{qnumber}
+	</update>
 	
+	<!-- 문의 삭제하기 -->
+	<delete id="deleteQuestionByQnumber" parameterType = "int">
+		delete from question where qnumber = #{qnumber}
+	</delete>
+	
+	<!-- 공지사항 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- 공지사항 생성 -->
+	<insert id="insertNotice" parameterType="notice">
+		<selectKey keyProperty="nnumber" resultType="int" order="BEFORE">
+			select SEQ_NNUMBER.nextval from dual
+		</selectKey>
+		insert into notice(
+			nnumber, ntitle, ncontent, ndate 
+		) values(
+			#{nnumber}, #{ntitle}, #{ncontent}, sysdate
+		)
+	</insert>
+	
+	<!-- 공지 사항 갯수 가져오기 -->
+	<select id="countNotice" resultType="int">
+		select count(*) from notice
+	</select>
+	
+	<!-- 공지사항 리스트 가져오기 -->
+	<select id="getNoticeList" parameterType="pager" resultType="notice">
+		<![CDATA[
+		select rnum, ntitle, ndate
+		from(
+			select rownum as rnum, ntitle, ndate
+			from(
+				select ntitle, ndate
+				from notice
+				order by ndate desc
+				)
+			where rownum <= #{endRowNo}
+		)
+		where rnum >= #{startRowNo}
+		]]>
+	</select>
+	
+	<!-- 공지사항 디테일 가져오기 -->
+	<select id="getNoticeDetail" parameterType="int" resultType="notice">
+		select ncontent, ndate, ntitle, nnumber
+		from notice
+		where nnumber =#{nnumber}
+	</select>
+	
+	<!-- 공지사항 수정하기 -->
+	<update id="updateNotice" parameterType="notice">
+		update notice set ncontent = #{ncontent}, ndate =sysdate, ntitle =#{ntitle}
+		where nnumber = #{nnumber}
+	</update>
+	
+	<!-- 공지사항 삭제하기 -->
+	<delete id="deleteNotice" parameterType="int">
+		delete from notice where nnumber = #{nnumber}
+	</delete>
+	
+	<!-- 검색 된 공지사항 리스트 가져오기 -->
+	<!-- <select id="getSearchedNoticeList" parameterType="pager, string" resultType="notice">
+		<![CDATA[
+		select rnum, ntitle, ndate
+		from(
+			select rownum as rnum, ntitle, ndate
+			from(
+				select ntitle, ndate
+				from notice
+				where ntitle like '%#{searchKeyword}%'
+				order by ndate desc
+				)
+			where rownum <= #{endRowNo}
+		)
+		where rnum >= #{startRowNo}
+		]]>
+	</select> -->
 
 </mapper>
