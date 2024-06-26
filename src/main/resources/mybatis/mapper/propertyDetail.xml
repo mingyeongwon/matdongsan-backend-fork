@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.PropertyDetailDao">
-
+	<insert id="createPropertyByPropertyDetail" parameterType="PropertyDetail">
+		<selectKey keyProperty="pdnumber" resultType="int" order="BEFORE">
+			select seq_pdnumber.nextval from dual
+		</selectKey>	
+		insert into property_detail(pdnumber, pdcontent, pdmoveindate, pdbath, pdlift, pdbed, 
+		pdlot, pdheating, pdcooling, pdmicrowave, pdburner, pdfridge, pdshoecloset, pdtv, pdcloset, 
+		pddinningtable, pdtable, pdwasher, pdinduction, pd_pnumber)
+		
+		values(#{pdnumber}, #{pdcontent}, sysdate, #{pdbath}, #{pdlift}, #{pdbed},
+				#{pdlot}, #{pdheating}, #{pdcooling}, #{pdmicrowave}, #{pdburner}, #{pdfridge}, #{pdshoecloset},
+				#{pdtv}, #{pdcloset}, #{pddinningtable}, #{pdtable}, #{pdwasher}, #{pdinduction}, #{pdPnumber})
+	</insert>
 </mapper>

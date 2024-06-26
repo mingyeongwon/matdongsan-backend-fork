@@ -8,7 +8,6 @@ import lombok.Data;
 public class PropertyDetail {
    private int pdnumber;
    private String pdcontent;
-   private String pdaddress;
    private Date pdmoveindate;
    private boolean pdbath;
    private boolean pdlift;
@@ -25,7 +24,6 @@ public class PropertyDetail {
    private boolean pddinningtable;
    private boolean pdtable;
    private boolean pdwasher;
-   private String pdlongitude;
    private boolean pdinduction;
    private int pdPnumber;
 }

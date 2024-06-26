@@ -8,5 +8,8 @@ import com.mycompany.matdongsan.dto.Property;
 public interface PropertyDao {
 
 	Property selectByPnumber(int pnumber);
+	
+	// 생성
+	public int createPropertyByProperty(Property property);
 
 }
