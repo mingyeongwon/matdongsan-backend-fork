@@ -6,19 +6,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
+import com.mycompany.matdongsan.dto.AgentSignupData;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.UserEmail;
 import com.mycompany.matdongsan.service.AgentService;
@@ -37,27 +41,24 @@ public class AgentController {
 	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword) {
 
-	
 		// 무한 스크롤
 		int totalAgentRows = agentService.getAllAgentCount();
 		Pager pager = new Pager(size, pageNo, totalAgentRows);
-		
-		//검색 내용 찾기
+
+		// 검색 내용 찾기
 		// 부동산 이름, 대표 이름, 주소명
+		// 키워드 유무 확인
 		List<Agent> list;
-		if(keyword != null) {
-			log.info("키워드입니다. " + keyword);
-			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(),keyword);
+		if (keyword != null) {
+			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword);
 		} else {
 			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage());
 		}
-		
-	
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", list);
 		map.put("pager", pager);
-		
+
 		return map;
 	}
 
@@ -66,45 +67,32 @@ public class AgentController {
 	// agent관련 DTO를 만들어서 코드 바꿀것
 	@Transactional
 	@PostMapping("/Signup/AgentSignup")
-	public AgentDetail createAgentAccount(@RequestParam("abrand") String abrand, @RequestParam("aphone") String aphone,
-			@RequestParam("aaddress") String aaddress, @RequestParam("apostcode") String apostcode,
-			@RequestParam("alatitude") String alatitude, @RequestParam("alongitude") String alongitude,
-			@RequestParam("addressdetail") String addressdetail, @RequestParam("adname") String adname,
-			@RequestParam("adbrandnumber") String adbrandnumber,
-			@RequestParam(value = "adattach", required = false) MultipartFile adattach,
-			@RequestParam("uemail") String uemail, @RequestParam("urole") String urole,
-			@RequestParam("upassword") String upassword, @RequestParam("uremoved") boolean uremoved)
-			throws IOException {
+	public AgentSignupData createAgentAccount(@ModelAttribute AgentSignupData agentSignupData) throws IOException {
 		// 객체 생성 및 데이터 설정
-		Agent agent = new Agent();
-		agent.setAbrand(abrand);
-		agent.setAphone(aphone);
-		agent.setAaddress(aaddress);
-		agent.setApostcode(apostcode);
-		agent.setAlatitude(alatitude);
-		agent.setAlongitude(alongitude);
-		agent.setAaddressdetail(addressdetail);
-
-		AgentDetail agentDetail = new AgentDetail();
-		agentDetail.setAdname(adname);
-		agentDetail.setAdbrandnumber(adbrandnumber);
-
-		UserEmail userEmail = new UserEmail();
-		userEmail.setUemail(uemail);
-		userEmail.setUrole(urole);
-		userEmail.setUpassword(upassword);
-		userEmail.setUremoved(uremoved);
+		Agent agent = agentSignupData.getAgent();
+		AgentDetail agentDetail = agentSignupData.getAgentDetail();
+		UserEmail userEmail = agentSignupData.getUserEmail();
 
 		// 비밀번호 암호화
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
 
-		// 첨부 파일 처리
-		if (adattach != null && !adattach.isEmpty()) {
-			log.info("실행1234123");
-			agentDetail.setAdattachoname(adattach.getOriginalFilename());
-			agentDetail.setAdattachtype(adattach.getContentType());
-			agentDetail.setAdattachdata(adattach.getBytes());
+		MultipartFile profileImg = agent.getAprofile();
+
+		// 중개인 프로필 사진 이미지 처리
+		if (profileImg != null && !profileImg.isEmpty()) {
+			agent.setAprofileoname(profileImg.getOriginalFilename());
+			agent.setAprofiletype(profileImg.getContentType());
+			agent.setAprofiledata(profileImg.getBytes());
+			log.info(agent.getAprofileoname());
+		}
+
+		// 사업자 등록증 이미지
+		// 사업자 등록증 첨부 파일 처리
+		if (agentDetail.getAdattach() != null && !agentDetail.getAdattach().isEmpty()) {
+			agentDetail.setAdattachoname(agentDetail.getAdattach().getOriginalFilename());
+			agentDetail.setAdattachtype(agentDetail.getAdattach().getContentType());
+			agentDetail.setAdattachdata(agentDetail.getAdattach().getBytes());
 			log.info(agentDetail.getAdattachoname());
 		}
 
@@ -114,9 +102,11 @@ public class AgentController {
 		agentService.joinByAgent(agent);
 		agentDetail.setAdAnumber(agent.getAnumber());
 		agentService.insertAgentData(agentDetail);
+		// 출력시 데이터 부분은 출력 길이가 길어서 null로 처리
 		userEmail.setUpassword(null);
-
-		return agentDetail;
+		agentDetail.setAdattachdata(null);
+		agent.setAprofiledata(null);
+		return agentSignupData;
 	}
 
 	// 부동산 상세 정보 조회
@@ -137,18 +127,52 @@ public class AgentController {
 	 * null;//agentService.getAgentByNumberWithSort(anumber, sort); }
 	 */
 
-	// 마이페이지 부동산 중개업자 정보 수정
-	@PreAuthorize("hasAuthority('ROLE_USER')") // 중개인일 경우에만 등록 가능
+	// 마이페이지 부동산 중개업자 정보 불러오기
+	// @PreAuthorize("hasAuthority('ROLE_USER')") // 중개인일 경우에만 등록 가능
 	@GetMapping("/Mypage/MyInfomation")
-	public Agent getMypagePropertyInfoList(@PathVariable int aid) {
-
-		return null;
+	public AgentSignupData getMypagePropertyInfo(String userEmail
+	// Authentication autentication
+	) {
+		// 로그인한 중개인의 데이터 수정
+		// 아이디로 중개인의 정보 가져옴
+		// int agentId = agentService.getUserIdByUserName(autentication.getUsername());
+		int agentNumber = agentService.getUserIdByUserName(userEmail);
+		AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(agentNumber);
+		return agentSignupData;
 	}
 
-	// 검색
-	@GetMapping("/Agent/search/{keyword}")
-	public Agent getAgentByKeyword(@PathVariable String keyword) {
-		return null;
+	// 중개업자 정보 업데이트
+	@PutMapping("/Mypage/MyInfomation")
+	public void updateMypagePropertyInfo(@ModelAttribute AgentSignupData agentSignupData) {
+		Agent agent = agentSignupData.getAgent();
+		AgentDetail agentDetail = agentSignupData.getAgentDetail();
+		UserEmail userEmail = agentSignupData.getUserEmail();
+		// 프로필사진
+		MultipartFile agentProfile = agent.getAprofile();
+		MultipartFile agentDetailFile = agentDetail.getAdattach();
+		
+		// 파일 이름을 설정
+		agent.setAprofileoname(agentProfile.getOriginalFilename());
+		agentDetail.setAdattachoname(agentDetailFile.getOriginalFilename());
+		// 파일 종류를 설정
+		agent.setAprofiletype(agentProfile.getContentType());
+		agentDetail.setAdattachtype(agentDetail.getAdattachtype());
+		try {
+			// 파일 데이터를 설정
+			agent.setAprofiledata(agentProfile.getBytes());
+			agentDetail.setAdattachdata(agentDetailFile.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// 수정하기
+		agentService.updateAgentData(agent,agentDetail);
+		// 수정된 내용의 Board 객체 얻기
+//		board = boardService.getBoard(board.getBno());
+//		// JSON으로 변환되지 않는 필드는 null처리
+//		board.setBattachdata(null);
 	}
+
 	// 댓글 정렬
 }

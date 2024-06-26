@@ -1,6 +1,7 @@
 package com.mycompany.matdongsan.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.mycompany.matdongsan.dto.UserEmail;
 
@@ -14,5 +15,7 @@ public interface UserEmailDao {
 	public int insertUserDataByUser(UserEmail userEmail);
 	
 	public UserEmail selectByUnumber(String username);
+
+	public int getUserIdByUsername(String username);
 
 }

@@ -25,19 +25,19 @@
 	</select>
 
 	<!-- 전체 중개인 리스트 -->
-<select id="getAgentListByKeyword"  resultType="Agent">
+	<select id="getAgentListByKeyword" resultType="Agent">
     <![CDATA[
     SELECT *
     FROM (
         SELECT a.*, ROW_NUMBER() OVER (ORDER BY 1) AS rnum
         FROM Agent a  ]]>
-        <if test="keyword != null and keyword != ''">
-        WHERE a.abrand LIKE '%' || #{keyword} || '%'
-        </if>   <![CDATA[
+		<if test="keyword != null and keyword != ''">
+			WHERE a.abrand LIKE '%' || #{keyword} || '%'
+		</if>   <![CDATA[
     )
     WHERE rnum BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     ]]>
-</select>
+	</select>
 
 	<!-- 전체 중개인 리스트 -->
 	<select id="getAgentList" parameterType="map" resultType="Agent">
@@ -51,4 +51,20 @@
     ]]>
 	</select>
 	<!-- <select id="getAgentList" resultType="Agent"> select * from agent </select> -->
+
+	<select id="getAgentDataByAgentNumber" parameterType="int"
+		resultType="Agent">
+		SELECT *
+		FROM agent
+		where a_unumber = #{agentNumber}
+	</select>
+
+	<update id="updateAgentData" parameterType="Agent">
+		update agent set abrand=#{abrand}, aphone=#{aphone},aaddress=#{aaddress},
+		,aprofileoname=#{aprofileoname},
+		aprofiletype=#{aprofiletype},
+		aprofiledata=#{aprofiledata},
+		apostcode=#{apostcode},aaddressdetail=#{aaddressdetail},alatitude=#{alatitude},alongitude=#{alongitude}
+		where anumber=#{anumber}
+	</update>
 </mapper>

@@ -8,4 +8,7 @@
 		insert into user_email(unumber, uemail, upassword, urole, uremoved)
 		values (#{unumber}, #{uemail}, #{upassword}, #{urole}, #{uremoved})
 	</insert>
+	<select id="getUserIdByUsername" parameterType="String" resultType="int">
+		select unumber from user_email where uemail = #{uemail}
+	</select>
 </mapper>
