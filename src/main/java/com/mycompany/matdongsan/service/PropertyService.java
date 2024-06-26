@@ -1,5 +1,7 @@
 package com.mycompany.matdongsan.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,27 +21,35 @@ public class PropertyService {
 	@Autowired
 	private PropertyPhotoDao propertyPhotoDao;
 	
-	// 생성
-	public void createProperty(Property property, PropertyDetail propertyDetail, PropertyPhoto propertyPhoto) {
+	// 생성 - property and propertyDetail
+	public void createProperty(Property property, PropertyDetail propertyDetail) {
 		// property
 		propertyDao.createPropertyByProperty(property);
 		
 		// propertyDetail
 		propertyDetail.setPdPnumber(property.getPnumber()); // FK 값 주기
         propertyDetailDao.createPropertyByPropertyDetail(propertyDetail);
-        
-        // propertyPhoto
-        propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+	}
+	
+	// 생성 - propertyPhoto
+	public void createPropertyByPropertyPhoto(PropertyPhoto propertyPhoto) {
         propertyPhotoDao.createPropertyByPropertyPhoto(propertyPhoto);
 	}
 	
-	// 수정
-	public void updateProperty(Property property, PropertyDetail propertyDetail, PropertyPhoto propertyPhoto) {
+	// 수정 
+	public void updateProperty(Property property, PropertyDetail propertyDetail) {
+		// property
 		propertyDao.updatePropertyByProperty(property);
+		
+		// propertyDetail
 		propertyDetailDao.updatePropertyByPropertyDetail(propertyDetail);
-		if (propertyPhoto.getPpattachdata() != null && propertyPhoto.getPpattachdata().length > 0) {
-			propertyPhotoDao.updatePropertyByPropertyPhoto(propertyPhoto);
-		}
+	}
+	
+	// 수정 - propertyPhoto
+	public void updatePropertyByPropertyPhoto(PropertyPhoto propertyPhoto) {
+    	if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
+    		propertyPhotoDao.updatePropertyByPropertyPhoto(propertyPhoto);
+    	}
 		
 	}
 	
@@ -68,10 +78,15 @@ public class PropertyService {
 		return pdnumber;
 	}
 
-	// pk 값 가져오기 - propertyDetail
-	public int getPpnumber(int ppPnumber) {
-		int ppnumber = propertyPhotoDao.selectPpnumberByPnumber(ppPnumber);
-		return ppnumber;
+	// pk 값 가져오기 - propertyPhoto
+	public List<Integer> getPpnumbers(int ppPnumber) {
+		List<Integer> ppnumbers = propertyPhotoDao.selectPpnumbersByPnumber(ppPnumber);
+		return ppnumbers;
+	}
+	
+	// 삭제 - propertyPhoto
+	public int deletePropertyPhoto(int ppnumber) {
+		return propertyPhotoDao.deleteByPpnumber(ppnumber);
 	}
 
 }
