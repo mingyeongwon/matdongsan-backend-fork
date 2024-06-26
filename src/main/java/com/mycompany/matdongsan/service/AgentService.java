@@ -41,7 +41,7 @@ public class AgentService {
 	}
 	//공통 회원가입 데이터부분 저장
 	public void joinByUserEmail(UserEmail userEmail) {
-		userEmailDao.joinByUserEmail(userEmail);
+		userEmailDao.insertUserDataByUser(userEmail);
 
 	}
 

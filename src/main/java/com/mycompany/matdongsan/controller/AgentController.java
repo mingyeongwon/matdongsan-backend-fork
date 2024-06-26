@@ -99,8 +99,8 @@ public class AgentController {
 	    }
 
 	    // 데이터베이스에 저장
-	    agentService.joinByAgent(agent);
 	    agentService.joinByUserEmail(userEmail);
+	    agentService.joinByAgent(agent);
 	    agentService.insertAgentData(agentDetail);
 	    userEmail.setUpassword(null);
 

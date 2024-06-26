@@ -9,11 +9,10 @@ public interface UserEmailDao {
 	
 	// 회원가입
 //	public int joinByUserEmail(UserEmail userEmail);
-
-	public int insertUserDataByMember(UserEmail userEmail);
+	
+	//회원가입
+	public int insertUserDataByUser(UserEmail userEmail);
 
 	public UserEmail selectByUnumber(String username);
 
-	public void joinByUserEmail(UserEmail userEmail);
-	
 }
