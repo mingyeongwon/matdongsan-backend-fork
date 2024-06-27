@@ -17,7 +17,7 @@
 		from USER_COMMON_DATA
 		where uemail = #{uemail}
 	</select>
-	<select id="getUserDataByUserName" parameterType="String" resultType = "UserCommonData">
+	<select id="getUserDataByUserName" parameterType="String" resultType = "String">
 		select urole from USER_COMMON_DATA
 		where uemail = #{name}
 	</select>

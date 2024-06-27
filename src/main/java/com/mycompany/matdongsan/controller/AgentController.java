@@ -1,13 +1,12 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +47,8 @@ public class AgentController {
 		// 검색 내용 찾기
 		// 부동산 이름, 대표 이름, 주소명
 		// 키워드 유무 확인
-		List<Agent> list;
+		log.info(pager.getStartRowIndex()+"");
+		List<Agent> list = new ArrayList<>();
 		if (keyword != null) {
 			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword);
 		} else {

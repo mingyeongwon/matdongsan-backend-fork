@@ -34,6 +34,7 @@ public class AgentService {
 	// Agent 데이터 리스트 가져오기
 	public List<Agent> getAgentList(int offset, int limit) {
 		List<Agent> agentList = agentDao.getAgentList(offset, limit);
+		log.info(agentList.toString());
 		return agentList;
 	}
 
