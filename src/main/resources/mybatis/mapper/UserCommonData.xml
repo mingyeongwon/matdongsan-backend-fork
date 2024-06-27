@@ -5,20 +5,20 @@
 		<selectKey keyProperty="unumber" resultType="int" order="BEFORE">
 			select seq_unumber.nextval from dual
 		</selectKey>
-		insert into user_email(unumber, uemail, upassword, urole, uremoved)
+		insert into USER_COMMON_DATA(unumber, uemail, upassword, urole, uremoved)
 		values (#{unumber}, #{uemail}, #{upassword}, #{urole}, #{uremoved})
 	</insert>
 	<select id="getUserIdByUsername" parameterType="String" resultType="int">
-		select unumber from user_email where uemail = #{uemail}
+		select unumber from USER_COMMON_DATA where uemail = #{uemail}
 	</select>
 	
 	<select id="selectByUnumber" parameterType="String" resultType="UserCommonData">
 		select unumber, uemail, upassword, urole, ujoindate,uremoved
-		from user_email
+		from USER_COMMON_DATA
 		where uemail = #{uemail}
 	</select>
 	<select id="getUserDataByUserName" parameterType="String" resultType = "UserCommonData">
-		select urole from user_email
+		select urole from USER_COMMON_DATA
 		where uemail = #{name}
 	</select>
 </mapper>
