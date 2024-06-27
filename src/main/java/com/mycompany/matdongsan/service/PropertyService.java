@@ -84,7 +84,7 @@ public class PropertyService {
 		return ppnumbers;
 	}
 	
-	// 삭제 - propertyPhoto
+	// 수정 시 propertyPhoto 삭제
 	public int deletePropertyPhoto(int ppnumber) {
 		return propertyPhotoDao.deleteByPpnumber(ppnumber);
 	}
@@ -112,6 +112,34 @@ public class PropertyService {
 			String date, String rentType) {
 		List<Property> propertyList = propertyDao.getPropertyListByFilter(offset, limit, keyword, price, date, rentType);
 		return propertyList;
+	}
+	
+	// 삭제
+	public void deleteProperty(int pnumber) {
+		// propertyDetail
+		propertyDetailDao.deletePropertyDetailByPdPnumber(pnumber);		
+		
+		// propertyPhoto
+		propertyPhotoDao.deletePropertyPhotoByPpPnumber(pnumber);	
+		
+		// property
+		propertyDao.deletePropertyByPnumber(pnumber);			
+	}
+
+	public void readProperty(int pnumber) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	// 읽기 - propertyDetail
+	public PropertyDetail getPropertyDetailByPdPnumber(int pnumber) {
+		PropertyDetail propertyDetail = propertyDetailDao.selectPropertyDetailByPdPnumber(pnumber);
+		return propertyDetail;
+	}
+
+	public PropertyPhoto getPropertyPhotoByPpPnumber(int pnumber) {
+		PropertyPhoto propertyPhoto = propertyPhotoDao.selectPropertyPhotoByPpPnumber(pnumber);
+		return propertyPhoto;
 	}
 	
 

@@ -20,7 +20,13 @@ public interface PropertyPhotoDao {
 	// pk 값 가져오기
 	public List<Integer> selectPpnumbersByPnumber(int ppPnumber);
 	
-	// 삭제
+	// 수정 시 삭제
 	public int deleteByPpnumber(int ppnumber);
+	
+	// 전체 삭제
+	public int deletePropertyPhotoByPpPnumber(int ppPnumber);
+	
+	// 읽기
+	public PropertyPhoto selectPropertyPhotoByPpPnumber(int ppPnumber);
 
 }

@@ -39,5 +39,19 @@
 		select pdnumber 
 		from property_detail  
 		where pd_pnumber=#{pdPnumber}
-	</select>     
+	</select>   
+	
+	<!-- 삭제 -->
+	<delete id="deletePropertyDetailByPdPnumber" parameterType="int">
+		delete 
+		from property_detail
+		where pd_pnumber=#{pdPnumber}
+	</delete>	
+	
+   <!-- 읽기 -->
+    <select id="selectPropertyDetailByPdPnumber" parameterType="int" resultType="PropertyDetail">
+      select *
+      from property_detail 
+      where pd_pnumber=#{pdPnumber}
+   </select> 		  
 </mapper>

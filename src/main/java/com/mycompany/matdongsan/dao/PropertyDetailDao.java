@@ -17,5 +17,11 @@ public interface PropertyDetailDao {
 	
 	// pk 값 가져오기
 	public int selectPdnumberByPnumber(int pdPnumber);
+	
+	// 삭제
+	public int deletePropertyDetailByPdPnumber(int pdPnumber);
+	
+	// 읽기 
+	public PropertyDetail selectPropertyDetailByPdPnumber(int pdPnumber);
 
 }

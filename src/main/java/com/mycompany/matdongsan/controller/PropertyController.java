@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mycompany.matdongsan.dto.Agent;
+import com.mycompany.matdongsan.dto.Comment;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
@@ -62,6 +63,19 @@ public class PropertyController {
 		map.put("pager", pager);
 		return map; // { "property" : {}, "pager" : {}}
 	}
+	
+	
+//	읽기
+	@GetMapping("/Property/{pnumber}")
+	public TotalProperty readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty) {
+	    
+	    totalProperty.setProperty(propertyService.getProperty(pnumber));
+	    totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
+	    totalProperty.setPropertyPhoto(propertyService.getPropertyPhotoByPpPnumber(pnumber));	    
+	    
+		return totalProperty;
+	}
+	
 	
 //	등록
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
@@ -113,6 +127,7 @@ public class PropertyController {
 		
 		return totalProperty;
 	}
+	
 	
 //	수정
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
@@ -167,7 +182,6 @@ public class PropertyController {
 	        }
 	    }
 
-
 	    // totalProperty 객체에 수정된 내용 다시 설정
 	    totalProperty.setProperty(propertyService.getProperty(property.getPnumber()));
 	    totalProperty.setPropertyDetail(propertyService.getPropertyDetail(propertyDetail.getPdnumber()));
@@ -182,11 +196,32 @@ public class PropertyController {
 		return totalProperty;
 	}
 	
-	//	매물 상태 (비활성화, 거래완료)
+	
+//	 삭제
+//	@PreAuthorize("hasAuthority('ROLE_USER')")	
+	@Transactional
+	@DeleteMapping("/deleteProperty/{pnumber}")
+	public void deleteProperty(@PathVariable int pnumber) {
+		propertyService.deleteProperty(pnumber);
+	}
+	
+	
+//	상태 변경 (비활성화, 거래완료)
 	@PatchMapping("/updatePropertyStatus")
 	public Property updatePropertyStatus(Property property) {
 		property.setPstatus(null);
 		return property;
+	}
+	
+	
+//	댓글 생성
+	@PostMapping("/Property/{pnumber}")
+	public Property createPropertyReview(@PathVariable int pnumber, @ModelAttribute Comment comment,
+			Authentication authentication) {
+		
+		
+		
+		return null;
 	}
 
 //	매물 신고

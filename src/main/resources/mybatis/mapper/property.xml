@@ -118,5 +118,12 @@
 		<![CDATA[ )
 		    where rnum between #{offset} + 1 and #{offset} + #{limit}
 	    ]]>
-	</select>  	 
+	</select>  
+	
+	<!-- 삭제 -->
+	<delete id="deletePropertyByPnumber" parameterType="int">
+		delete 
+		from property
+		where pnumber=#{pnumber}
+	</delete>	 
 </mapper>
