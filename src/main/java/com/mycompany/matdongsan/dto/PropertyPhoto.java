@@ -1,5 +1,7 @@
 package com.mycompany.matdongsan.dto;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -12,6 +14,6 @@ public class PropertyPhoto {
    private String ppattachtype;
    private int ppPnumber;
 
-   private MultipartFile ppattach;
+   private List<MultipartFile> ppattach;
 }
 

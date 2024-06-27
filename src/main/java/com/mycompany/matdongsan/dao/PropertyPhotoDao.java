@@ -1,5 +1,7 @@
 package com.mycompany.matdongsan.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.mycompany.matdongsan.dto.PropertyPhoto;
@@ -16,6 +18,9 @@ public interface PropertyPhotoDao {
 	public PropertyPhoto selectByPpnumber(int ppnumber);
 	
 	// pk 값 가져오기
-	public int selectPpnumberByPnumber(int ppPnumber);
+	public List<Integer> selectPpnumbersByPnumber(int ppPnumber);
+	
+	// 삭제
+	public int deleteByPpnumber(int ppnumber);
 
 }

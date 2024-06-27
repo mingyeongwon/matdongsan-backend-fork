@@ -1,6 +1,7 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,6 @@ import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.TotalProperty;
-import com.mycompany.matdongsan.dto.UserEmail;
 import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,6 @@ public class PropertyController {
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
-		
 	    // 사용자 설정
 		// 추후 authentication 설정하기
 		property.setPUnumber(9);
@@ -68,21 +67,31 @@ public class PropertyController {
 			property.setPthumbnaildata(mf.getBytes());
 		}
 		
+		propertyService.createProperty(property, propertyDetail);
+		
+		// propertyPhoto 
+		log.info("propertyPhotos null 여부 : " + propertyPhoto.getPpattach().isEmpty());
+		
 		// propertyPhoto 파일 첨부 여부
 		if(propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
-			MultipartFile mf = propertyPhoto.getPpattach();
-			propertyPhoto.setPpattachoname(mf.getOriginalFilename());
-			propertyPhoto.setPpattachtype(mf.getContentType());
-			propertyPhoto.setPpattachdata(mf.getBytes());
+			List<MultipartFile> files = propertyPhoto.getPpattach();
+			if(files != null && !files.isEmpty()) {	
+				for(MultipartFile file : files) {
+					log.info(file.getOriginalFilename());
+					propertyPhoto.setPpattachoname(file.getOriginalFilename());
+					propertyPhoto.setPpattachtype(file.getContentType());
+					propertyPhoto.setPpattachdata(file.getBytes());
+			        propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+			        propertyService.createPropertyByPropertyPhoto(propertyPhoto);
+				}
+			}
 		}
-
-		propertyService.createProperty(property, propertyDetail, propertyPhoto);
 		
 		// JSON으로 변환되지 않는 필드는 null 처리
 		property.setPthumbnail(null);
 		property.setPthumbnaildata(null);
-		propertyPhoto.setPpattach(null);
-		propertyPhoto.setPpattachdata(null);
+	    propertyPhoto.setPpattach(null);
+	    propertyPhoto.setPpattachdata(null);
 		
 		return totalProperty;
 	}
@@ -98,7 +107,6 @@ public class PropertyController {
 		
 		// PK 값 가져오기
 		propertyDetail.setPdnumber(propertyService.getPdnumber(property.getPnumber()));
-		propertyPhoto.setPpnumber(propertyService.getPpnumber(property.getPnumber()));
 		
 		// property 파일 첨부 여부
 		if(property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
@@ -108,15 +116,39 @@ public class PropertyController {
 			property.setPthumbnaildata(mf.getBytes());
 		}
 		
-		// propertyPhoto 파일 첨부 여부
-		if(propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
-			MultipartFile mf = propertyPhoto.getPpattach();
-			propertyPhoto.setPpattachoname(mf.getOriginalFilename());
-			propertyPhoto.setPpattachtype(mf.getContentType());
-			propertyPhoto.setPpattachdata(mf.getBytes());
-		}
+		propertyService.updateProperty(property, propertyDetail);
 		
-		propertyService.updateProperty(property, propertyDetail, propertyPhoto);
+	    // propertyPhoto 파일 첨부 여부
+	    if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
+	        List<Integer> ppnumbers = propertyService.getPpnumbers(property.getPnumber()); // pk 값 가져오기
+	        List<MultipartFile> files = propertyPhoto.getPpattach();
+	        log.info("files.size() : " + files.size());
+	        int existingPhotosCount = ppnumbers.size();
+	        int newFilesCount = files.size();
+
+	        for (int i = 0; i < newFilesCount; i++) {
+	            MultipartFile file = files.get(i);
+	            propertyPhoto.setPpattachoname(file.getOriginalFilename());
+	            propertyPhoto.setPpattachtype(file.getContentType());
+	            propertyPhoto.setPpattachdata(file.getBytes());
+	            if (i < existingPhotosCount) {
+	                // 기존 사진을 업데이트하는 경우
+	                propertyPhoto.setPpnumber(ppnumbers.get(i));
+		            propertyService.updatePropertyByPropertyPhoto(propertyPhoto);
+	            } else {
+	                // 새로운 사진을 추가하는 경우
+	                propertyPhoto.setPpnumber(0); // 새로운 사진의 경우 ppnumber는 0(null)로 설정하고, DB에서 자동 생성되도록 처리
+	                propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+	                propertyService.createPropertyByPropertyPhoto(propertyPhoto);
+	            }
+	        }
+
+	        // 기존 사진 중 남은 사진은 삭제 처리 (newFilesCount < existingPhotosCount 인 경우)
+	        for (int i = newFilesCount; i < existingPhotosCount; i++) {
+	            propertyService.deletePropertyPhoto(ppnumbers.get(i));
+	        }
+	    }
+
 
 	    // totalProperty 객체에 수정된 내용 다시 설정
 	    totalProperty.setProperty(propertyService.getProperty(property.getPnumber()));
@@ -127,11 +159,12 @@ public class PropertyController {
 		property.setPthumbnail(null);
 		property.setPthumbnaildata(null);
 		propertyPhoto.setPpattach(null);
-		propertyPhoto.setPpattachdata(null);
-		
+	    propertyPhoto.setPpattachdata(null);
+	    
 		return totalProperty;
 	}
 	
 //	매물 상태 (비활성화, 거래완료)
 
+//	매물 신고
 }
