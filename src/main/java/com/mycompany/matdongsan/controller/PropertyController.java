@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,7 +36,7 @@ public class PropertyController {
 	
 //  리스트
 	@GetMapping("/Property")
-	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
+	public Map<String, Object> getPropertyList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
 			@RequestParam(required = false) String rentType) {
@@ -54,7 +55,6 @@ public class PropertyController {
             pager = new Pager(size, pageNo, totalPropertyRows);
             Propertylist = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
         }
-		
 		
 		// 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
 		Map<String, Object> map = new HashMap<>();
@@ -182,7 +182,12 @@ public class PropertyController {
 		return totalProperty;
 	}
 	
-//	매물 상태 (비활성화, 거래완료)
+	//	매물 상태 (비활성화, 거래완료)
+	@PatchMapping("/updatePropertyStatus")
+	public Property updatePropertyStatus(Property property) {
+		property.setPstatus(null);
+		return property;
+	}
 
 //	매물 신고
 }

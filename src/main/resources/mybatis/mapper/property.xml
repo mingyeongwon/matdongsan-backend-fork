@@ -47,7 +47,7 @@
    </select>   
    
    <!-- property 개수 by filter and keyword -->
-   <select id="getPropertyCountByFilter" resultType="String">
+   <select id="getPropertyCountByFilter" resultType="int">
       select 
       	count(*) 
       from property
@@ -69,7 +69,7 @@
 		<![CDATA[
 		    select *
 		    from (
-		        select p.*, row_number() over (order by 1) as rnum
+		        select p.*, row_number() over (order by p.pnumber desc) as rnum
 		        from property p
 		    )
 		    where rnum between #{offset} + 1 and #{offset} + #{limit}
@@ -81,7 +81,7 @@
 		<![CDATA[
 		    select *
 		    from (
-		        select p.*, row_number() over (order by 1) as rnum
+		        select p.*, row_number() over (order by p.pnumber desc) as rnum
 		        from property p 
 		]]>
 		        <where>
@@ -90,8 +90,8 @@
 			      	</if>
 			      	<if test="keyword != null and keyword != ''">
 			      		and (
-			                paddress like '%' || #{keyword} || '%' 
-			                or paddressdetail like '%' || #{keyword} || '%'
+			                p.paddress like '%' || #{keyword} || '%' 
+			                or p.paddressdetail like '%' || #{keyword} || '%'
 			            )
 			      	</if>
 		       </where>	
