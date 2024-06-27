@@ -1,12 +1,18 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
+import com.mycompany.matdongsan.security.AppUserDetails;
+import com.mycompany.matdongsan.security.AppUserDetailsService;
+import com.mycompany.matdongsan.security.JwtProvider;
 import com.mycompany.matdongsan.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private JwtProvider jwtProvider;
 
+	@Autowired
+	private AppUserDetailsService userDetailsService;
 	// 로그인
 
 	// 회원가입
@@ -76,7 +89,49 @@ public class MemberController {
 	    return userEmail;
 	}
 
+	@PostMapping("/login")
+	public Map<String, String> userLogin(String uemail, String upassword) {
+		// 사용자 상세 정보 얻기
+		AppUserDetails userDetails = (AppUserDetails) userDetailsService.loadUserByUsername(uemail);
+		// 비밀번호 체크
+		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		boolean checkResult = passwordEncoder.matches(upassword, userDetails.getUser().getUpassword());
+		//비활성화 되었는지 확인해야함
+		boolean checkActivation = userDetails.isEnabled();
+		
+		// Spring security 인증 처리
+		if (checkResult && !checkActivation) {
+			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+					userDetails.getAuthorities());
+
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+		}
+		// 응답 생성 비밀번호 일치 && 계정 활성화 확인
+		Map<String, String> map = new HashMap<>();
+		if (checkResult && !checkActivation) {
+			// AccessToken을 생성
+			String accessToken = jwtProvider.createAccessToken(uemail, userDetails.getUser().getUrole());
+			// JSON 응답
+			map.put("result", "success");
+			map.put("userEmail", uemail);
+			map.put("accessToken", accessToken);
+			
+		} else if(checkActivation){ // 비활성화(삭제된) 유저의 경우 removed라고 map에 값을 넣음
+			map.put("result", "removed");
+
+		} else { //로그인에 실패한 경우(비밀번호, 아이디 문제) fail 표시
+			map.put("result", "fail");
+		}
+		return map;
+	}
 	// 탈퇴
+	@PutMapping("/MyPage/DeleteAccount")
+	public String activateAccount(Authentication authentication) {
+		String role = memberService.getUserRole(authentication.getName());
+		
+		return role;
+	}
+
 
 	// 비밀번호 수정
 

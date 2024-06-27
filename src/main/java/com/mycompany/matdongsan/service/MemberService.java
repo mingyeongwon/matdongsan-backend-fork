@@ -23,4 +23,9 @@ public class MemberService {
 		memberDao.insertMemberData(member);
 	}
 
+	public String getUserRole(String name) {
+		String userRole = userEmailDao.getUserDataByUserName(name);
+		return userRole;
+	}
+
 }
