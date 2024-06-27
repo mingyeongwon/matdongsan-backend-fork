@@ -197,11 +197,12 @@ public class PropertyController {
 	}
 	
 	
-//	 삭제
+//	삭제
 //	@PreAuthorize("hasAuthority('ROLE_USER')")	
 	@Transactional
 	@DeleteMapping("/deleteProperty/{pnumber}")
 	public void deleteProperty(@PathVariable int pnumber) {
+		
 		propertyService.deleteProperty(pnumber);
 	}
 	
@@ -209,6 +210,7 @@ public class PropertyController {
 //	상태 변경 (비활성화, 거래완료)
 	@PatchMapping("/updatePropertyStatus")
 	public Property updatePropertyStatus(Property property) {
+		
 		property.setPstatus(null);
 		return property;
 	}
@@ -218,6 +220,11 @@ public class PropertyController {
 	@PostMapping("/Property/{pnumber}")
 	public Property createPropertyReview(@PathVariable int pnumber, @ModelAttribute Comment comment,
 			Authentication authentication) {
+		
+		String userEmail = authentication.getName();
+
+		comment.setCPnumber(pnumber);
+		
 		
 		
 		
