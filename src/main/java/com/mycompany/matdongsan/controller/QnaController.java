@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dao.QuestionDao;
+import com.mycompany.matdongsan.dto.Answer;
 import com.mycompany.matdongsan.dto.Notice;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Question;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class QnaController {
 	@Autowired 
 	private QnaService qnaService;
-	private QuestionDao questionDao;
 	
 	// 고객 문의 생성
 	@PostMapping("/CustomerInquiryForm")
@@ -111,6 +111,36 @@ public class QnaController {
 	}
 	
 //	-------------------------------------------------------------------------------------------------------------------------------------
+	// 문의사항 답변
+	
+	// 문의 답변 생성
+	@PostMapping("/AdminInquiryAnswer")
+	public Answer createAnswer(Answer answer) {
+		qnaService.insertAnswer(answer);
+		return answer;
+	}
+	
+	// 문의 답변 수정
+	@PutMapping("/AdminInquiryAnswer")
+	public Answer updateAnswer(Answer answer) {
+		qnaService.updateAnswer(answer);
+		// 읽기 메소드 만들어서 수정한거 DB에서 새로 불러오기
+		return answer;
+	}
+	
+	// 문의 답변 읽기
+	@GetMapping("/AdminInquiryAnswerDetail")
+	public Answer readAnswer(int anumber) {
+		return qnaService.getAnswer(anumber);
+	}
+	
+	// 문의 답변 삭제
+	@DeleteMapping("/AdminInquiryAnswerDelete")
+	public int deleteAnswer(int anumber) {
+		return qnaService.deleteAnswer(anumber);
+	}
+	
+//	-------------------------------------------------------------------------------------------------------------------------------------
 	// 공지 사항
 	
 	// 공지 사항 생성
@@ -168,24 +198,31 @@ public class QnaController {
 	}
 	
 	// 공지 사항 검색
-//	@GetMapping("Notice")
-//	public Map<String, Object> searchNoticeList(@RequestParam(defaultValue = "1") int pageNo, String searchKeyword){
-//		// 공지사항 갯수
-//		int totalRows = qnaService.countNotice(); 
-//		
-//		// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
-//		Pager pager = new Pager(10, 5, totalRows, pageNo);
-//		
-//		// 해당 페이지의 게시물 목록 가져오기
-//		List<Notice> list = qnaService.getNoticeList(pager);
-//		
-//		// 여러 객체를 리턴하기 위해 Map 객체 생성		
-//		Map<String, Object> map = new HashMap<>();
-//		
-//		// map에 데이터 넣기
-//		map.put("notice", list);
-//		map.put("pager", pager);
-//		
-//		return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
-//	}
+	@GetMapping("/Notice")
+	public Map<String, Object> searchNoticeList(@RequestParam(defaultValue = "1") int pageNo, String searchKeyword){
+		// 검색 된 공지사항 갯수
+		int totalRows = qnaService.getCountOfSearchedNotices(searchKeyword); 
+		
+		// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
+		Pager pager = new Pager(10, 5, totalRows, pageNo);
+		
+		// 검색된 페이지 불러오기 위한 Map 생성 (Mybatis는 parameter을 하나의 타입만 보낼 수 있어서 map에 담아서 매개변수를 넣는다.)
+		Map<String, Object> mapForSearch = new HashMap<>();
+		mapForSearch.put("pager", pager);
+		mapForSearch.put("keyword", searchKeyword);
+		
+		// 해당 페이지의 게시물 목록 가져오기
+		List<Notice> list = qnaService.getSearchedNoticeList(mapForSearch);
+		
+		// 여러 객체를 리턴하기 위해 Map 객체 생성		
+		Map<String, Object> map = new HashMap<>();
+		
+		// map에 데이터 넣기
+		map.put("notice", list);
+		map.put("pager", pager);
+		
+		return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
+	}
+	
+	
 }
