@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -124,10 +125,11 @@ public class AgentController {
 		// 중개인 상세정보
 		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
 		// 중개인 리뷰정보
-
+		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber);
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
+		map.put("agentReviewList", agentReviewList);
 		return map;
 	}
 
@@ -191,7 +193,7 @@ public class AgentController {
 
 	// 댓글 생성
 	@PostMapping("/Agent/{anumber}")
-	public Agent createAgentReview(@PathVariable int anumber, @ModelAttribute AgentReview agentReview,
+	public void createAgentReview(@PathVariable int anumber, @ModelAttribute AgentReview agentReview,
 			Authentication authentication) {
 		log.info(authentication.getName());
 		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
@@ -200,13 +202,29 @@ public class AgentController {
 		agentReview.setArMnumber(memberNum);
 		log.info(agentReview.toString());
 		agentService.createAgentReview(agentReview);
-		return null;
 	}
 
-	// 대댓글 생성
+	// 댓글 수정
+	@PutMapping("/Agent/{anumber}/{arnumber}")
+	public void updateAgentReview(@PathVariable int anumber, @PathVariable int arnumber,
+			@ModelAttribute AgentReview agentReview, Authentication authentication) {
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getMemberNumberByMemberEmail(userEmail);
+		agentReview.setArAnumber(anumber);
+		agentReview.setArnumber(arnumber);
+		agentReview.setArMnumber(userNumber);
+		agentService.updateAgentReview(agentReview);
+	}
 
 	// 댓글 삭제
+	@DeleteMapping("/Agent/{anumber}/{arnumber}")
+	public void deleteAgentReview(@PathVariable int anumber, @PathVariable int arnumber,
+			Authentication authentication) {
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getMemberNumberByMemberEmail(userEmail);
 
-	// 대댓글 삭제
+		// 리뷰글번호,중개인번호,유저번호로 글 삭제
+		agentService.deleteAgentReview(anumber, arnumber, userNumber);
+	}
 
 }

@@ -108,4 +108,19 @@ public class AgentService {
 		
 	}
 
+	public void deleteAgentReview(int arnumber, int anumber, int userNumber) {
+		agentReviewDao.deleteAgentReview(arnumber,anumber,userNumber);
+		
+	}
+
+	public List<AgentReview> getAgentReviewListByAnumber(int anumber) {
+		List<AgentReview> agentReviewList = agentReviewDao.getAgentReviewByAnumber(anumber);
+		return agentReviewList;
+	}
+
+	public void updateAgentReview(AgentReview agentReview) {
+		agentReviewDao.updateAgentReview(agentReview);
+		
+	}
+
 }
