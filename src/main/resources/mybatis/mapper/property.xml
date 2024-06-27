@@ -17,13 +17,13 @@
 	
 	<!-- 수정 -->
    <update id="updatePropertyByProperty" parameterType="Property">
-      update property set pdeposite=#{pdeposite}, prentalfee=#{prentalfee}, pfloortype=#{pfloortype}, pfloor=#{pfloor}, 
-      					psize=#{psize}, pmaintenance=#{pmaintenance}, ptitle=#{ptitle}, pcategory=#{pcategory},
-      					paddress=#{paddress}, paddressdetail=#{paddressdetail}, ppostcode=#{ppostcode}, platitude=#{platitude}, plongitude=#{plongitude}
-      <if test="pthumbnailoname != null">
-      , pthumbnailoname=#{pthumbnailoname}, pthumbnailtype=#{pthumbnailtype}, 
-      pthumbnaildata=#{pthumbnaildata}
-      </if>
+	      update property set pdeposite=#{pdeposite}, prentalfee=#{prentalfee}, pfloortype=#{pfloortype}, pfloor=#{pfloor}, 
+	      					psize=#{psize}, pmaintenance=#{pmaintenance}, ptitle=#{ptitle}, pcategory=#{pcategory},
+	      					paddress=#{paddress}, paddressdetail=#{paddressdetail}, ppostcode=#{ppostcode}, platitude=#{platitude}, plongitude=#{plongitude}
+	      <if test="pthumbnailoname != null">
+	      , pthumbnailoname=#{pthumbnailoname}, pthumbnailtype=#{pthumbnailtype}, 
+	      pthumbnaildata=#{pthumbnaildata}
+	      </if>
       where pnumber=#{pnumber}
    </update>
    	
@@ -38,4 +38,85 @@
       from property 
       where pnumber=#{pnumber}
    </select>
+   
+   <!-- property 총 개수 -->
+   <select id="getAllPropertyCount" resultType="int">
+      select 
+      	count(*) 
+      from property
+   </select>   
+   
+   <!-- property 개수 by filter and keyword -->
+   <select id="getPropertyCountByFilter" resultType="String">
+      select 
+      	count(*) 
+      from property
+      <where>
+      	<if test="rentType != null">
+      		and pcategory=#{rentType}
+      	</if>
+      	<if test="keyword != null and keyword != ''">
+      		and (
+                paddress like '%' || #{keyword} || '%' 
+                or paddressdetail like '%' || #{keyword} || '%'
+            )
+      	</if>
+      </where>
+   </select>      
+
+	<!-- property 전체 리스트 -->   
+	<select id="getAllPropertyList" parameterType="map" resultType="Property">
+		<![CDATA[
+		    select *
+		    from (
+		        select p.*, row_number() over (order by 1) as rnum
+		        from property p
+		    )
+		    where rnum between #{offset} + 1 and #{offset} + #{limit}
+	    ]]>
+	</select>  
+	
+	<!-- property 리스트 by filter and keyword -->   
+	<select id="getPropertyListByFilter" parameterType="map" resultType="Property">
+		<![CDATA[
+		    select *
+		    from (
+		        select p.*, row_number() over (order by 1) as rnum
+		        from property p 
+		]]>
+		        <where>
+			      	<if test="rentType != null">
+			      		and pcategory=#{rentType}
+			      	</if>
+			      	<if test="keyword != null and keyword != ''">
+			      		and (
+			                paddress like '%' || #{keyword} || '%' 
+			                or paddressdetail like '%' || #{keyword} || '%'
+			            )
+			      	</if>
+		       </where>	
+		        order by
+					<if test="price=='lowPrice'">
+						pdeposite asc
+					</if>
+					<if test="price=='highPrice'">
+						pdeposite desc
+					</if>	
+					<if test="price != null and date != null">
+					,
+					</if>
+					<!-- pmoveindate로 바꾸기 -->
+					<if test="date=='older'">
+						pdate asc
+					</if>
+					<if test="date=='newer'">
+						pdate desc
+					</if>	 
+					<if test="price==null and date==null">
+						pnumber desc
+					</if>				        
+		<![CDATA[ )
+		    where rnum between #{offset} + 1 and #{offset} + #{limit}
+	    ]]>
+	</select>  	 
 </mapper>

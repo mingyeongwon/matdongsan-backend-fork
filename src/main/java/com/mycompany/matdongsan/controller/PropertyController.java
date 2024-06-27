@@ -1,7 +1,9 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,9 +13,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mycompany.matdongsan.dto.Agent;
+import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
@@ -30,19 +35,32 @@ public class PropertyController {
 	
 //  리스트
 	@GetMapping("/Property")
-	public String getPropertyList() {
-		return null;
-	}
-	
-//	읽기
-//	@PreAuthorize("hasAuthority('ROLE_USER')")
-	@GetMapping("/Property/{pnumber}")
-	public Property readProperty(@PathVariable int pnumber) {
-		Property property = propertyService.getProperty(pnumber);
+	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
+			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
+			@RequestParam(required = false) String rentType) {
+
+		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType
+		int totalPropertyRows;
+		Pager pager;
+		List<Property> Propertylist;
 		
-		// JSON으로 변환되지 않는 필드는 NULL 처리
-		property.setPthumbnail(null);
-		return property;
+		if(keyword != null || price != null || date != null || rentType != null) {
+			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType);
+			pager = new Pager(size, pageNo, totalPropertyRows);
+			Propertylist = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword, price, date, rentType);
+		} else { // 전체 리스트 
+			totalPropertyRows = propertyService.getAllPropertyCount();
+            pager = new Pager(size, pageNo, totalPropertyRows);
+            Propertylist = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
+        }
+		
+		
+		// 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
+		Map<String, Object> map = new HashMap<>();
+		map.put("property", Propertylist);
+		map.put("pager", pager);
+		return map; // { "property" : {}, "pager" : {}}
 	}
 	
 //	등록

@@ -88,5 +88,31 @@ public class PropertyService {
 	public int deletePropertyPhoto(int ppnumber) {
 		return propertyPhotoDao.deleteByPpnumber(ppnumber);
 	}
+	
+	// property 전체 개수 
+	public int getAllPropertyCount() {
+		int totalPropertyRows = propertyDao.getAllPropertyCount();
+		return totalPropertyRows;
+	}
+	
+	// property 개수 by filter and keyword
+	public int getPropertyCountByFilter(String keyword, String price, String date, String rentType) {
+		int totalPropertyRows = propertyDao.getPropertyCountByFilter(keyword, price, date, rentType);
+		return totalPropertyRows;
+	}
+	
+	// property 전체 리스트
+	public List<Property> getAllPropertyList(int offset, int limit) {
+		List<Property> propertyList = propertyDao.getAllPropertyList(offset, limit);
+		return propertyList;
+	}
+
+	// property 리스트 by filter and keyword
+	public List<Property> getPropertyListByFilter(int offset, int limit, String keyword, String price,
+			String date, String rentType) {
+		List<Property> propertyList = propertyDao.getPropertyListByFilter(offset, limit, keyword, price, date, rentType);
+		return propertyList;
+	}
+	
 
 }
