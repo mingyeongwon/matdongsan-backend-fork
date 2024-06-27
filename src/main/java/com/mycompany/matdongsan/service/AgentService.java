@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.AgentDao;
 import com.mycompany.matdongsan.dao.AgentDetailDao;
-import com.mycompany.matdongsan.dao.UserEmailDao;
+import com.mycompany.matdongsan.dao.UserCommonDataDao;
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
 import com.mycompany.matdongsan.dto.AgentSignupData;
-import com.mycompany.matdongsan.dto.UserEmail;
+import com.mycompany.matdongsan.dto.UserCommonData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +23,7 @@ public class AgentService {
 	@Autowired
 	private AgentDetailDao agentDetailDao;
 	@Autowired
-	private UserEmailDao userEmailDao;
+	private UserCommonDataDao userEmailDao;
 
 	// agent 데이터 카운트
 	public int getCount() {
@@ -53,7 +53,7 @@ public class AgentService {
 	}
 
 	// 공통 회원가입 데이터부분 저장
-	public void joinByUserEmail(UserEmail userEmail) {
+	public void joinByUserEmail(UserCommonData userEmail) {
 		userEmailDao.insertUserDataByUser(userEmail);
 
 	}

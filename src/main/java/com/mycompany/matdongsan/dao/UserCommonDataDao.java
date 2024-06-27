@@ -3,18 +3,18 @@ package com.mycompany.matdongsan.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.mycompany.matdongsan.dto.UserEmail;
+import com.mycompany.matdongsan.dto.UserCommonData;
 
 @Mapper
-public interface UserEmailDao {
+public interface UserCommonDataDao {
 	
 	// 회원가입
 //	public int joinByUserEmail(UserEmail userEmail);
 	
 	//회원가입
-	public int insertUserDataByUser(UserEmail userEmail);
+	public int insertUserDataByUser(UserCommonData userCommonData);
 	
-	public UserEmail selectByUnumber(String username);
+	public UserCommonData selectByUnumber(String username);
 
 	public int getUserIdByUsername(String username);
 

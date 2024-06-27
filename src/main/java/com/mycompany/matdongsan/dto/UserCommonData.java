@@ -5,7 +5,7 @@ import java.sql.Date;
 import lombok.Data;
 
 @Data
-public class UserEmail {
+public class UserCommonData {
    private int unumber;
    private String uemail;
    private String urole;

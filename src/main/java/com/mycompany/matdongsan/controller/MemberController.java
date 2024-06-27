@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dto.Member;
-import com.mycompany.matdongsan.dto.UserEmail;
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class MemberController {
 	// https://velog.io/@tjddnths0223/%ED%8C%81-RequestBody%EB%A1%9C-%EC%97%AC%EB%9F%AC-%EA%B0%9D%EC%B2%B4-%EB%B0%9B%EA%B8%B0
 	@Transactional
 	@PostMapping("/Signup/MemberSignup")
-	public UserEmail joinByMember(
+	public UserCommonData joinByMember(
 		    @RequestParam("uemail") String uemail,
 		    @RequestParam("urole") String urole,
 		    @RequestParam("upassword") String upassword,
@@ -40,7 +40,7 @@ public class MemberController {
 		    @RequestParam("mphone") String mphone,
 			@RequestParam(value = "mprofile", required = false) MultipartFile mprofile) throws IOException {
 
-		UserEmail userEmail = new UserEmail();
+		UserCommonData userEmail = new UserCommonData();
 	    userEmail.setUemail(uemail);
 	    userEmail.setUrole(urole);
 	    userEmail.setUpassword(upassword);

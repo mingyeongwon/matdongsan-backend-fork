@@ -4,18 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.MemberDao;
-import com.mycompany.matdongsan.dao.UserEmailDao;
+import com.mycompany.matdongsan.dao.UserCommonDataDao;
 import com.mycompany.matdongsan.dto.Member;
-import com.mycompany.matdongsan.dto.UserEmail;
+import com.mycompany.matdongsan.dto.UserCommonData;
 
 @Service
 public class MemberService {
 	@Autowired
 	private MemberDao memberDao;
 	@Autowired
-	private UserEmailDao userEmailDao;
+	private UserCommonDataDao userEmailDao;
 	
-	public void joinUserByMember(UserEmail userEmail) {
+	public void joinUserByMember(UserCommonData userEmail) {
 		userEmailDao.insertUserDataByUser(userEmail);
 	}
 	

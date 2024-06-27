@@ -6,5 +6,5 @@ import lombok.Data;
 public class AgentSignupData {
 	private Agent agent;
 	private AgentDetail agentDetail;
-	private UserEmail userEmail;
+	private UserCommonData userEmail;
 }

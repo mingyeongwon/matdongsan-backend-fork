@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.UserEmailDao">
-	<insert id="insertUserDataByUser" parameterType="UserEmail">
+	<insert id="insertUserDataByUser" parameterType="UserCommonData">
 		<selectKey keyProperty="unumber" resultType="int" order="BEFORE">
 			select seq_unumber.nextval from dual
 		</selectKey>
@@ -12,7 +12,7 @@
 		select unumber from user_email where uemail = #{uemail}
 	</select>
 	
-	<select id="selectByUnumber" parameterType="String" resultType="UserEmail">
+	<select id="selectByUnumber" parameterType="String" resultType="UserCommonData">
 		select unumber, uemail, upassword, urole, ujoindate,uremoved
 		from user_email
 		where uemail = #{uemail}

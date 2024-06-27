@@ -24,7 +24,7 @@ import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
 import com.mycompany.matdongsan.dto.AgentSignupData;
 import com.mycompany.matdongsan.dto.Pager;
-import com.mycompany.matdongsan.dto.UserEmail;
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +71,7 @@ public class AgentController {
 		// 객체 생성 및 데이터 설정
 		Agent agent = agentSignupData.getAgent();
 		AgentDetail agentDetail = agentSignupData.getAgentDetail();
-		UserEmail userEmail = agentSignupData.getUserEmail();
+		UserCommonData userEmail = agentSignupData.getUserEmail();
 
 		// 비밀번호 암호화
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -146,7 +146,7 @@ public class AgentController {
 	public void updateMypagePropertyInfo(@ModelAttribute AgentSignupData agentSignupData) {
 		Agent agent = agentSignupData.getAgent();
 		AgentDetail agentDetail = agentSignupData.getAgentDetail();
-		UserEmail userEmail = agentSignupData.getUserEmail();
+		UserCommonData userEmail = agentSignupData.getUserEmail();
 		// 프로필사진 & 등록증 사진
 		MultipartFile agentProfile = agent.getAprofile();
 		MultipartFile agentDetailFile = agentDetail.getAdattach();

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycompany.matdongsan.dto.UserEmail;
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
@@ -27,6 +27,7 @@ public class HomeController {
 	
 	@Autowired
 	private JwtProvider jwtProvider;
+
 	@Autowired
 	private AppUserDetailsService userDetailsService;
 
@@ -62,16 +63,20 @@ public class HomeController {
 			map.put("result", "success");
 			map.put("userEmail", uemail);
 			map.put("accessToken", accessToken);
-		} else {
+			
+		} else if(checkActivation){ // 비활성화(삭제된) 유저의 경우 removed라고 map에 값을 넣음
+			map.put("result", "removed");
+
+		} else { //로그인에 실패한 경우(비밀번호, 아이디 문제) fail 표시
 			map.put("result", "fail");
 		}
 		return map;
-
 	}
 	
 	@PutMapping("/MyPage/DeleteAccount")
-	public UserEmail activateAccount() {
-		UserEmail userEmail = new UserEmail();
-		return userEmail;
+	public UserCommonData activateAccount(Authentication authentication) {
+		UserCommonData userCommonData = new UserCommonData();
+		
+		return userCommonData;
 	}
 }
