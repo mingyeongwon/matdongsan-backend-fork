@@ -44,17 +44,18 @@ public class HomeController {
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		boolean checkResult = passwordEncoder.matches(upassword, userDetails.getUser().getUpassword());
 		//비활성화 되었는지 확인해야함
-		boolean checkActivation;
+		boolean checkActivation = userDetails.isEnabled();
+		
 		// Spring security 인증 처리
-		if (checkResult) {
+		if (checkResult && !checkActivation) {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
 					userDetails.getAuthorities());
 
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
-		// 응답 생성
+		// 응답 생성 비밀번호 일치 && 계정 활성화 확인
 		Map<String, String> map = new HashMap<>();
-		if (checkResult) {
+		if (checkResult && !checkActivation) {
 			// AccessToken을 생성
 			String accessToken = jwtProvider.createAccessToken(uemail, userDetails.getUser().getUrole());
 			// JSON 응답

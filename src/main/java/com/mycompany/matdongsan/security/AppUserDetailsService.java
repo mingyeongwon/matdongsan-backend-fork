@@ -21,7 +21,7 @@ public class AppUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEmail userEmail = userEmailDao.selectByUnumber(username);
-
+		
 		if (userEmail == null) {
 			throw new UsernameNotFoundException(username);
 		}
