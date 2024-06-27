@@ -27,4 +27,11 @@ public class MemberService {
 		userEmailDao.getUserDataByUserName(name,isDeactivate);
 	}
 
+	public int getMemberNumberByMemberEmail(String name) {
+		int userName=userEmailDao.getUserIdByUsername(name);
+		int memberNumber = memberDao.getMemberNumberByMemberEmail(userName);
+		return memberNumber;
+		
+	}
+
 }

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.AgentDao;
 import com.mycompany.matdongsan.dao.AgentDetailDao;
+import com.mycompany.matdongsan.dao.AgentReviewDao;
 import com.mycompany.matdongsan.dao.UserCommonDataDao;
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
+import com.mycompany.matdongsan.dto.AgentReview;
 import com.mycompany.matdongsan.dto.AgentSignupData;
 import com.mycompany.matdongsan.dto.UserCommonData;
 
@@ -24,7 +26,8 @@ public class AgentService {
 	private AgentDetailDao agentDetailDao;
 	@Autowired
 	private UserCommonDataDao userEmailDao;
-
+	@Autowired
+	private AgentReviewDao agentReviewDao;
 	// agent 데이터 카운트
 	public int getCount() {
 		int totalAgentCount = agentDao.getAgentCount();
@@ -69,10 +72,10 @@ public class AgentService {
 		return userId;
 	}
 
-	public AgentSignupData getAgentDataFullyByUserNumber(int agentNumber) {
+	public AgentSignupData getAgentDataFullyByUserNumber(int userNumber) {
 		AgentSignupData agentSignupData = new AgentSignupData();
 		log.info("check");
-		agentSignupData.setAgent(agentDao.getAgentDataByAgentNumber(agentNumber));
+		agentSignupData.setAgent(agentDao.getAgentDataByUserNumber(userNumber));
 		log.info("check1");
 		agentSignupData.setAgentDetail(
 				agentDetailDao.getAgentDetailDataByAgentNumber(agentSignupData.getAgent().getAnumber()));
@@ -87,7 +90,22 @@ public class AgentService {
 
 	public int getAgentNumberByUserNumber(int userNum) {
 		// TODO Auto-generated method stub
-		return agentDao.getAgentDataByAgentNumber(userNum).getAnumber();
+		return agentDao.getAgentDataByUserNumber(userNum).getAnumber();
+	}
+
+	public Agent getAgentDataByUserNumber(int anumber) {
+		Agent agent = agentDao.getAgentDataByAgentNumber(anumber);
+		return agent;
+	}
+
+	public AgentDetail getAgentDetailByAgentNumber(int anumber) {
+		AgentDetail agentDetail = agentDetailDao.getAgentDetailDataByAgentNumber(anumber);
+		return agentDetail;
+	}
+
+	public void createAgentReview(AgentReview agentReview) {
+		agentReviewDao.createAgentReviewByMember(agentReview);
+		
 	}
 
 }

@@ -12,4 +12,6 @@ public interface MemberDao {
 
 	public int insertMemberData(Member member);
 
+	public int getMemberNumberByMemberEmail(int userNumber);
+
 }

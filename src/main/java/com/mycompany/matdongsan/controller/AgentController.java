@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
+import com.mycompany.matdongsan.dto.AgentReview;
 import com.mycompany.matdongsan.dto.AgentSignupData;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
+import com.mycompany.matdongsan.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +37,8 @@ public class AgentController {
 
 	@Autowired
 	private AgentService agentService;
+	@Autowired
+	private MemberService memberService;
 
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
@@ -47,7 +52,7 @@ public class AgentController {
 		// 검색 내용 찾기
 		// 부동산 이름, 대표 이름, 주소명
 		// 키워드 유무 확인
-		log.info(pager.getStartRowIndex()+"");
+		log.info(pager.getStartRowIndex() + "");
 		List<Agent> list = new ArrayList<>();
 		if (keyword != null) {
 			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword);
@@ -111,10 +116,19 @@ public class AgentController {
 
 	// 부동산 상세 정보 조회
 	@GetMapping("/Agent/{anumber}")
-	public Agent readAgentInfoByNumber(@PathVariable int anumber) {
+	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber) {
+
 		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
-		// 실제 구현은 agentService를 통해 데이터를 가져와야 합니다.
-		return null;// agentService.getAgentByNumber(anumber);
+		// 중개인 정보
+		Agent agent = agentService.getAgentDataByUserNumber(anumber);
+		// 중개인 상세정보
+		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
+		// 중개인 리뷰정보
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("agent", agent);
+		map.put("agentDetail", agentDetail);
+		return map;
 	}
 
 	/*
@@ -136,8 +150,8 @@ public class AgentController {
 		// 로그인한 중개인의 데이터 수정
 		// 아이디로 중개인의 정보 가져옴
 		// int agentId = agentService.getUserIdByUserName(autentication.getUsername());
-		int agentNumber = agentService.getUserIdByUserName(userEmail);
-		AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(agentNumber);
+		int userNumber = agentService.getUserIdByUserName(userEmail);
+		AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(userNumber);
 		return agentSignupData;
 	}
 
@@ -150,7 +164,7 @@ public class AgentController {
 		// 프로필사진 & 등록증 사진
 		MultipartFile agentProfile = agent.getAprofile();
 		MultipartFile agentDetailFile = agentDetail.getAdattach();
-		
+
 		// 파일 이름을 설정
 		agent.setAprofileoname(agentProfile.getOriginalFilename());
 		agentDetail.setAdattachoname(agentDetailFile.getOriginalFilename());
@@ -165,15 +179,34 @@ public class AgentController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int userNum = agentService.getUserIdByUserName(userEmail.getUemail()); //유저 번호
-		int Anumber = agentService.getAgentNumberByUserNumber(userNum); //중개인 번호
+		int userNum = agentService.getUserIdByUserName(userEmail.getUemail()); // 유저 번호
+		int Anumber = agentService.getAgentNumberByUserNumber(userNum); // 중개인 번호
 		agent.setAnumber(Anumber);
 		agentDetail.setAdAnumber(Anumber);
 		// 수정하기
-		agentService.updateAgentData(agent,agentDetail);
+		agentService.updateAgentData(agent, agentDetail);
 	}
-	
-	
-	// 댓글 정렬
-	
+
+	// 중개인 리뷰
+
+	// 댓글 생성
+	@PostMapping("/Agent/{anumber}")
+	public Agent createAgentReview(@PathVariable int anumber, @ModelAttribute AgentReview agentReview,
+			Authentication authentication) {
+		log.info(authentication.getName());
+		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
+		agentReview.setArAnumber(anumber);
+		int memberNum = memberService.getMemberNumberByMemberEmail(authentication.getName());
+		agentReview.setArMnumber(memberNum);
+		log.info(agentReview.toString());
+		agentService.createAgentReview(agentReview);
+		return null;
+	}
+
+	// 대댓글 생성
+
+	// 댓글 삭제
+
+	// 대댓글 삭제
+
 }

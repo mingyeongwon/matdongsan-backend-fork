@@ -56,13 +56,18 @@
 
 	<!-- <select id="getAgentList" resultType="Agent"> select * from agent </select> -->
 
+	<select id="getAgentDataByUserNumber" parameterType="int"
+		resultType="Agent">
+		SELECT *
+		FROM agent
+		where a_unumber = #{userNumber}
+	</select>
 	<select id="getAgentDataByAgentNumber" parameterType="int"
 		resultType="Agent">
 		SELECT *
 		FROM agent
-		where a_unumber = #{agentNumber}
+		where anumber = #{agentNumber}
 	</select>
-
 	<update id="updateAgentData" parameterType="Agent">
 		update agent set
 		abrand=#{abrand}, aphone=#{aphone},aaddress=#{aaddress},

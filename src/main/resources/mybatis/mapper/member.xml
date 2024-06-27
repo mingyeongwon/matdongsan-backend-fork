@@ -9,4 +9,9 @@
 		insert into member(mnumber, mname, mphone, mprofileoname, mprofiledata, mprofiletype, m_unumber)
 		values (#{mnumber}, #{mname}, #{mphone}, #{mprofileoname}, #{mprofiledata}, #{mprofiletype}, #{mUnumber})
 	</insert>
+	
+	<select id="getMemberNumberByMemberEmail" parameterType="int" resultType="int">
+	select mnumber from member
+	where m_unumber = #{userNumber}
+	</select>
 </mapper>
