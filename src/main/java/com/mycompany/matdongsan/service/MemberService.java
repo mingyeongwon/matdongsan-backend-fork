@@ -23,9 +23,8 @@ public class MemberService {
 		memberDao.insertMemberData(member);
 	}
 
-	public String getUserRole(String name) {
-		String userRole = userEmailDao.getUserDataByUserName(name);
-		return userRole;
+	public void getUserRole(String name,boolean isDeactivate) {
+		userEmailDao.getUserDataByUserName(name,isDeactivate);
 	}
 
 }

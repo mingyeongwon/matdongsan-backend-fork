@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mycompany.matdongsan.dao.UserCommonDataDao">
+<mapper
+	namespace="com.mycompany.matdongsan.dao.UserCommonDataDao">
 	<insert id="insertUserDataByUser" parameterType="UserCommonData">
-		<selectKey keyProperty="unumber" resultType="int" order="BEFORE">
+		<selectKey keyProperty="unumber" resultType="int"
+			order="BEFORE">
 			select seq_unumber.nextval from dual
 		</selectKey>
-		insert into USER_COMMON_DATA(unumber, uemail, upassword, urole, uremoved)
-		values (#{unumber}, #{uemail}, #{upassword}, #{urole}, #{uremoved})
+		insert into USER_COMMON_DATA(unumber, uemail, upassword, urole,
+		uremoved)
+		values (#{unumber}, #{uemail}, #{upassword}, #{urole},
+		#{uremoved})
 	</insert>
-	<select id="getUserIdByUsername" parameterType="String" resultType="int">
-		select unumber from USER_COMMON_DATA where uemail = #{uemail}
+	<select id="getUserIdByUsername" parameterType="String"
+		resultType="int">
+		select unumber from USER_COMMON_DATA where uemail =
+		#{uemail}
 	</select>
-	
-	<select id="selectByUnumber" parameterType="String" resultType="UserCommonData">
-		select unumber, uemail, upassword, urole, ujoindate,uremoved
+
+	<select id="selectByUnumber" parameterType="String"
+		resultType="UserCommonData">
+		select unumber, uemail, upassword, urole,
+		ujoindate,uremoved
 		from USER_COMMON_DATA
 		where uemail = #{uemail}
 	</select>
-	<select id="getUserDataByUserName" parameterType="String" resultType = "String">
-		select urole from USER_COMMON_DATA
-		where uemail = #{name}
-	</select>
+	
+	<update id="getUserDataByUserName" parameterType="map">
+		update user_common_data set
+		uremoved=#{isDeactivate}
+		where uemail=#{name}
+	</update>
 </mapper>

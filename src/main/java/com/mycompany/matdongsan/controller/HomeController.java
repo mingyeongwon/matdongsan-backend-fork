@@ -76,14 +76,9 @@ public class HomeController {
 
 	// 탈퇴
 	@PutMapping("/MyPage/DeleteAccount")
-	public String activateAccount(Authentication authentication) {
-		String role = memberService.getUserRole(authentication.getName());
-		if (role.equals("AGENT")) {
-
-		} else {
-
-		}
-		return role;
+	public void activateAccount(Authentication authentication) {
+		boolean isDeactivate=true;
+		memberService.getUserRole(authentication.getName(),isDeactivate);
 	}
 
 }

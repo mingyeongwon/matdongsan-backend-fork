@@ -18,6 +18,6 @@ public interface UserCommonDataDao {
 
 	public int getUserIdByUsername(String username);
 
-	public String getUserDataByUserName(String name);
+	public void getUserDataByUserName(String name,boolean isDeactivate);
 
 }
