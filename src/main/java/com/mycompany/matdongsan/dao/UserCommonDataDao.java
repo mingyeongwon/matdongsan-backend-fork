@@ -20,4 +20,6 @@ public interface UserCommonDataDao {
 
 	public void getUserDataByUserName(String name,boolean isDeactivate);
 
+	public String getUserRoleByUserName(String name);
+
 }

@@ -25,6 +25,7 @@ import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
 import com.mycompany.matdongsan.dto.AgentReview;
 import com.mycompany.matdongsan.dto.AgentSignupData;
+import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
@@ -146,15 +147,25 @@ public class AgentController {
 	// 마이페이지 부동산 중개업자 정보 불러오기
 	// @PreAuthorize("hasAuthority('ROLE_USER')") // 중개인일 경우에만 등록 가능
 	@GetMapping("/Mypage/MyInfomation")
-	public AgentSignupData getMypagePropertyInfo(String userEmail
-	// Authentication autentication
-	) {
+	public Map<String, Object> getMypagePropertyInfo(Authentication autentication) {
+		String userName = autentication.getName();
 		// 로그인한 중개인의 데이터 수정
 		// 아이디로 중개인의 정보 가져옴
-		// int agentId = agentService.getUserIdByUserName(autentication.getUsername());
-		int userNumber = agentService.getUserIdByUserName(userEmail);
-		AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(userNumber);
-		return agentSignupData;
+		int userNumber = agentService.getUserIdByUserName(userName);
+		String userRole = memberService.getUserRole(userName);
+		Map<String, Object> map = new HashMap<>();
+		// 일반 유저일 경우
+		if (userRole.equals("MEMBER")) {
+			Member member = memberService.getMemberDataFullyByUserNumber(userNumber);
+			map.put("member", member);
+		} else {
+			// 중개인일 경우
+			AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(userNumber);
+			map.put("agentSignupData", agentSignupData);
+		}
+
+		return map;
+
 	}
 
 	// 중개업자 정보 업데이트

@@ -22,7 +22,9 @@ public class MemberService {
 	public void joinByMember(Member member) {
 		memberDao.insertMemberData(member);
 	}
-
+	public String getUserRole(String name) {
+		return userEmailDao.getUserRoleByUserName(name);
+	}
 	public void getUserRole(String name,boolean isDeactivate) {
 		userEmailDao.getUserDataByUserName(name,isDeactivate);
 	}
@@ -32,6 +34,11 @@ public class MemberService {
 		int memberNumber = memberDao.getMemberNumberByMemberEmail(userName);
 		return memberNumber;
 		
+	}
+
+	public Member getMemberDataFullyByUserNumber(int userNumber) {
+		Member member = memberDao.getMemberDataByUserNumber(userNumber);
+		return member;
 	}
 
 }

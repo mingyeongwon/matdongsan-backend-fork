@@ -25,7 +25,10 @@
 		from USER_COMMON_DATA
 		where uemail = #{uemail}
 	</select>
-	
+	<select id="getUserRoleByUserName" parameterType="String" resultType="String">
+		select urole from user_common_data
+		where uemail = #{name}
+	</select>
 	<update id="getUserDataByUserName" parameterType="map">
 		update user_common_data set
 		uremoved=#{isDeactivate}
