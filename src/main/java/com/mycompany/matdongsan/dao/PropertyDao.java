@@ -33,6 +33,9 @@ public interface PropertyDao {
 	// property 리스트 by filter and keyword
 	public List<Property> getPropertyListByFilter(@Param("offset") int offset, @Param("limit") int limit, @Param("keyword") String keyword, 
 			@Param("price") String price, @Param("date") String date, @Param("rentType") String rentType);
+	
+	// 삭제
+	public int deletePropertyByPnumber(int pnumber);
 
 
 }

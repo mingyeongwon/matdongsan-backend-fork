@@ -32,10 +32,24 @@
 		where pp_pnumber=#{ppPnumber}
 	</select>     
 	
-	<!-- 삭제 -->
+	<!-- 수정 시 삭제 -->
 	<delete id="deleteByPpnumber" parameterType="int">
       delete 
       from property_photo  
       where ppnumber=#{ppnumber}
     </delete> 	
+    
+	<!-- 삭제 -->
+	<delete id="deletePropertyPhotoByPpPnumber" parameterType="int">
+		delete 
+		from property_photo
+		where pp_pnumber=#{ppPnumber}
+	</delete>	
+	
+   <!-- 읽기 -->
+   <select id="selectPropertyPhotoByPpPnumber" parameterType="int" resultType="PropertyPhoto">
+      select *
+      from property_photo 
+      where pp_pnumber=#{ppPnumber}
+   </select>	    
 </mapper>
