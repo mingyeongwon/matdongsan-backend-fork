@@ -12,5 +12,6 @@ public class Comment {
    private int cUnumber;
    private int cparentnumber;
    private int cPnumber;
+   private boolean uremoved;
 }
 

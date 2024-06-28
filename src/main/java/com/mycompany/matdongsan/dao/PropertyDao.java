@@ -36,6 +36,9 @@ public interface PropertyDao {
 	
 	// 삭제
 	public int deletePropertyByPnumber(int pnumber);
+	
+	// 댓글 작성 시 매물 주인 여부
+	public int isPropertyOwnerByComment(@Param("pnumber") int pnumber, @Param("userNumber") int userNumber);
 
 
 }

@@ -40,5 +40,10 @@ public class MemberService {
 		Member member = memberDao.getMemberDataByUserNumber(userNumber);
 		return member;
 	}
+	
+	public int getUnumberByUemail(String userEmail) {
+		int userNumber = userEmailDao.getUserIdByUsername(userEmail); // userId = userNumber
+		return userNumber;
+	}
 
 }

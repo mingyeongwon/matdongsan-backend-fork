@@ -125,5 +125,13 @@
 		delete 
 		from property
 		where pnumber=#{pnumber}
-	</delete>	 
+	</delete>	
+	
+	<!-- 댓글 작성 시 매물 주인 여부 -->
+   	<select id="isPropertyOwnerByComment" resultType="int">
+      select 
+      	count(*) 
+      from property
+      where pnumber=#{pnumber} and p_unumber=#{userNumber}
+   	</select>  
 </mapper>

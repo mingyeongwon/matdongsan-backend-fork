@@ -25,6 +25,7 @@ import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.TotalProperty;
+import com.mycompany.matdongsan.service.MemberService;
 import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 public class PropertyController {
 	@Autowired
 	private PropertyService propertyService;
+	@Autowired
+	private MemberService memberService;
 	
 //  리스트
 	@GetMapping("/Property")
@@ -222,14 +225,40 @@ public class PropertyController {
 			Authentication authentication) {
 		
 		String userEmail = authentication.getName();
-
+		String userRole = memberService.getUserRole(userEmail);
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		
+		if(comment.getCparentnumber() == 0) { // 부모 댓글 없음
+			if(!userRole.equals("MEMBER")) {
+				// agent가 댓글 못달게 처리하기
+			}
+			// 매물 주인 여부
+			boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber);
+			if(isPropertyOwner) {
+				
+			}
+		} else { // 부모 댓글 있음 
+			if(userRole.equals("MEMBER")) {
+				
+			}
+		}
+		
+		
 		comment.setCPnumber(pnumber);
-		
-		
-		
+		propertyService.createPropertyReview(comment);
 		
 		return null;
 	}
 
+
+//	댓글 조회
+
+
+//	댓글 수정
+	
+	
+//	댓글 삭제
+
+	
 //	매물 신고
 }
