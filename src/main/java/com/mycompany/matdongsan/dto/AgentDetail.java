@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class AgentDetail {
    private int adnumber;
-   private String adname;
    private String adattachoname;
    private byte[] adattachdata;
    private String adattachtype;

@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class Agent {
 	private int anumber;
+	private String aname;
 	private String abrand;
 	private String aphone;
 	private String aaddress;
@@ -18,6 +19,6 @@ public class Agent {
 	private String apostcode;
 	private String aaddressdetail;
 	private int aUnumber;
-	
+
 	private MultipartFile aprofile;
 }

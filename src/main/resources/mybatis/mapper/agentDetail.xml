@@ -8,10 +8,10 @@
 			order="BEFORE">
 			select seq_adnumber.nextval from dual
 		</selectKey>
-		insert into agent_detail(adnumber, adname, adattachoname,
+		insert into agent_detail(adnumber, adattachoname,
 		adattachdata,adattachtype,adbrandnumber,AD_ANUMBER)
 		values
-		(#{adnumber}, #{adname}, #{adattachoname}, #{adattachdata},
+		(#{adnumber},  #{adattachoname}, #{adattachdata},
 		#{adattachtype},#{adbrandnumber},#{adAnumber})
 	</insert>
 	<select id="getAgentDetailDataByAgentNumber" parameterType="int"
@@ -21,7 +21,7 @@
 	</select>
 
 	<update id="updateAgentDetailData" parameterType="AgentDetail">
-		update agent_detail set adname=#{adname},
+		update agent_detail set
 		adattachoname=#{adattachoname},adattachdata=#{adattachdata},
 		,adattachtype=#{adattachtype},
 		adbrandnumber=#{adbrandnumber},

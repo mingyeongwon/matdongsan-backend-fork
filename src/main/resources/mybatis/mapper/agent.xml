@@ -8,11 +8,11 @@
 			order="BEFORE">
 			select seq_anumber.nextval from dual
 		</selectKey>
-		insert into agent(anumber, abrand, aphone,
+		insert into agent(anumber,aname, abrand, aphone,
 		aaddress,APROFILEDATA,APROFILEONAME,APROFILETYPE,
 		ALATITUDE,ALONGITUDE,APOSTCODE,AADDRESSDETAIL,A_UNUMBER)
 		values
-		(#{anumber}, #{abrand}, #{aphone}, #{aaddress},
+		(#{anumber},#{aname} #{abrand}, #{aphone}, #{aaddress},
 		#{aprofiledata},#{aprofileoname},#{aprofiletype},#{alatitude},#{alongitude},#{apostcode},#{aaddressdetail},#{aUnumber})
 	</insert>
 
@@ -73,7 +73,7 @@
 	</select>
 	<update id="updateAgentData" parameterType="Agent">
 		update agent set
-		abrand=#{abrand}, aphone=#{aphone},aaddress=#{aaddress},
+		abrand=#{abrand},aname=#{aname}, aphone=#{aphone},aaddress=#{aaddress},
 		,aprofileoname=#{aprofileoname},
 		aprofiletype=#{aprofiletype},
 		aprofiledata=#{aprofiledata},
