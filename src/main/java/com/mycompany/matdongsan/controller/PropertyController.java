@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mycompany.matdongsan.dto.Comment;
+import com.mycompany.matdongsan.dto.UserComment;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
@@ -225,7 +225,7 @@ public class PropertyController {
 	
 //	댓글 생성
 	@PostMapping("/Property/{pnumber}")
-	public Property createPropertyReview(@PathVariable int pnumber, @ModelAttribute Comment comment,
+	public UserComment createPropertyComment(@PathVariable int pnumber, @ModelAttribute UserComment userComment,
 			Authentication authentication) {
 		
 		String userEmail = authentication.getName();
@@ -233,55 +233,64 @@ public class PropertyController {
 		int userNumber = memberService.getUnumberByUemail(userEmail);
 		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부 
 		
-		if(comment.getCparentnumber() == 0) { // 부모 댓글 없음
+		if(userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
+			log.info("uparentnumber : "+ userComment.getUcparentnumber());
 			if(!userRole.equals("MEMBER")) {
 				// agent가 댓글 못달게 처리하기
 			}
-
 			if(isPropertyOwner) {
 				// member여도 매물 주인이면 댓글 못달게 처리
 			} else {
-				comment.setCUnumber(userNumber);
+				userComment.setUcUnumber(userNumber);
 			}
+			userComment.setUcparentnumber(0);
 		} else { // 부모 댓글 있음 
 			if(userRole.equals("MEMBER")) { // 기존 댓글 주인 여부 파악하기 위해 member / agent 나눠서 처리 
-				boolean isFirstCommentOwner = propertyService.isFirstCommentOwner(comment.getCUnumber(), pnumber);
+				boolean isFirstCommentOwner = propertyService.isFirstCommentOwner(userComment.getUcUnumber(), pnumber);
 				if(!isFirstCommentOwner) { 
 					// 댓글 주인 아닌 경우 못달게 처리
 				} else {
-					comment.setCUnumber(userNumber);
+					userComment.setUcUnumber(userNumber);
 				}
 			} else { // agent인 경우
 				if(isPropertyOwner) {
-					comment.setCUnumber(userNumber);
+					userComment.setUcUnumber(userNumber);
 				} else {
 					// 올린 사람 아니면 댓글 못달게 하기
 				}
 			}
+			userComment.setUcparentnumber(userComment.getUcUnumber());
 		}
+		log.info("user_comment 실행 중2");
+		userComment.setUcPnumber(pnumber);
+		userComment.setUcremoved(false);
+		propertyService.createPropertyComment(userComment);
 		
-		comment.setCPnumber(pnumber);
-		propertyService.createPropertyReview(comment);
-		
-		return null;
+		return userComment;
 	}
-
-
-//	댓글 조회
 	
 
 //	댓글 수정
-	@PutMapping("/Property/{pnumber}/{cnumber}")
+	@PutMapping("/Property/{pnumber}/{ucnumber}")
+	
+	
 	
 //	댓글 삭제
-	@DeleteMapping("/Property/{pnumber}/{cnumber}")
-	public void deletePropertyReview(@PathVariable int pnumber, @PathVariable int cnumber,
+	@DeleteMapping("/Property/{pnumber}/{ucnumber}")
+	public void deletePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber,
 			Authentication authentication) {
 		
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
+		UserComment comment = propertyService.getCommentByCnumber(ucnumber);
 		
-		propertyService.deletePropertyReview(pnumber, cnumber, userNumber);
+		// 자식 댓글 존재 여부 
+		boolean isComment = propertyService.isComment(ucnumber, pnumber);
+		if(isComment) {
+			comment.setUcremoved(true);
+		} else {			
+			propertyService.deletePropertyComment(pnumber, ucnumber, userNumber);
+		}
 	}
 	
 //	매물 신고

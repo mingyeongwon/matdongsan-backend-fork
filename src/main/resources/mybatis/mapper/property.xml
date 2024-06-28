@@ -29,7 +29,9 @@
    	
 	<!-- 조회수 -->
    <update id="updatePhitcount" parameterType="int">   
-      update property set phitcount=phitcount+1 where pnumber=#{pnumber}   
+      update property 
+      set phitcount=phitcount+1 
+      where pnumber=#{pnumber}   
    </update>	
    
    <!-- 읽기 -->

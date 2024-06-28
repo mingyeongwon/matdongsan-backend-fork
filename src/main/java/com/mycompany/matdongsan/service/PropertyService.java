@@ -5,11 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mycompany.matdongsan.dao.UserCommentDao;
 import com.mycompany.matdongsan.dao.PropertyDao;
 import com.mycompany.matdongsan.dao.PropertyDetailDao;
 import com.mycompany.matdongsan.dao.PropertyListingDao;
 import com.mycompany.matdongsan.dao.PropertyPhotoDao;
-import com.mycompany.matdongsan.dto.Comment;
+import com.mycompany.matdongsan.dto.UserComment;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyListing;
@@ -25,6 +26,8 @@ public class PropertyService {
 	private PropertyPhotoDao propertyPhotoDao;
 	@Autowired
 	private PropertyListingDao propertyListingDao;
+	@Autowired
+	private UserCommentDao commentDao;
 	
 	// 생성 - property and propertyDetail
 	public void createProperty(Property property, PropertyDetail propertyDetail) {
@@ -148,6 +151,16 @@ public class PropertyService {
 		return propertyPhoto;
 	}
 	
+	// 상품 구매
+	public void purchasePropertyListing(PropertyListing propertyListing) {
+		propertyListingDao.createPropertyListing(propertyListing);
+		
+	}
+	
+	public boolean checkPropertyCondition(int userNumber) {
+		return propertyListingDao.checkUserDataInPropertyListing(userNumber)>0? true : false;
+	}
+	
 	//  댓글 작성 시 매물 주인 여부
 	public boolean isPropertyOwner(int pnumber, int userNumber) {
 		int propertyCount = propertyDao.isPropertyOwnerByComment(pnumber, userNumber);
@@ -159,28 +172,30 @@ public class PropertyService {
 	}
 	
 	// 댓글 생성
-	public void createPropertyReview(Comment comment) {
-		// TODO Auto-generated method stub
+	public void createPropertyComment(UserComment comment) {
+		commentDao.createPropertyComment(comment);
 		
 	}
 
-	public void purchasePropertyListing(PropertyListing propertyListing) {
-		propertyListingDao.createPropertyListing(propertyListing);
-		
-	}
-
-	public boolean checkPropertyCondition(int userNumber) {
-		return propertyListingDao.checkUserDataInPropertyListing(userNumber)>0? true : false;
-	}
 
 	public boolean isFirstCommentOwner(int cUnumber, int pnumber) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public void deletePropertyReview(int pnumber, int cnumber, int userNumber) {
-		// TODO Auto-generated method stub
-		
+	
+	// 댓글 삭제
+	public void deletePropertyComment(int pnumber, int cnumber, int userNumber) {
+		commentDao.deletePropertyComment(pnumber, cnumber, userNumber);
+	}
+	
+	// 자식 댓글 존재 여부
+	public boolean isComment(int cnumber, int pnumber) {
+		return commentDao.isChildComment(cnumber, pnumber) != 0 ? true : false;
+	}
+	
+	// 댓글 정보 가져오기
+	public UserComment getCommentByCnumber(int cnumber) {
+		return commentDao.getCommentByCnumber(cnumber);
 	}
 
 

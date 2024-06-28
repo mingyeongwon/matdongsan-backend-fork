@@ -11,7 +11,7 @@
 	<typeAliases>
 		<typeAlias alias="member" type="com.mycompany.matdongsan.dto.Member"/>
 		<typeAlias alias="favorite" type="com.mycompany.matdongsan.dto.Favorite"/>
-		<typeAlias alias="comment" type="com.mycompany.matdongsan.dto.Comment" />
+		<typeAlias alias="userComment" type="com.mycompany.matdongsan.dto.UserComment" />
 		<typeAlias alias="answer" type="com.mycompany.matdongsan.dto.Answer" />
 		<typeAlias alias="agent" type="com.mycompany.matdongsan.dto.Agent" />
 		<typeAlias alias="agentReview" type="com.mycompany.matdongsan.dto.AgentReview" />
