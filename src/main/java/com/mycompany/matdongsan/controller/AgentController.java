@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -30,6 +32,7 @@ import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
+import com.mycompany.matdongsan.service.PagerService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +44,8 @@ public class AgentController {
 	private AgentService agentService;
 	@Autowired
 	private MemberService memberService;
-
+	@Autowired
+	private PagerService pagerService;
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
 	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
@@ -117,16 +121,21 @@ public class AgentController {
 	}
 
 	// 부동산 상세 정보 조회
+	// 댓글 정렬기능을 위한 sort 파라미터
 	@GetMapping("/Agent/{anumber}")
-	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber) {
-
+	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,@RequestParam(defaultValue = "1",required = false) String pageNo, @RequestParam(defaultValue = "desc",required = false) String sort,HttpSession session) {
+		
+		
 		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
 		// 중개인 정보
 		Agent agent = agentService.getAgentDataByUserNumber(anumber);
 		// 중개인 상세정보
 		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
 		// 중개인 리뷰정보
-		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber);
+		int totalRows = agentService.getTotalReviews();
+		Pager pager= pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
+		log.info(pager.toString());
+		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber,sort,pager);
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
@@ -237,5 +246,7 @@ public class AgentController {
 		// 리뷰글번호,중개인번호,유저번호로 글 삭제
 		agentService.deleteAgentReview(anumber, arnumber, userNumber);
 	}
+	
+
 
 }

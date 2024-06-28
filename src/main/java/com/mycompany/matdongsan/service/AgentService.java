@@ -13,6 +13,7 @@ import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.AgentDetail;
 import com.mycompany.matdongsan.dto.AgentReview;
 import com.mycompany.matdongsan.dto.AgentSignupData;
+import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.UserCommonData;
 
 import lombok.extern.slf4j.Slf4j;
@@ -113,14 +114,19 @@ public class AgentService {
 		
 	}
 
-	public List<AgentReview> getAgentReviewListByAnumber(int anumber) {
-		List<AgentReview> agentReviewList = agentReviewDao.getAgentReviewByAnumber(anumber);
+	public List<AgentReview> getAgentReviewListByAnumber(int anumber,String sort,Pager pager) {
+		List<AgentReview> agentReviewList = agentReviewDao.getAgentReviewByAnumber(anumber,sort,pager);
 		return agentReviewList;
 	}
 
 	public void updateAgentReview(AgentReview agentReview) {
 		agentReviewDao.updateAgentReview(agentReview);
 		
+	}
+
+	public int getTotalReviews() {
+		int totalRows = agentReviewDao.getTotalReviewRows();
+		return totalRows;
 	}
 
 }

@@ -14,11 +14,27 @@
 		#{arrate}, sysdate,
 		#{arAnumber},#{arMnumber})
 	</insert>
-	<select id="getAgentReviewByAnumber" parameterType="int"
+	<select id="getAgentReviewByAnumber" parameterType="Pager"
 		resultType="AgentReview">
-		select * from agent_review
-		where ar_anumber = #{anumber}
-		order by arnumber desc
+		<![CDATA[
+		select rnum, arnumber,arcontent,arrate,ardate,ar_anumber,ar_mnumber from (
+		select rownum as rnum, arnumber,arcontent,arrate,ardate,ar_anumber,ar_mnumber
+		from(
+			select arnumber,arcontent,arrate,ardate,ar_anumber,ar_mnumber
+			from agent_review
+			order by arnumber ]]>
+		<if test="sort == 'desc'">
+			desc
+		</if><![CDATA[
+		)
+		where rownum <= #{pager.endRowNo}
+		)
+		where rnum >= #{pager.startRowNo}
+		]]>
+	</select>
+	<select id="getTotalReviewRows" resultType="int">
+		select count(*) from
+		agent_review
 	</select>
 	<delete id="deleteAgentReview" parameterType="int">
 		delete from
@@ -29,10 +45,12 @@
 		ar_mnumber = #{userNumber}
 	</delete>
 	<update id="updateAgentReview" parameterType="AgentReview">
-		update agent_review set
+		update agent_review
+		set
 		arnumber=#{arnumber},
 		arcontent=#{arcontent},arrate=#{arrate}
-		where arnumber=#{arnumber}
+		where
+		arnumber=#{arnumber}
 		and ar_anumber = #{arAnumber}
 		and ar_mnumber =
 		#{arMnumber}
