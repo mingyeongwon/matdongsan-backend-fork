@@ -173,5 +173,15 @@ public class PropertyService {
 		return propertyListingDao.checkUserDataInPropertyListing(userNumber)>0? true : false;
 	}
 
+	public boolean isFirstCommentOwner(int cUnumber, int pnumber) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void deletePropertyReview(int pnumber, int cnumber, int userNumber) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

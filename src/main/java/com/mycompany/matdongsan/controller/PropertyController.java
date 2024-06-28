@@ -23,8 +23,10 @@ import com.mycompany.matdongsan.dto.Comment;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
+import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.TotalProperty;
+import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
 import com.mycompany.matdongsan.service.PropertyService;
 
@@ -37,6 +39,8 @@ public class PropertyController {
 	private PropertyService propertyService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private AgentService agentService;
 	
 //  리스트
 	@GetMapping("/Property")
@@ -227,24 +231,34 @@ public class PropertyController {
 		String userEmail = authentication.getName();
 		String userRole = memberService.getUserRole(userEmail);
 		int userNumber = memberService.getUnumberByUemail(userEmail);
+		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부 
 		
 		if(comment.getCparentnumber() == 0) { // 부모 댓글 없음
 			if(!userRole.equals("MEMBER")) {
 				// agent가 댓글 못달게 처리하기
 			}
-			// 매물 주인 여부
-			boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber);
+
 			if(isPropertyOwner) {
 				// member여도 매물 주인이면 댓글 못달게 처리
 			} else {
 				comment.setCUnumber(userNumber);
 			}
 		} else { // 부모 댓글 있음 
-			if(userRole.equals("MEMBER")) {
-				
+			if(userRole.equals("MEMBER")) { // 기존 댓글 주인 여부 파악하기 위해 member / agent 나눠서 처리 
+				boolean isFirstCommentOwner = propertyService.isFirstCommentOwner(comment.getCUnumber(), pnumber);
+				if(!isFirstCommentOwner) { 
+					// 댓글 주인 아닌 경우 못달게 처리
+				} else {
+					comment.setCUnumber(userNumber);
+				}
+			} else { // agent인 경우
+				if(isPropertyOwner) {
+					comment.setCUnumber(userNumber);
+				} else {
+					// 올린 사람 아니면 댓글 못달게 하기
+				}
 			}
 		}
-		
 		
 		comment.setCPnumber(pnumber);
 		propertyService.createPropertyReview(comment);
@@ -254,13 +268,22 @@ public class PropertyController {
 
 
 //	댓글 조회
-
+	
 
 //	댓글 수정
-	
+	@PutMapping("/Property/{pnumber}/{cnumber}")
 	
 //	댓글 삭제
-
+	@DeleteMapping("/Property/{pnumber}/{cnumber}")
+	public void deletePropertyReview(@PathVariable int pnumber, @PathVariable int cnumber,
+			Authentication authentication) {
+		
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		
+		propertyService.deletePropertyReview(pnumber, cnumber, userNumber);
+	}
 	
 //	매물 신고
+	
 }

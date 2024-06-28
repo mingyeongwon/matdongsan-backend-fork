@@ -88,34 +88,6 @@ public class HomeController {
 		memberService.getUserRole(authentication.getName(), isDeactivate);
 	}
 
-	// 등록권 구매
-	@PostMapping("/Payment/PaymentResult/{quantity}")
-	public boolean purchasePropertyListing(Authentication authentication, @PathVariable int quantity) {
-		String userName = authentication.getName();
-		// 유저 번호
-		int userNumber = agentService.getUserIdByUserName(userName);
-		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); //유저정보가 테이블에 이미 존재하는지 확인함 있다면 등록권 수량 체크함
-		log.info(hasPropertyListing+"");
-		if(!hasPropertyListing) {
-			int price = 5500;
-			PropertyListing propertyListing = new PropertyListing();
-			propertyListing.setPlquantity(quantity);
-			propertyListing.setPlUnumber(userNumber);
-			if (quantity > 1) {
-				price = quantity * 5500 - (500 * quantity);
-				propertyListing.setPlprice(price);
-			} else {
-				propertyListing.setPlprice(price);
-			}
-			log.info(propertyListing.toString());
-			propertyService.purchasePropertyListing(propertyListing);
-			return true; //등록권이 없는 유저나 처음 구매하는 유저라면 true
-		} else {
-			log.info("이미 등록권이 존재합니다.");
-			return false; //아직 등록권이 존재하는 유저라면 false를 리턴
-		}
-		
 
-	}
 	
 }
