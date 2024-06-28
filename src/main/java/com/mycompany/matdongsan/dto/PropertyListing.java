@@ -5,7 +5,7 @@ import java.sql.Date;
 import lombok.Data;
 
 @Data
-public class PropertyService {
+public class PropertyListing {
    private int psnumber;
    private int psprice;
    private Date psdate;

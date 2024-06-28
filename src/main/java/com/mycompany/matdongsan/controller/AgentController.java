@@ -46,6 +46,7 @@ public class AgentController {
 	private MemberService memberService;
 	@Autowired
 	private PagerService pagerService;
+
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
 	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
@@ -123,9 +124,10 @@ public class AgentController {
 	// 부동산 상세 정보 조회
 	// 댓글 정렬기능을 위한 sort 파라미터
 	@GetMapping("/Agent/{anumber}")
-	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,@RequestParam(defaultValue = "1",required = false) String pageNo, @RequestParam(defaultValue = "desc",required = false) String sort,HttpSession session) {
-		
-		
+	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,
+			@RequestParam(defaultValue = "1", required = false) String pageNo,
+			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
+
 		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
 		// 중개인 정보
 		Agent agent = agentService.getAgentDataByUserNumber(anumber);
@@ -133,25 +135,15 @@ public class AgentController {
 		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
 		// 중개인 리뷰정보
 		int totalRows = agentService.getTotalReviews();
-		Pager pager= pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
+		Pager pager = pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
 		log.info(pager.toString());
-		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber,sort,pager);
+		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber, sort, pager);
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
 		map.put("agentReviewList", agentReviewList);
 		return map;
 	}
-
-	/*
-	 * // 부동산 상세 정보 조회 with Sort
-	 * 
-	 * @GetMapping("/Agent/{anumber}") public Agent
-	 * readAgentInfoByNumberWithSort(@PathVariable int anumber, @RequestParam String
-	 * sort) { log.info("readAgentInfoByNumberWithSort 실행, anumber={}, sort={}",
-	 * anumber, sort); // 실제 구현은 agentService를 통해 데이터를 가져와야 합니다. return
-	 * null;//agentService.getAgentByNumberWithSort(anumber, sort); }
-	 */
 
 	// 마이페이지 부동산 중개업자 정보 불러오기
 	// @PreAuthorize("hasAuthority('ROLE_USER')") // 중개인일 경우에만 등록 가능
@@ -213,7 +205,7 @@ public class AgentController {
 
 	// 댓글 생성
 	@PostMapping("/Agent/{anumber}")
-	public void createAgentReview(@PathVariable int anumber, @ModelAttribute AgentReview agentReview,
+	public int createAgentReview(@PathVariable int anumber, @ModelAttribute AgentReview agentReview,
 			Authentication authentication) {
 		log.info(authentication.getName());
 		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
@@ -221,7 +213,15 @@ public class AgentController {
 		int memberNum = memberService.getMemberNumberByMemberEmail(authentication.getName());
 		agentReview.setArMnumber(memberNum);
 		log.info(agentReview.toString());
-		agentService.createAgentReview(agentReview);
+		String role = memberService.getUserRole(authentication.getName());
+
+		if (role.equals("MEMBER")) {
+			agentService.createAgentReview(agentReview);
+			return 1; //멤버인 경우 리턴 1과 서비스 실행
+		} else {
+			return 0; //role이 멤버가 아닌경우 리턴 0
+		}
+
 	}
 
 	// 댓글 수정
@@ -246,7 +246,5 @@ public class AgentController {
 		// 리뷰글번호,중개인번호,유저번호로 글 삭제
 		agentService.deleteAgentReview(anumber, arnumber, userNumber);
 	}
-	
-
 
 }

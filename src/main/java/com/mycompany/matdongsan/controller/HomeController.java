@@ -10,14 +10,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
+import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
+import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,8 +31,11 @@ public class HomeController {
 	@Autowired
 	private MemberService memberService;
 	@Autowired
+	private AgentService agentService;
+	@Autowired
+	private PropertyService propertyService;
+	@Autowired
 	private JwtProvider jwtProvider;
-
 	@Autowired
 	private AppUserDetailsService userDetailsService;
 
@@ -77,8 +84,29 @@ public class HomeController {
 	// 탈퇴
 	@PutMapping("/MyPage/DeleteAccount")
 	public void activateAccount(Authentication authentication) {
-		boolean isDeactivate=true;
-		memberService.getUserRole(authentication.getName(),isDeactivate);
+		boolean isDeactivate = true;
+		memberService.getUserRole(authentication.getName(), isDeactivate);
 	}
 
+	// 등록권 구매
+	@PostMapping("/Payment/PaymentResult/{quantity}")
+	public void purchasePropertyListing(Authentication authentication, @PathVariable int quantity) {
+		int price = 5500;
+		PropertyListing propertyListing = new PropertyListing();
+		propertyListing.setPsquantity(quantity);
+		String userName = authentication.getName();
+		// 유저 번호
+		int userNubmer = agentService.getUserIdByUserName(userName);
+		propertyListing.setPsUnumber(userNubmer);
+		if (quantity > 1) {
+			price = quantity * 5500 - (500 * quantity);
+			propertyListing.setPsprice(price);
+		} else {
+			propertyListing.setPsprice(price);
+		}
+
+		//propertyService.purchasePropertyListing(propertyListing);
+
+	}
+	
 }
