@@ -235,7 +235,9 @@ public class PropertyController {
 			// 매물 주인 여부
 			boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber);
 			if(isPropertyOwner) {
-				
+				// member여도 매물 주인이면 댓글 못달게 처리
+			} else {
+				comment.setCUnumber(userNumber);
 			}
 		} else { // 부모 댓글 있음 
 			if(userRole.equals("MEMBER")) {

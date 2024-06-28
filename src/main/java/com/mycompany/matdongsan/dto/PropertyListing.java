@@ -6,10 +6,10 @@ import lombok.Data;
 
 @Data
 public class PropertyListing {
-   private int psnumber;
-   private int psprice;
-   private Date psdate;
-   private int psquantity;
-   private int psUnumber;
+   private int plnumber;
+   private int plprice;
+   private Date pldate;
+   private int plquantity;
+   private int plUnumber;
 }
 

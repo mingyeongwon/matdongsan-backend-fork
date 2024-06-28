@@ -20,7 +20,7 @@
 		<typeAlias alias="report" type="com.mycompany.matdongsan.dto.Report" />
 		<typeAlias alias="question" type="com.mycompany.matdongsan.dto.Question" />
 		<typeAlias alias="property" type="com.mycompany.matdongsan.dto.Property" />
-		<typeAlias alias="propertyService" type="com.mycompany.matdongsan.dto.PropertyService" />
+		<typeAlias alias="propertyListing" type="com.mycompany.matdongsan.dto.PropertyListing" />
 		<typeAlias alias="propertyPhoto" type="com.mycompany.matdongsan.dto.PropertyPhoto" />
 		<typeAlias alias="propertyDetail" type="com.mycompany.matdongsan.dto.PropertyDetail" />
 		<typeAlias alias="pager" type="com.mycompany.matdongsan.dto.Pager" />
