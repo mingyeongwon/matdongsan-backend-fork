@@ -11,11 +11,15 @@ import com.mycompany.matdongsan.dao.PropertyDetailDao;
 import com.mycompany.matdongsan.dao.PropertyListingDao;
 import com.mycompany.matdongsan.dao.PropertyPhotoDao;
 import com.mycompany.matdongsan.dto.UserComment;
+
+import lombok.extern.slf4j.Slf4j;
+
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
 
+@Slf4j
 @Service
 public class PropertyService {
 	@Autowired
@@ -173,6 +177,8 @@ public class PropertyService {
 	
 	// 댓글 생성
 	public void createPropertyComment(UserComment comment) {
+		
+		log.info(comment.toString());
 		commentDao.createPropertyComment(comment);
 		
 	}

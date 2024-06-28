@@ -41,7 +41,7 @@ public class PropertyController {
 	private MemberService memberService;
 	@Autowired
 	private AgentService agentService;
-	
+
 //  리스트
 	@GetMapping("/Property")
 	public Map<String, Object> getPropertyList(@RequestParam(defaultValue = "1") int pageNo,
@@ -53,246 +53,243 @@ public class PropertyController {
 		int totalPropertyRows;
 		Pager pager;
 		List<Property> Propertylist;
-		
-		if(keyword != null || price != null || date != null || rentType != null) {
+
+		if (keyword != null || price != null || date != null || rentType != null) {
 			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType);
 			pager = new Pager(size, pageNo, totalPropertyRows);
-			Propertylist = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword, price, date, rentType);
-		} else { // 전체 리스트 
+			Propertylist = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(),
+					keyword, price, date, rentType);
+		} else { // 전체 리스트
 			totalPropertyRows = propertyService.getAllPropertyCount();
-            pager = new Pager(size, pageNo, totalPropertyRows);
-            Propertylist = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
-        }
-		
+			pager = new Pager(size, pageNo, totalPropertyRows);
+			Propertylist = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
+		}
+
 		// 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
 		Map<String, Object> map = new HashMap<>();
 		map.put("property", Propertylist);
 		map.put("pager", pager);
 		return map; // { "property" : {}, "pager" : {}}
 	}
-	
-	
+
 //	읽기
 	@GetMapping("/Property/{pnumber}")
 	public TotalProperty readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty) {
-	    
-	    totalProperty.setProperty(propertyService.getProperty(pnumber));
-	    totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
-	    totalProperty.setPropertyPhoto(propertyService.getPropertyPhotoByPpPnumber(pnumber));	    
-	    
+
+		totalProperty.setProperty(propertyService.getProperty(pnumber));
+		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
+		totalProperty.setPropertyPhoto(propertyService.getPropertyPhotoByPpPnumber(pnumber));
+
 		return totalProperty;
 	}
-	
-	
+
 //	등록
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@Transactional
 	@PostMapping("/PropertyForm")
-	public TotalProperty createProperty(@ModelAttribute TotalProperty totalProperty, Authentication authentication) throws IOException {
-		
+	public TotalProperty createProperty(@ModelAttribute TotalProperty totalProperty, Authentication authentication)
+			throws IOException {
+
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
-	    // 사용자 설정
+		// 사용자 설정
 		// 추후 authentication 설정하기
 		property.setPUnumber(9);
 		property.setPstatus("활성화");
-		
+
 		// property 파일 첨부 여부
-		if(property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
+		if (property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
 			MultipartFile mf = property.getPthumbnail();
 			property.setPthumbnailoname(mf.getOriginalFilename());
 			property.setPthumbnailtype(mf.getContentType());
 			property.setPthumbnaildata(mf.getBytes());
 		}
-		
+
 		propertyService.createProperty(property, propertyDetail);
-		
-		// propertyPhoto 
+
+		// propertyPhoto
 		log.info("propertyPhotos null 여부 : " + propertyPhoto.getPpattach().isEmpty());
-		
+
 		// propertyPhoto 파일 첨부 여부
-		if(propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
+		if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
 			List<MultipartFile> files = propertyPhoto.getPpattach();
-			if(files != null && !files.isEmpty()) {	
-				for(MultipartFile file : files) {
+			if (files != null && !files.isEmpty()) {
+				for (MultipartFile file : files) {
 					log.info(file.getOriginalFilename());
 					propertyPhoto.setPpattachoname(file.getOriginalFilename());
 					propertyPhoto.setPpattachtype(file.getContentType());
 					propertyPhoto.setPpattachdata(file.getBytes());
-			        propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
-			        propertyService.createPropertyByPropertyPhoto(propertyPhoto);
+					propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+					propertyService.createPropertyByPropertyPhoto(propertyPhoto);
 				}
 			}
 		}
-		
+
 		// JSON으로 변환되지 않는 필드는 null 처리
 		property.setPthumbnail(null);
 		property.setPthumbnaildata(null);
-	    propertyPhoto.setPpattach(null);
-	    propertyPhoto.setPpattachdata(null);
-		
+		propertyPhoto.setPpattach(null);
+		propertyPhoto.setPpattachdata(null);
+
 		return totalProperty;
 	}
-	
-	
+
 //	수정
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@PutMapping("/updateProperty")
 	public TotalProperty updateProperty(@ModelAttribute TotalProperty totalProperty) throws IOException {
-		
+
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
-		
+
 		// PK 값 가져오기
 		propertyDetail.setPdnumber(propertyService.getPdnumber(property.getPnumber()));
-		
+
 		// property 파일 첨부 여부
-		if(property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
+		if (property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
 			MultipartFile mf = property.getPthumbnail();
 			property.setPthumbnailoname(mf.getOriginalFilename());
 			property.setPthumbnailtype(mf.getContentType());
 			property.setPthumbnaildata(mf.getBytes());
 		}
-		
+
 		propertyService.updateProperty(property, propertyDetail);
-		
-	    // propertyPhoto 파일 첨부 여부
-	    if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
-	        List<Integer> ppnumbers = propertyService.getPpnumbers(property.getPnumber()); // pk 값 가져오기
-	        List<MultipartFile> files = propertyPhoto.getPpattach();
-	        log.info("files.size() : " + files.size());
-	        int existingPhotosCount = ppnumbers.size();
-	        int newFilesCount = files.size();
 
-	        for (int i = 0; i < newFilesCount; i++) {
-	            MultipartFile file = files.get(i);
-	            propertyPhoto.setPpattachoname(file.getOriginalFilename());
-	            propertyPhoto.setPpattachtype(file.getContentType());
-	            propertyPhoto.setPpattachdata(file.getBytes());
-	            if (i < existingPhotosCount) {
-	                // 기존 사진을 업데이트하는 경우
-	                propertyPhoto.setPpnumber(ppnumbers.get(i));
-		            propertyService.updatePropertyByPropertyPhoto(propertyPhoto);
-	            } else {
-	                // 새로운 사진을 추가하는 경우
-	                propertyPhoto.setPpnumber(0); // 새로운 사진의 경우 ppnumber는 0(null)로 설정하고, DB에서 자동 생성되도록 처리
-	                propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
-	                propertyService.createPropertyByPropertyPhoto(propertyPhoto);
-	            }
-	        }
+		// propertyPhoto 파일 첨부 여부
+		if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
+			List<Integer> ppnumbers = propertyService.getPpnumbers(property.getPnumber()); // pk 값 가져오기
+			List<MultipartFile> files = propertyPhoto.getPpattach();
+			log.info("files.size() : " + files.size());
+			int existingPhotosCount = ppnumbers.size();
+			int newFilesCount = files.size();
 
-	        // 기존 사진 중 남은 사진은 삭제 처리 (newFilesCount < existingPhotosCount 인 경우)
-	        for (int i = newFilesCount; i < existingPhotosCount; i++) {
-	            propertyService.deletePropertyPhoto(ppnumbers.get(i));
-	        }
-	    }
+			for (int i = 0; i < newFilesCount; i++) {
+				MultipartFile file = files.get(i);
+				propertyPhoto.setPpattachoname(file.getOriginalFilename());
+				propertyPhoto.setPpattachtype(file.getContentType());
+				propertyPhoto.setPpattachdata(file.getBytes());
+				if (i < existingPhotosCount) {
+					// 기존 사진을 업데이트하는 경우
+					propertyPhoto.setPpnumber(ppnumbers.get(i));
+					propertyService.updatePropertyByPropertyPhoto(propertyPhoto);
+				} else {
+					// 새로운 사진을 추가하는 경우
+					propertyPhoto.setPpnumber(0); // 새로운 사진의 경우 ppnumber는 0(null)로 설정하고, DB에서 자동 생성되도록 처리
+					propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+					propertyService.createPropertyByPropertyPhoto(propertyPhoto);
+				}
+			}
 
-	    // totalProperty 객체에 수정된 내용 다시 설정
-	    totalProperty.setProperty(propertyService.getProperty(property.getPnumber()));
-	    totalProperty.setPropertyDetail(propertyService.getPropertyDetail(propertyDetail.getPdnumber()));
-	    totalProperty.setPropertyPhoto(propertyService.getPropertyPhoto(propertyPhoto.getPpnumber()));
+			// 기존 사진 중 남은 사진은 삭제 처리 (newFilesCount < existingPhotosCount 인 경우)
+			for (int i = newFilesCount; i < existingPhotosCount; i++) {
+				propertyService.deletePropertyPhoto(ppnumbers.get(i));
+			}
+		}
 
-	    // JSON으로 변환되지 않는 필드는 null 처리
+		// totalProperty 객체에 수정된 내용 다시 설정
+		totalProperty.setProperty(propertyService.getProperty(property.getPnumber()));
+		totalProperty.setPropertyDetail(propertyService.getPropertyDetail(propertyDetail.getPdnumber()));
+		totalProperty.setPropertyPhoto(propertyService.getPropertyPhoto(propertyPhoto.getPpnumber()));
+
+		// JSON으로 변환되지 않는 필드는 null 처리
 		property.setPthumbnail(null);
 		property.setPthumbnaildata(null);
 		propertyPhoto.setPpattach(null);
-	    propertyPhoto.setPpattachdata(null);
-	    
+		propertyPhoto.setPpattachdata(null);
+
 		return totalProperty;
 	}
-	
-	
+
 //	삭제
 //	@PreAuthorize("hasAuthority('ROLE_USER')")	
 	@Transactional
 	@DeleteMapping("/deleteProperty/{pnumber}")
 	public void deleteProperty(@PathVariable int pnumber) {
-		
+
 		propertyService.deleteProperty(pnumber);
 	}
-	
-	
+
 //	상태 변경 (비활성화, 거래완료)
 	@PatchMapping("/updatePropertyStatus")
 	public Property updatePropertyStatus(Property property) {
-		
+
 		property.setPstatus(null);
 		return property;
 	}
-	
-	
+
 //	댓글 생성
 	@PostMapping("/Property/{pnumber}")
 	public UserComment createPropertyComment(@PathVariable int pnumber, @ModelAttribute UserComment userComment,
 			Authentication authentication) {
-		
+
 		String userEmail = authentication.getName();
 		String userRole = memberService.getUserRole(userEmail);
 		int userNumber = memberService.getUnumberByUemail(userEmail);
-		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부 
-		
-		if(userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
-			log.info("uparentnumber : "+ userComment.getUcparentnumber());
-			if(!userRole.equals("MEMBER")) {
+		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부
+		log.info(isPropertyOwner + "");
+		if (userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
+			log.info("uparentnumber : " + userComment.getUcparentnumber());
+			if (!userRole.equals("MEMBER")) {
 				// agent가 댓글 못달게 처리하기
 			}
-			if(isPropertyOwner) {
+			if (isPropertyOwner) {
 				// member여도 매물 주인이면 댓글 못달게 처리
 			} else {
-				userComment.setUcUnumber(userNumber);
+				userComment.setUcUnumber(userNumber);	
 			}
 			userComment.setUcparentnumber(0);
-		} else { // 부모 댓글 있음 
-			if(userRole.equals("MEMBER")) { // 기존 댓글 주인 여부 파악하기 위해 member / agent 나눠서 처리 
+		} else { // 부모 댓글 있음
+
+			if (userRole.equals("MEMBER")) { // 기존 댓글 주인 여부 파악하기 위해 member / agent 나눠서 처리
 				boolean isFirstCommentOwner = propertyService.isFirstCommentOwner(userComment.getUcUnumber(), pnumber);
-				if(!isFirstCommentOwner) { 
+				if (!isFirstCommentOwner) {
 					// 댓글 주인 아닌 경우 못달게 처리
 				} else {
 					userComment.setUcUnumber(userNumber);
 				}
 			} else { // agent인 경우
-				if(isPropertyOwner) {
+				if (isPropertyOwner) {
 					userComment.setUcUnumber(userNumber);
 				} else {
 					// 올린 사람 아니면 댓글 못달게 하기
 				}
 			}
-			userComment.setUcparentnumber(userComment.getUcUnumber());
+			// 부모키를 0으로 초기화 시켰던 코드
+			// userComment.setUcntnumber(userComment.getUcUnumber());
 		}
+		// 유저 넘버 없음
+		userComment.setUcUnumber(userNumber);
 		log.info("user_comment 실행 중2");
 		userComment.setUcPnumber(pnumber);
 		userComment.setUcremoved(false);
 		propertyService.createPropertyComment(userComment);
-		
+
 		return userComment;
 	}
-	
 
 //	댓글 수정
 	@PutMapping("/Property/{pnumber}/{ucnumber}")
-	
-	
-	
+
 //	댓글 삭제
 	@DeleteMapping("/Property/{pnumber}/{ucnumber}")
 	public void deletePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber,
 			Authentication authentication) {
-		
+
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
 		UserComment comment = propertyService.getCommentByCnumber(ucnumber);
-		
-		// 자식 댓글 존재 여부 
+
+		// 자식 댓글 존재 여부
 		boolean isComment = propertyService.isComment(ucnumber, pnumber);
-		if(isComment) {
+		if (isComment) {
 			comment.setUcremoved(true);
-		} else {			
+		} else {
 			propertyService.deletePropertyComment(pnumber, ucnumber, userNumber);
 		}
 	}
-	
+
 //	매물 신고
-	
+
 }
