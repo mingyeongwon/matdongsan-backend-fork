@@ -10,12 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
@@ -30,10 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 public class HomeController {
 	@Autowired
 	private MemberService memberService;
-	@Autowired
-	private AgentService agentService;
-	@Autowired
-	private PropertyService propertyService;
 	@Autowired
 	private JwtProvider jwtProvider;
 	@Autowired
