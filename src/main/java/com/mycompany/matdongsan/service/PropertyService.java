@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.mycompany.matdongsan.dao.PropertyDao;
 import com.mycompany.matdongsan.dao.PropertyDetailDao;
 import com.mycompany.matdongsan.dao.PropertyPhotoDao;
+import com.mycompany.matdongsan.dto.Comment;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
@@ -136,11 +137,27 @@ public class PropertyService {
 		PropertyDetail propertyDetail = propertyDetailDao.selectPropertyDetailByPdPnumber(pnumber);
 		return propertyDetail;
 	}
-
+	
+	// 읽기 - propertyDetail
 	public PropertyPhoto getPropertyPhotoByPpPnumber(int pnumber) {
 		PropertyPhoto propertyPhoto = propertyPhotoDao.selectPropertyPhotoByPpPnumber(pnumber);
 		return propertyPhoto;
 	}
 	
+	//  댓글 작성 시 매물 주인 여부
+	public boolean isPropertyOwner(int pnumber, int userNumber) {
+		int propertyCount = propertyDao.isPropertyOwnerByComment(pnumber, userNumber);
+		if(propertyCount == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	// 댓글 생성
+	public void createPropertyReview(Comment comment) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
