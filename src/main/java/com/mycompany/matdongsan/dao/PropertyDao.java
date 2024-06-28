@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.mycompany.matdongsan.dto.Property;
+import com.mycompany.matdongsan.dto.PropertyListing;
 
 @Mapper
 public interface PropertyDao {
@@ -39,6 +40,7 @@ public interface PropertyDao {
 	
 	// 댓글 작성 시 매물 주인 여부
 	public int isPropertyOwnerByComment(@Param("pnumber") int pnumber, @Param("userNumber") int userNumber);
+
 
 
 }

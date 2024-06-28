@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mycompany.matdongsan.dao.PropertyServiceDao">
-
+<mapper
+	namespace="com.mycompany.matdongsan.dao.PropertyListingDao">
+	<insert id="createPropertyListing" parameterType="PropertyListing">
+		<selectKey keyProperty="plnumber" resultType="int"
+			order="BEFORE">
+			select seq_plnumber.nextval from dual
+		</selectKey>
+		insert into property_listing(plnumber, plprice,pldate,
+		plquantity,pl_unumber)
+		values
+		(#{plnumber}, #{plprice}, sysdate, #{plquantity},
+		#{plUnumber})
+	</insert>
+	<select id="checkUserDataInPropertyListing" parameterType="int" resultType="int">
+		select count(*) from property_listing
+		where pl_unumber = #{userNumber}
+		and plquantity > 0
+	</select>
 </mapper>

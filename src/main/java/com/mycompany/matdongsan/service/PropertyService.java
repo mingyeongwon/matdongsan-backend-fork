@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.PropertyDao;
 import com.mycompany.matdongsan.dao.PropertyDetailDao;
+import com.mycompany.matdongsan.dao.PropertyListingDao;
 import com.mycompany.matdongsan.dao.PropertyPhotoDao;
 import com.mycompany.matdongsan.dto.Comment;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
+import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
 
 @Service
@@ -21,6 +23,8 @@ public class PropertyService {
 	private PropertyDetailDao propertyDetailDao;
 	@Autowired
 	private PropertyPhotoDao propertyPhotoDao;
+	@Autowired
+	private PropertyListingDao propertyListingDao;
 	
 	// 생성 - property and propertyDetail
 	public void createProperty(Property property, PropertyDetail propertyDetail) {
@@ -159,5 +163,15 @@ public class PropertyService {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void purchasePropertyListing(PropertyListing propertyListing) {
+		propertyListingDao.createPropertyListing(propertyListing);
+		
+	}
+
+	public boolean checkPropertyCondition(int userNumber) {
+		return propertyListingDao.checkUserDataInPropertyListing(userNumber)>0? true : false;
+	}
+
 
 }
