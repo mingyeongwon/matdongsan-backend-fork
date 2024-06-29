@@ -19,6 +19,6 @@ public interface AgentReviewDao {
 
 	void updateAgentReview(AgentReview agentReview);
 
-	int getTotalReviewRows();
+	int getTotalReviewRows(int anumber);
 
 }

@@ -41,4 +41,41 @@
 	    set uccomment=#{uccomment}, ucremoved=#{ucremoved}
    		where ucnumber=#{ucnumber}
    </update>
+   
+   <!-- 댓글 총 개수 -->
+   <select id="getTotalCommentCount" resultType="int">
+		select count(*)
+		from user_comment 
+		where uc_pnumber=#{pnumber}
+   </select>
+   
+   <!-- 댓글 리스트 -->
+   <select id="getCommentByPager" parameterType="Pager" resultType="UserComment">
+<![CDATA[
+SELECT rnum, ucnumber, uccomment, ucdate, uc_unumber, ucparentnumber, uc_pnumber, ucremoved FROM (
+    SELECT ROWNUM AS rnum, ucnumber, uccomment, ucdate, uc_unumber, ucparentnumber, uc_pnumber, ucremoved
+    FROM (
+        SELECT ucnumber, uccomment, ucdate, uc_unumber, ucparentnumber, uc_pnumber, ucremoved
+        FROM user_comment
+        WHERE uc_pnumber = #{pnumber}
+        START WITH ucparentnumber = 0
+        CONNECT BY PRIOR ucnumber = ucparentnumber
+        ORDER SIBLINGS BY 
+        ]]>
+        <if test="date == 'desc'">
+        <![CDATA[
+	        DECODE(ucparentnumber, 0, ucnumber, NULL) DESC, DECODE(ucparentnumber, 0, NULL, ucnumber) ASC ]]>
+        </if>
+        <if test="date == 'asc'">
+        ucnumber
+        </if>
+        <![CDATA[
+    )
+    WHERE ROWNUM <= #{pager.endRowNo}
+)
+WHERE rnum >= #{pager.startRowNo}
+
+]]>
+		
+   </select>
 </mapper>

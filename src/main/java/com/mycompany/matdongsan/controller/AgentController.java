@@ -134,7 +134,7 @@ public class AgentController {
 		// 중개인 상세정보
 		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
 		// 중개인 리뷰정보
-		int totalRows = agentService.getTotalReviews();
+		int totalRows = agentService.getTotalReviews(anumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
 		log.info(pager.toString());
 		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber, sort, pager);

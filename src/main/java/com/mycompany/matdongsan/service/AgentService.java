@@ -124,8 +124,8 @@ public class AgentService {
 		
 	}
 
-	public int getTotalReviews() {
-		int totalRows = agentReviewDao.getTotalReviewRows();
+	public int getTotalReviews(int anumber) {
+		int totalRows = agentReviewDao.getTotalReviewRows(anumber);
 		return totalRows;
 	}
 

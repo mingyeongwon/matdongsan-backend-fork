@@ -19,7 +19,8 @@
    <update id="updatePropertyByProperty" parameterType="Property">
 	      update property set pdeposite=#{pdeposite}, prentalfee=#{prentalfee}, pfloortype=#{pfloortype}, pfloor=#{pfloor}, 
 	      					psize=#{psize}, pmaintenance=#{pmaintenance}, ptitle=#{ptitle}, pcategory=#{pcategory},
-	      					paddress=#{paddress}, paddressdetail=#{paddressdetail}, ppostcode=#{ppostcode}, platitude=#{platitude}, plongitude=#{plongitude}
+	      					paddress=#{paddress}, paddressdetail=#{paddressdetail}, ppostcode=#{ppostcode}, 
+	      					pstatus=#{pstatus} , platitude=#{platitude}, plongitude=#{plongitude}
 	      <if test="pthumbnailoname != null">
 	      , pthumbnailoname=#{pthumbnailoname}, pthumbnailtype=#{pthumbnailtype}, 
 	      pthumbnaildata=#{pthumbnaildata}

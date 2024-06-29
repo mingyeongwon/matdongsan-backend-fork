@@ -14,6 +14,7 @@ import com.mycompany.matdongsan.dto.UserComment;
 
 import lombok.extern.slf4j.Slf4j;
 
+import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyListing;
@@ -46,6 +47,11 @@ public class PropertyService {
 	// 생성 - propertyPhoto
 	public void createPropertyByPropertyPhoto(PropertyPhoto propertyPhoto) {
         propertyPhotoDao.createPropertyByPropertyPhoto(propertyPhoto);
+	}
+	
+	
+	public void updateProperty(Property property) {
+		propertyDao.updatePropertyByProperty(property);
 	}
 	
 	// 수정 
@@ -215,6 +221,18 @@ public class PropertyService {
 		propertyListingDao.updateRemainPropertyListing(userNumber);
 		
 	}
+	
+	// 해당 상품에 대한 댓글 총 개수
+	public int getAllPropertyCommentCount(int pnumber) {
+		return commentDao.getTotalCommentCount(pnumber);
+	}
+	
+	// 댓글 리스트
+	public List<UserComment> getCommentByPnumber(int pnumber, String date, Pager pager) {
+		return commentDao.getCommentByPager(pnumber, date, pager);
+	}
+
+
 
 
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,19 +17,21 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mycompany.matdongsan.dto.UserComment;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.TotalProperty;
+import com.mycompany.matdongsan.dto.UserComment;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
+import com.mycompany.matdongsan.service.PagerService;
 import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +45,8 @@ public class PropertyController {
 	private MemberService memberService;
 	@Autowired
 	private AgentService agentService;
+	@Autowired
+	private PagerService pagerService;
 
 //  리스트
 	@GetMapping("/Property")
@@ -74,14 +80,26 @@ public class PropertyController {
 
 //	읽기
 	@GetMapping("/Property/{pnumber}")
-	public TotalProperty readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty) {
-
+	public Map<String, Object> readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty, @RequestParam(defaultValue = "1", required = false) String pageNo, 
+			@RequestParam(defaultValue = "desc", required = false) String date, HttpSession session) {
+		
+		// property 정보
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
 		totalProperty.setPropertyPhoto(propertyService.getPropertyPhotoByPpPnumber(pnumber));
-
-		return totalProperty;
+		
+		// property Comment
+		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
+		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 9, 5, "propertyComment");
+		List<UserComment> propertyCommentList = propertyService.getCommentByPnumber(pnumber, date, pager);
+		
+		Map<String, Object> propertyMap = new HashMap<>();
+		propertyMap.put("totalProperty", totalProperty);
+		propertyMap.put("propertyCommentList", propertyCommentList);
+		
+		return propertyMap;
 	}
+	
 
 //	등록
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
@@ -229,9 +247,14 @@ public class PropertyController {
 
 //	상태 변경 (비활성화, 거래완료)
 	@PatchMapping("/updatePropertyStatus")
-	public Property updatePropertyStatus(Property property) {
-
-		property.setPstatus(null);
+	public Property updatePropertyStatus(@RequestBody Map<String, Object> requestData) {
+		
+		int pnumber = (int) requestData.get("pnumber");
+		String pstatus = (String) requestData.get("pstatus");
+		
+		Property property = propertyService.getProperty(pnumber);
+		property.setPstatus(pstatus);
+		propertyService.updateProperty(property);
 		return property;
 	}
 
@@ -281,6 +304,7 @@ public class PropertyController {
 
 		return userComment;
 	}
+	
 
 //	댓글 수정
 	@PutMapping("/Property/{pnumber}/{ucnumber}")
