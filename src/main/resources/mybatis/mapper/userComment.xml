@@ -17,7 +17,7 @@
       select 
       	count(*) 
       from user_comment
-      where uc_pnumber=#{pnumber} and ucparentnumber=#{cnumber}
+      where uc_pnumber=#{pnumber} and ucparentnumber=#{ucnumber}
    	</select>  
    	
    	<!-- 삭제 -->
@@ -34,4 +34,11 @@
       from user_comment 
       where ucnumber=#{cnumber}
    </select>	
+   
+   	<!-- 수정 -->
+   <update id="updatePropertyComment" parameterType="UserComment">
+	    update user_comment 
+	    set uccomment=#{uccomment}, ucremoved=#{ucremoved}
+   		where ucnumber=#{ucnumber}
+   </update>
 </mapper>

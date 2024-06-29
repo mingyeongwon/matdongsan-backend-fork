@@ -195,13 +195,19 @@ public class PropertyService {
 	}
 	
 	// 자식 댓글 존재 여부
-	public boolean isComment(int cnumber, int pnumber) {
-		return commentDao.isChildComment(cnumber, pnumber) != 0 ? true : false;
+	public boolean isComment(int ucnumber, int pnumber) {
+		return commentDao.isChildComment(ucnumber, pnumber) != 0 ? true : false;
 	}
 	
 	// 댓글 정보 가져오기
 	public UserComment getCommentByCnumber(int cnumber) {
 		return commentDao.getCommentByCnumber(cnumber);
+	}
+	
+	// 댓글 수정
+	public void updatePropertyComment(UserComment userComment) {
+		commentDao.updatePropertyComment(userComment);
+		
 	}
 
 

@@ -8,7 +8,7 @@ import com.mycompany.matdongsan.dto.UserComment;
 @Mapper
 public interface UserCommentDao {
 	// 자식 댓글 존재 여부
-	public int isChildComment(int cnumber, int pnumber);
+	public int isChildComment(int ucnumber, int pnumber);
 	
 	// 삭제
 	public void deletePropertyComment(int pnumber, int cnumber, int userNumber);
@@ -18,4 +18,7 @@ public interface UserCommentDao {
 	
 	// 생성
 	public void createPropertyComment(UserComment comment);
+	
+	// 수정
+	public void updatePropertyComment(UserComment userComment);
 }

@@ -256,12 +256,9 @@ public class PropertyController {
 					// 올린 사람 아니면 댓글 못달게 하기
 				}
 			}
-			// 부모키를 0으로 초기화 시켰던 코드
-			// userComment.setUcntnumber(userComment.getUcUnumber());
 		}
 		// 유저 넘버 없음
 		userComment.setUcUnumber(userNumber);
-		log.info("user_comment 실행 중2");
 		userComment.setUcPnumber(pnumber);
 		userComment.setUcremoved(false);
 		propertyService.createPropertyComment(userComment);
@@ -271,6 +268,18 @@ public class PropertyController {
 
 //	댓글 수정
 	@PutMapping("/Property/{pnumber}/{ucnumber}")
+	public UserComment updatePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber, 
+			@ModelAttribute UserComment userComment, Authentication authentication) {
+		
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		
+		userComment.setUcnumber(ucnumber);
+		userComment.setUcUnumber(userNumber);
+		userComment.setUcPnumber(pnumber);
+		propertyService.updatePropertyComment(userComment);
+		return userComment;
+	}
 
 //	댓글 삭제
 	@DeleteMapping("/Property/{pnumber}/{ucnumber}")
@@ -285,6 +294,7 @@ public class PropertyController {
 		boolean isComment = propertyService.isComment(ucnumber, pnumber);
 		if (isComment) {
 			comment.setUcremoved(true);
+			propertyService.updatePropertyComment(comment);
 		} else {
 			propertyService.deletePropertyComment(pnumber, ucnumber, userNumber);
 		}
