@@ -11,5 +11,6 @@ public class PropertyListing {
    private Date pldate;
    private int plquantity;
    private int plUnumber;
+   private int plremain;
 }
 

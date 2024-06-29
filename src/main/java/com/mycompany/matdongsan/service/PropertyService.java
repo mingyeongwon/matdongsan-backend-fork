@@ -209,6 +209,12 @@ public class PropertyService {
 		commentDao.updatePropertyComment(userComment);
 		
 	}
+	
+	// 등록권 개수 수정
+	public void updateRemainPropertyListing(int userNumber) {
+		propertyListingDao.updateRemainPropertyListing(userNumber);
+		
+	}
 
 
 }

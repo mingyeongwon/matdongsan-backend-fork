@@ -87,52 +87,68 @@ public class PropertyController {
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@Transactional
 	@PostMapping("/PropertyForm")
-	public TotalProperty createProperty(@ModelAttribute TotalProperty totalProperty, Authentication authentication)
+	public boolean createProperty(@ModelAttribute TotalProperty totalProperty, Authentication authentication)
 			throws IOException {
-
-		Property property = totalProperty.getProperty();
-		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
-		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
-		// 사용자 설정
-		// 추후 authentication 설정하기
-		property.setPUnumber(9);
-		property.setPstatus("활성화");
-
-		// property 파일 첨부 여부
-		if (property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
-			MultipartFile mf = property.getPthumbnail();
-			property.setPthumbnailoname(mf.getOriginalFilename());
-			property.setPthumbnailtype(mf.getContentType());
-			property.setPthumbnaildata(mf.getBytes());
-		}
-
-		propertyService.createProperty(property, propertyDetail);
-
-		// propertyPhoto
-		log.info("propertyPhotos null 여부 : " + propertyPhoto.getPpattach().isEmpty());
-
-		// propertyPhoto 파일 첨부 여부
-		if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
-			List<MultipartFile> files = propertyPhoto.getPpattach();
-			if (files != null && !files.isEmpty()) {
-				for (MultipartFile file : files) {
-					log.info(file.getOriginalFilename());
-					propertyPhoto.setPpattachoname(file.getOriginalFilename());
-					propertyPhoto.setPpattachtype(file.getContentType());
-					propertyPhoto.setPpattachdata(file.getBytes());
-					propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
-					propertyService.createPropertyByPropertyPhoto(propertyPhoto);
+		
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		
+		// 유저가 이전에 결제한 적 있는지, 있다면 남아있는 개수가 있는지
+		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); 
+		
+		if(hasPropertyListing) {
+			
+			Property property = totalProperty.getProperty();
+			PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
+			PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
+			// 사용자 설정
+			// 추후 authentication 설정하기
+			property.setPUnumber(userNumber);
+			property.setPstatus("활성화");
+			
+			// property 파일 첨부 여부
+			if (property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
+				MultipartFile mf = property.getPthumbnail();
+				property.setPthumbnailoname(mf.getOriginalFilename());
+				property.setPthumbnailtype(mf.getContentType());
+				property.setPthumbnaildata(mf.getBytes());
+			}
+			
+			propertyService.createProperty(property, propertyDetail);
+			
+			// propertyPhoto
+			log.info("propertyPhotos null 여부 : " + propertyPhoto.getPpattach().isEmpty());
+			
+			// propertyPhoto 파일 첨부 여부
+			if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
+				List<MultipartFile> files = propertyPhoto.getPpattach();
+				if (files != null && !files.isEmpty()) {
+					for (MultipartFile file : files) {
+						log.info(file.getOriginalFilename());
+						propertyPhoto.setPpattachoname(file.getOriginalFilename());
+						propertyPhoto.setPpattachtype(file.getContentType());
+						propertyPhoto.setPpattachdata(file.getBytes());
+						propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+						propertyService.createPropertyByPropertyPhoto(propertyPhoto);
+					}
 				}
 			}
+			
+			// JSON으로 변환되지 않는 필드는 null 처리
+			property.setPthumbnail(null);
+			property.setPthumbnaildata(null);
+			propertyPhoto.setPpattach(null);
+			propertyPhoto.setPpattachdata(null);
+			
+			propertyService.updateRemainPropertyListing(userNumber);
+			
+			return true;
+		} else { // 등록권 없음
+			// 등록권 소개 페이지로 이동 
+			return false;
 		}
+		
 
-		// JSON으로 변환되지 않는 필드는 null 처리
-		property.setPthumbnail(null);
-		property.setPthumbnaildata(null);
-		propertyPhoto.setPpattach(null);
-		propertyPhoto.setPpattachdata(null);
-
-		return totalProperty;
 	}
 
 //	수정
@@ -237,7 +253,7 @@ public class PropertyController {
 			if (isPropertyOwner) {
 				// member여도 매물 주인이면 댓글 못달게 처리
 			} else {
-				userComment.setUcUnumber(userNumber);	
+				userComment.setUcUnumber(userNumber);
 			}
 			userComment.setUcparentnumber(0);
 		} else { // 부모 댓글 있음
@@ -268,12 +284,12 @@ public class PropertyController {
 
 //	댓글 수정
 	@PutMapping("/Property/{pnumber}/{ucnumber}")
-	public UserComment updatePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber, 
+	public UserComment updatePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber,
 			@ModelAttribute UserComment userComment, Authentication authentication) {
-		
+
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
-		
+
 		userComment.setUcnumber(ucnumber);
 		userComment.setUcUnumber(userNumber);
 		userComment.setUcPnumber(pnumber);
@@ -302,4 +318,36 @@ public class PropertyController {
 
 //	매물 신고
 
+//	등록권 구매
+	@PostMapping("/Payment/PaymentResult/{quantity}")
+	public boolean purchasePropertyListing(Authentication authentication, @PathVariable int quantity) {
+		int price = 5500;
+		PropertyListing propertyListing = new PropertyListing();
+
+		// 유저 번호
+		String userName = authentication.getName();
+		int userNumber = agentService.getUserIdByUserName(userName);
+		
+		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지, 있다면 남아있는 개수가 있는지
+		
+		log.info(hasPropertyListing + "");
+		if (!hasPropertyListing) {
+			propertyListing.setPlquantity(quantity);
+			propertyListing.setPlremain(quantity);
+			propertyListing.setPlUnumber(userNumber);
+			if (quantity > 1) {
+				price = quantity * 5500 - (500 * quantity);
+				propertyListing.setPlprice(price);
+			} else {
+				propertyListing.setPlprice(price);
+			}
+			log.info(propertyListing.toString());
+			propertyService.purchasePropertyListing(propertyListing);
+			return true; // 등록권이 없는 유저나 처음 구매하는 유저라면 true
+		} else {
+			log.info("이미 등록권이 존재합니다.");
+			return false; // 아직 등록권이 존재하는 유저라면 false를 리턴
+		}
+
+	}
 }

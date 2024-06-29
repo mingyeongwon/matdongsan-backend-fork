@@ -8,14 +8,23 @@
 			select seq_plnumber.nextval from dual
 		</selectKey>
 		insert into property_listing(plnumber, plprice,pldate,
-		plquantity,pl_unumber)
+		plquantity,pl_unumber, plremain)
 		values
 		(#{plnumber}, #{plprice}, sysdate, #{plquantity},
-		#{plUnumber})
+		#{plUnumber}, #{plremain})
 	</insert>
+	
 	<select id="checkUserDataInPropertyListing" parameterType="int" resultType="int">
 		select count(*) from property_listing
 		where pl_unumber = #{userNumber}
-		and plquantity > 0
+		and plremain > 0
 	</select>
+	
+	<!-- remain 개수 수정 -->
+	<update id="updateRemainPropertyListing" parameterType="int">
+		update property_listing
+		set plremain = plremain - 1
+		where pl_unumber = #{userNumber}
+		and plremain > 0
+	</update>
 </mapper>
