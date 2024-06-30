@@ -5,20 +5,23 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mycompany.matdongsan.dao.UserCommentDao;
+import com.mycompany.matdongsan.dao.FavoriteDao;
 import com.mycompany.matdongsan.dao.PropertyDao;
 import com.mycompany.matdongsan.dao.PropertyDetailDao;
 import com.mycompany.matdongsan.dao.PropertyListingDao;
 import com.mycompany.matdongsan.dao.PropertyPhotoDao;
-import com.mycompany.matdongsan.dto.UserComment;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.mycompany.matdongsan.dao.ReportDao;
+import com.mycompany.matdongsan.dao.UserCommentDao;
+import com.mycompany.matdongsan.dto.Favorite;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
+import com.mycompany.matdongsan.dto.Report;
+import com.mycompany.matdongsan.dto.UserComment;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -33,6 +36,10 @@ public class PropertyService {
 	private PropertyListingDao propertyListingDao;
 	@Autowired
 	private UserCommentDao commentDao;
+	@Autowired
+	private FavoriteDao favoriteDao;
+	@Autowired
+	private ReportDao reportDao;
 	
 	// 생성 - property and propertyDetail
 	public void createProperty(Property property, PropertyDetail propertyDetail) {
@@ -230,6 +237,26 @@ public class PropertyService {
 	// 댓글 리스트
 	public List<UserComment> getCommentByPnumber(int pnumber, String date, Pager pager) {
 		return commentDao.getCommentByPager(pnumber, date, pager);
+	}
+	
+	// 좋아요 추가
+	public void addLikeButton(Favorite favorite) {
+		favoriteDao.addLikeButton(favorite);
+	}
+	
+	// 좋아요 여부
+	public boolean existsFavorite(int pnumber, int userNumber) {
+		return favoriteDao.existsFavorite(pnumber, userNumber) != 0 ? true : false;
+	}
+	
+	// 좋아요 취소
+	public void cancelLikeButton(int pnumber, int userNumber) {
+		favoriteDao.cancelLikeButton(pnumber, userNumber);
+	}
+	
+	// 매물 신고
+	public void createPropertyReport(Report report) {
+		reportDao.createPropertyReport(report);
 	}
 
 

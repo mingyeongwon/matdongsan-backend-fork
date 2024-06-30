@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.ReportDao">
-
+	<!-- 생성 -->
+	<insert id="createPropertyReport" parameterType="Report">
+		<selectKey keyProperty="rnumber" resultType="int" order="BEFORE">
+			select seq_rnumber.nextval from dual
+		</selectKey>	
+		insert into report (rnumber, rcontent, rdate, r_pnumber, r_unumber)
+		
+		values(#{rnumber}, #{rcontent}, sysdate, #{rPnumber}, #{rUnumber})
+	</insert>	
 </mapper>

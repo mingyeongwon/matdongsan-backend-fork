@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.FavoriteDao">
-
+	<!-- 좋아요 여부 -->
+   	<select id="existsFavorite" resultType="int">
+      select 
+      	count(*) 
+      from favorite
+      where f_pnumber=#{pnumber} and f_mnumber=#{userNumber}
+   	</select>  
+   	
+	<!-- 좋아요 -->
+	<insert id="addLikeButton" parameterType="Favorite">
+		insert into favorite (f_pnumber, f_mnumber)
+		values(#{fPnumber}, #{fMnumber})
+	</insert>	
+	
+   	<!-- 좋아요 취소 -->
+	<delete id="cancelLikeButton" parameterType="int">
+		delete 
+		from favorite
+		where f_pnumber=#{pnumber} and f_mnumber = #{userNumber}
+	</delete>	   		
 </mapper>

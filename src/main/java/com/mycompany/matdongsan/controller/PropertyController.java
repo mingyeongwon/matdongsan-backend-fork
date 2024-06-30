@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mycompany.matdongsan.dto.Favorite;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
 import com.mycompany.matdongsan.dto.PropertyListing;
 import com.mycompany.matdongsan.dto.PropertyPhoto;
+import com.mycompany.matdongsan.dto.Report;
 import com.mycompany.matdongsan.dto.TotalProperty;
 import com.mycompany.matdongsan.dto.UserComment;
 import com.mycompany.matdongsan.service.AgentService;
@@ -269,7 +271,6 @@ public class PropertyController {
 		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부
 		log.info(isPropertyOwner + "");
 		if (userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
-			log.info("uparentnumber : " + userComment.getUcparentnumber());
 			if (!userRole.equals("MEMBER")) {
 				// agent가 댓글 못달게 처리하기
 			}
@@ -339,9 +340,58 @@ public class PropertyController {
 			propertyService.deletePropertyComment(pnumber, ucnumber, userNumber);
 		}
 	}
+	
+	
+//	상품 좋아요 추가
+	@PostMapping("/Property/{pnumber}/favorite")
+	public boolean addLikeButton(@PathVariable int pnumber, @ModelAttribute Favorite favorite,
+			Authentication authentication) {
+		
+		String userEmail = authentication.getName();
+		// agent도 좋아요 할 수 있는지 팀원들이랑 얘기해보기 
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		
+		boolean existsFavorite = propertyService.existsFavorite(pnumber, userNumber); // 이미 좋아요 눌렀는지
+		
+		if(!existsFavorite) { // 좋아요 존재하지 않아서 추가하기
+			favorite.setFPnumber(pnumber);
+			favorite.setFMnumber(userNumber);
+			propertyService.addLikeButton(favorite);
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	
+//	상품 좋아요 취소
+	@DeleteMapping("/Property/{pnumber}/favorite")
+	public void cancelLikeButton(@PathVariable int pnumber, @ModelAttribute Favorite favorite,
+			Authentication authentication) {
+		
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		
+		propertyService.cancelLikeButton(pnumber, userNumber);
+	}	
+	
 
 //	매물 신고
+	@PostMapping("/Property/{pnumber}/report")
+	public Report createPropertyReport(@PathVariable int pnumber, @ModelAttribute Report report,
+			Authentication authentication) {
 
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		report.setRPnumber(pnumber);
+		report.setRUnumber(userNumber);
+		
+		propertyService.createPropertyReport(report);
+		return report;
+	}
+
+	
 //	등록권 구매
 	@PostMapping("/Payment/PaymentResult/{quantity}")
 	public boolean purchasePropertyListing(Authentication authentication, @PathVariable int quantity) {
@@ -372,6 +422,5 @@ public class PropertyController {
 			log.info("이미 등록권이 존재합니다.");
 			return false; // 아직 등록권이 존재하는 유저라면 false를 리턴
 		}
-
 	}
 }
