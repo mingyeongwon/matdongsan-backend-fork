@@ -34,8 +34,7 @@
         WHERE 1=1 ]]>
 		<if test="keyword != null and keyword != ''">
 			AND a.abrand LIKE '%' || #{keyword} || '%'
-			OR a.aaddress
-			LIKE '%' || #{keyword} || '%'
+			OR a.aname LIKE '%' || #{keyword} || '%'
 			OR a.aaddress LIKE '%' || #{keyword} || '%'
 		</if>
     <![CDATA[

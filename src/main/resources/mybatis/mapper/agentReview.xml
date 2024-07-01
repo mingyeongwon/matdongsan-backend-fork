@@ -22,6 +22,7 @@
 		from(
 			select arnumber,arcontent,arrate,ardate,ar_anumber,ar_mnumber
 			from agent_review
+			where AR_anumber =#{anumber}
 			order by arnumber ]]>
 		<if test="sort == 'desc'">
 			desc

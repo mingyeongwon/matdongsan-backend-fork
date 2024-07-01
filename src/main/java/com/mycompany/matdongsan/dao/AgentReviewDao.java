@@ -15,7 +15,7 @@ public interface AgentReviewDao {
 
 	void deleteAgentReview(int arnumber, int anumber, int userNumber);
 
-	List<AgentReview> getAgentReviewByAnumber(int anumber,String sort,@Param("pager") Pager pager);
+	List<AgentReview> getAgentReviewByAnumber(@Param("anumber") int anumber, String sort,@Param("pager") Pager pager);
 
 	void updateAgentReview(AgentReview agentReview);
 
