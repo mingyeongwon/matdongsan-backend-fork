@@ -12,7 +12,7 @@
 		aaddress,APROFILEDATA,APROFILEONAME,APROFILETYPE,
 		ALATITUDE,ALONGITUDE,APOSTCODE,AADDRESSDETAIL,A_UNUMBER)
 		values
-		(#{anumber},#{aname} #{abrand}, #{aphone}, #{aaddress},
+		(#{anumber},#{aname}, #{abrand}, #{aphone}, #{aaddress},
 		#{aprofiledata},#{aprofileoname},#{aprofiletype},#{alatitude},#{alongitude},#{apostcode},#{aaddressdetail},#{aUnumber})
 	</insert>
 

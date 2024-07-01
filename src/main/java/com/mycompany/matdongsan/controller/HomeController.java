@@ -63,7 +63,7 @@ public class HomeController {
 			String accessToken = jwtProvider.createAccessToken(uemail, userDetails.getUser().getUrole());
 			// JSON 응답
 			map.put("result", "success");
-			map.put("userEmail", uemail);
+			map.put("uemail", uemail);
 			map.put("accessToken", accessToken);
 
 		} else if (checkActivation) { // 비활성화(삭제된) 유저의 경우 removed라고 map에 값을 넣음
@@ -72,6 +72,7 @@ public class HomeController {
 		} else { // 로그인에 실패한 경우(비밀번호, 아이디 문제) fail 표시
 			map.put("result", "fail");
 		}
+		log.info(map+"");
 		return map;
 	}
 
