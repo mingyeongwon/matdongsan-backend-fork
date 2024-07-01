@@ -39,5 +39,51 @@
 	<delete id="deleteQuestionByQnumber" parameterType = "int">
 		delete from question where qnumber = #{qnumber}
 	</delete>
-
+	
+	<!-- 해당하는 회원의 문의 갯수 가져오기 -->
+	<select id="getQuestionCountByUnumber" resultType="int" parameterType="int">
+		select count(*) from question where q_unumber = #{qUnumber} 
+	</select>
+	
+	
+	<!-- 해당하는 회원의 문의 리스트 가져오기 -->
+	<select id="getUsersQuestionList" parameterType="Map" resultType="question">
+		<![CDATA[
+		select rnum, qtitle, qdate, qnumber, q_unumber
+		from(
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber
+			from(
+				select qtitle, qdate, qnumber, q_unumber
+				from question
+				where q_unumber = #{qUnumber}
+				order by qdate desc
+				)
+			where rownum <= #{pager.endRowNo}
+		)
+		where rnum >= #{pager.startRowNo}
+		]]>
+	</select>
+	
+	<!-- 해당하는 회원의 문의 갯수 가져오기 -->
+	<select id="getQuestionCount" resultType="int">
+		select count(*) from question 
+	</select>
+	
+	
+	<!-- 문의 리스트 가져오기 -->
+	<select id="getQuestionList" parameterType="pager" resultType="question">
+		<![CDATA[
+		select rnum, qtitle, qdate, qnumber, q_unumber
+		from(
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber
+			from(
+				select qtitle, qdate, qnumber, q_unumber
+				from question
+				order by qdate desc
+				)
+			where rownum <= #{endRowNo}
+		)
+		where rnum >= #{startRowNo}
+		]]>
+	</select>
 </mapper>

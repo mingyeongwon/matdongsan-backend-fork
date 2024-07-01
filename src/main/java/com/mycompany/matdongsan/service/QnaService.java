@@ -45,6 +45,26 @@ public class QnaService {
 		return questionDao.deleteQuestionByQnumber(qnumber);
 	}
 	
+	// 해당하는 고객의 문의 갯수 가져오기
+	public int getQuestionCountByUnumber(int qUnumber) {
+		return questionDao.getQuestionCountByUnumber(qUnumber);
+	}
+	
+	// 해당하는 고객의 문의 리스트 가져오기
+	public List<Question> getUsersQuestionList(Map<String, Object> usersQuestion){
+		return questionDao.getUsersQuestionList(usersQuestion);
+	}
+	
+	// 고객 문의 갯수 가져오기(전체)
+	public int getQuestionCount() {
+		return questionDao.getQuestionCount();
+	}
+	
+	// 고객 문의 리스트 가져오기(전체)
+	public List<Question> getQuestionList(Pager pager){
+		return questionDao.getQuestionList(pager);
+	}
+	
 	// Answer 고객 문의 답변-------------------/////////////////////////////////////////////////////////////////////
 	
 	// 문의 답변 생성
@@ -67,6 +87,7 @@ public class QnaService {
 		return answerDao.deleteAnswer(anumber);
 	}
 	
+	
 	// Notice 공지 사항---------------------//////////////////////////////////////////////////////////////////////
 	
 	// 공지 사항 DB 저장
@@ -75,15 +96,20 @@ public class QnaService {
 	}
 	
 	// 공지사항 갯수 가져오기
-	public int countNotice() {
+	public int getCountNotice() {
 		return noticeDao.countNotice();
 	}
 	
-	// 공지사항 리스트 가져오기
-	public List<Notice> getNoticeList(Pager pager){
-		return noticeDao.getNoticeList(pager);
+	// 검색 된 공지사항 갯수 가져오기
+	public int getCountOfSearchedNotices(String searchKeyword) {
+		return noticeDao.getCountOfSearchedNotices(searchKeyword);
 	}
 	
+	// 공지사항 검색 및 정렬하기
+	public List<Notice> getSearchedNoticeList(Map<String,Object> mapForSearch){
+		return noticeDao.getSearchedNoticeList(mapForSearch);
+	}
+		
 	// 공지사항 디테일 가져오기
 	public Notice getNoticeDetail(int nnumber) {
 		return noticeDao.getNoticeDetail(nnumber);
@@ -99,13 +125,5 @@ public class QnaService {
 		return noticeDao.deleteNotice(nnumber);
 	}
 	
-	// 검색 된 공지사항 갯수 가져오기
-	public int getCountOfSearchedNotices(String searchKeyword) {
-		return noticeDao.getCountOfSearchedNotices(searchKeyword);
-	}
-	
-	// 공지사항 검색하기
-	public List<Notice> getSearchedNoticeList(Map<String,Object> mapForSearch){
-		return noticeDao.getSearchedNoticeList(mapForSearch);
-	}
+
 }

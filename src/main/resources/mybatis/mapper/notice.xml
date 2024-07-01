@@ -19,23 +19,6 @@
 		select count(*) from notice
 	</select>
 	
-	<!-- 공지사항 리스트 가져오기 -->
-	<select id="getNoticeList" parameterType="pager" resultType="notice">
-		<![CDATA[
-		select rnum, ntitle, ndate, nnumber
-		from(
-			select rownum as rnum, ntitle, ndate, nnumber
-			from(
-				select ntitle, ndate, nnumber
-				from notice
-				order by ndate desc
-				)
-			where rownum <= #{endRowNo}
-		)
-		where rnum >= #{startRowNo}
-		]]>
-	</select>
-	
 	<!-- 공지사항 디테일 가져오기 -->
 	<select id="getNoticeDetail" parameterType="int" resultType="notice">
 		select ncontent, ndate, ntitle, nnumber
@@ -59,7 +42,7 @@
 		select count(*) from notice where ntitle LIKE '%'||#{searchKeyword}||'%'
 	</select>
 	
-	<!-- 검색 된 공지사항 리스트 가져오기 -->
+		
 	<select id="getSearchedNoticeList" parameterType="Map" resultType="notice">
 		<![CDATA[
 		select rnum, ntitle, ndate, nnumber
@@ -67,13 +50,17 @@
 			select rownum as rnum, ntitle, ndate, nnumber
 			from(
 				select ntitle, ndate, nnumber
-				from notice
-				where ntitle LIKE '%'||#{keyword}||'%'
-				order by ndate desc
+				from notice]]>
+				<if test="keyword != null">
+					<![CDATA[
+					where ntitle LIKE '%'||#{keyword}||'%'
+					]]>
+				</if>
+				<![CDATA[
+				order by ndate ${sort == 'desc' ? 'desc' : 'asc'})
+				where rownum <= #{pager.endRowNo}
 				)
-			where rownum <= #{pager.endRowNo}
-		)
-		where rnum >= #{pager.startRowNo}
-		]]>
+				where rnum >= #{pager.startRowNo}		
+				]]>
 	</select>
 </mapper>

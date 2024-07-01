@@ -13,7 +13,6 @@ public interface NoticeDao {
 	
 	public int insertNotice(Notice notice);
 	public int countNotice();
-	public List<Notice> getNoticeList(Pager pager);
 	public Notice getNoticeDetail(int nnumber);
 	public int updateNotice(Notice notice);
 	public int deleteNotice(int nnumber);
