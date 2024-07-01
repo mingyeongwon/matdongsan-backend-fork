@@ -348,14 +348,13 @@ public class PropertyController {
 			Authentication authentication) {
 		
 		String userEmail = authentication.getName();
-		// agent도 좋아요 할 수 있는지 팀원들이랑 얘기해보기 
-		int userNumber = memberService.getUnumberByUemail(userEmail);
+		int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
 		
-		boolean existsFavorite = propertyService.existsFavorite(pnumber, userNumber); // 이미 좋아요 눌렀는지
+		boolean existsFavorite = propertyService.existsFavorite(pnumber, memberNumber); // 이미 좋아요 눌렀는지
 		
 		if(!existsFavorite) { // 좋아요 존재하지 않아서 추가하기
 			favorite.setFPnumber(pnumber);
-			favorite.setFMnumber(userNumber);
+			favorite.setFMnumber(memberNumber);
 			propertyService.addLikeButton(favorite);
 			return true;
 		} else {
@@ -371,9 +370,9 @@ public class PropertyController {
 			Authentication authentication) {
 		
 		String userEmail = authentication.getName();
-		int userNumber = memberService.getUnumberByUemail(userEmail);
+		int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
 		
-		propertyService.cancelLikeButton(pnumber, userNumber);
+		propertyService.cancelLikeButton(pnumber, memberNumber);
 	}	
 	
 
