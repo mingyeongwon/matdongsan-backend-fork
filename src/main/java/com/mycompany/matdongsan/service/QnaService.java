@@ -29,8 +29,14 @@ public class QnaService {
 		return questionDao.insertQuestion(question);
 	}
 	
-	// 고객 문의 읽기
-	public Question getQuestion(int qnumber) {
+	// 고객 문의 읽기(해당하는 고객의 문의만)
+	public Question getQuestionByQUnumbers(Map<String, Integer> QUnumbsers) {
+		Question question =  questionDao.getQuestionByQUnumbers(QUnumbsers);
+		return question;
+	}
+	
+	// 고객 문의 읽기(user정보에 상관없이 읽기)
+	public Question getQuestionByQnumber(int qnumber) {
 		Question question =  questionDao.getQuestionByQnumber(qnumber);
 		return question;
 	}

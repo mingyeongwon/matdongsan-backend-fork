@@ -16,6 +16,13 @@
 	</insert>
 	
 	<!-- 이미지 데이터는 빼고 가져 온다. -->
+	<select id="getQuestionByQUnumbers" parameterType="map" resultType="question">
+		select qnumber, qcategory, qtitle, qcontent, qattachoname,  
+			qattachtype, qdate, q_unumber 
+		from question
+		where qnumber = #{qnumber} and q_unumber = #{ qUnumber }
+	</select>
+	
 	<select id="getQuestionByQnumber" parameterType="int" resultType="question">
 		select qnumber, qcategory, qtitle, qcontent, qattachoname,  
 			qattachtype, qdate, q_unumber 
