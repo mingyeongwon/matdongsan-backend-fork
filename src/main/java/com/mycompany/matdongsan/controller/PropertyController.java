@@ -1,10 +1,12 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.Favorite;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
@@ -421,5 +424,28 @@ public class PropertyController {
 			log.info("이미 등록권이 존재합니다.");
 			return false; // 아직 등록권이 존재하는 유저라면 false를 리턴
 		}
+	}
+	
+	//매물 썸네일 사진 다운로드
+//	@PreAuthorize("hasAuthority('ROLE_USER')")
+	@GetMapping("/pattach/{pnumber}")
+	public void downloadAgentProfile(@PathVariable int pnumber, HttpServletResponse response) {
+		// 해당 게시물 가져오기
+		Property property = propertyService.getProperty(pnumber);
+		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
+		try {
+			String fileName = new String(property.getPthumbnailoname().getBytes("UTF-8"), "ISO-8859-1");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+			// 파일 타입을 헤더에 추가
+			response.setContentType(property.getPthumbnailtype());
+			// 응답 바디에 파일 데이터를 출력
+			OutputStream os = response.getOutputStream();
+			os.write(property.getPthumbnaildata());
+			os.flush();
+			os.close();
+		} catch (IOException e) {
+			log.error(e.toString());
+		}
+
 	}
 }

@@ -1,11 +1,13 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,4 +250,26 @@ public class AgentController {
 		agentService.deleteAgentReview(anumber, arnumber, userNumber);
 	}
 
+	//중개인 프로파일 다운로드
+//	@PreAuthorize("hasAuthority('ROLE_USER')")
+	@GetMapping("/aattach/{anumber}")
+	public void downloadAgentProfile(@PathVariable int anumber, HttpServletResponse response) {
+		// 해당 게시물 가져오기
+		Agent agent = agentService.getAgentDataByUserNumber(anumber);
+		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
+		try {
+			String fileName = new String(agent.getAprofileoname().getBytes("UTF-8"), "ISO-8859-1");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+			// 파일 타입을 헤더에 추가
+			response.setContentType(agent.getAprofiletype());
+			// 응답 바디에 파일 데이터를 출력
+			OutputStream os = response.getOutputStream();
+			os.write(agent.getAprofiledata());
+			os.flush();
+			os.close();
+		} catch (IOException e) {
+			log.error(e.toString());
+		}
+
+	}
 }
