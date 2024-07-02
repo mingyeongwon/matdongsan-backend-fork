@@ -40,6 +40,9 @@ public interface PropertyDao {
 	
 	// 댓글 작성 시 매물 주인 여부
 	public int isPropertyOwnerByComment(@Param("pnumber") int pnumber, @Param("userNumber") int userNumber);
+	
+	// 유저 매물 리스트
+	public List<Property> getUserPropertyListByUnumber(int unumber);
 
 
 

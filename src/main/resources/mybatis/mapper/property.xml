@@ -137,4 +137,11 @@
       from property
       where pnumber=#{pnumber} and p_unumber=#{userNumber}
    	</select>  
+   	
+   <!-- 유저 매물 리스트 -->
+    <select id="getUserPropertyListByUnumber" parameterType="int" resultType="Property">
+      select *
+      from property 
+      where p_unumber=#{unumber}
+   </select>   	
 </mapper>

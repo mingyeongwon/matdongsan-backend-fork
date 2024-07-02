@@ -82,6 +82,18 @@ public class PropertyController {
 		map.put("pager", pager);
 		return map; // { "property" : {}, "pager" : {}}
 	}
+	
+
+//	유저 매물 리스트
+	@GetMapping("/Mypage/ManageMyProperty")
+	public List<Property> getUserPropertyList(Authentication authentication) {
+		
+		String uemail = authentication.getName();
+		int unumber = memberService.getUnumberByUemail(uemail);
+		
+		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber);
+		return userPropertyList;
+	}
 
 //	읽기
 	@GetMapping("/Property/{pnumber}")
@@ -429,7 +441,7 @@ public class PropertyController {
 	//매물 썸네일 사진 다운로드
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/pattach/{pnumber}")
-	public void downloadAgentProfile(@PathVariable int pnumber, HttpServletResponse response) {
+	public void downloadPropertyThumbnail(@PathVariable int pnumber, HttpServletResponse response) {
 		// 해당 게시물 가져오기
 		Property property = propertyService.getProperty(pnumber);
 		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드

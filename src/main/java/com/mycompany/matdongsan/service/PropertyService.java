@@ -258,6 +258,11 @@ public class PropertyService {
 	public void createPropertyReport(Report report) {
 		reportDao.createPropertyReport(report);
 	}
+	
+	// 유저 매물 리스트
+	public List<Property> getAllUserPropertyList(int unumber) {
+		return propertyDao.getUserPropertyListByUnumber(unumber);
+	}
 
 
 
