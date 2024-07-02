@@ -10,16 +10,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
-import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
-import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,6 +83,13 @@ public class HomeController {
 		memberService.getUserRole(authentication.getName(), isDeactivate);
 	}
 
+	//유저정보 불러오기
+	@GetMapping("/Mypage/MyInfomation/{uemail}")
+	public UserCommonData getUserDataByUemail(@PathVariable String uemail) {
+		log.info(uemail);
+		UserCommonData userData = memberService.getUserDataByUemail(uemail);
+		return userData;
+	}
 
 	
 }

@@ -17,7 +17,10 @@
 		select unumber from USER_COMMON_DATA where uemail =
 		#{uemail}
 	</select>
-
+	<select id="getUserDataByUser" parameterType="String" resultType="UserCommonData">
+	select * from USER_COMMON_DATA
+	where uemail = #{uemail}
+	</select>
 	<select id="selectByUnumber" parameterType="String"
 		resultType="UserCommonData">
 		select unumber, uemail, upassword, urole,

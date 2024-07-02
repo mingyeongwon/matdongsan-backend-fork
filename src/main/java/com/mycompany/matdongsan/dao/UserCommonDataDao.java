@@ -22,4 +22,6 @@ public interface UserCommonDataDao {
 
 	public String getUserRoleByUserName(String name);
 
+	public UserCommonData getUserDataByUser(String uemail);
+
 }

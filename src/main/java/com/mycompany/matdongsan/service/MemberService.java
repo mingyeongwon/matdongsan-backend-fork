@@ -46,4 +46,9 @@ public class MemberService {
 		return userNumber;
 	}
 
+	public UserCommonData getUserDataByUemail(String uemail) {
+		UserCommonData userData = userEmailDao.getUserDataByUser(uemail);
+		return userData;
+	}
+
 }
