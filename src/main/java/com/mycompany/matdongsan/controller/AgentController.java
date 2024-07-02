@@ -79,7 +79,7 @@ public class AgentController {
 	// agent관련 DTO를 만들어서 코드 바꿀것
 	@Transactional
 	@PostMapping("/Signup/AgentSignup")
-	public AgentSignupData createAgentAccount(@ModelAttribute AgentSignupData agentSignupData) throws IOException {
+	public void createAgentAccount(@ModelAttribute AgentSignupData agentSignupData) throws IOException {
 		// 객체 생성 및 데이터 설정
 		Agent agent = agentSignupData.getAgent();
 		AgentDetail agentDetail = agentSignupData.getAgentDetail();
@@ -118,7 +118,7 @@ public class AgentController {
 		userEmail.setUpassword(null);
 		agentDetail.setAdattachdata(null);
 		agent.setAprofiledata(null);
-		return agentSignupData;
+//		return agentSignupData;
 	}
 
 	// 부동산 상세 정보 조회
