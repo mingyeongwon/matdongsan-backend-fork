@@ -16,43 +16,45 @@ public class MemberService {
 	private MemberDao memberDao;
 	@Autowired
 	private UserCommonDataDao userEmailDao;
-	
+
 	public void joinUserByMember(UserCommonData userEmail) {
 		userEmailDao.insertUserDataByUser(userEmail);
 	}
-	
+
 	public void joinByMember(Member member) {
 		memberDao.insertMemberData(member);
 	}
+
 	public String getUserRole(String name) {
 		return userEmailDao.getUserRoleByUserName(name);
 	}
+
 	public void deleteAccount(String uemail, Boolean isDeactivate) {
 		userEmailDao.deleteUser(uemail, isDeactivate);
 	}
 
 	public int getMemberNumberByMemberEmail(String name) {
-		int userName=userEmailDao.getUserIdByUsername(name);
+		int userName = userEmailDao.getUserIdByUsername(name);
 		int memberNumber = memberDao.getMemberNumberByMemberEmail(userName);
 		return memberNumber;
-		
+
 	}
 
 	public Member getMemberDataFullyByUserNumber(int userNumber) {
 		Member member = memberDao.getMemberDataByUserNumber(userNumber);
 		return member;
 	}
-	
+
 	public int getUnumberByUemail(String userEmail) {
 		int userNumber = userEmailDao.getUserIdByUsername(userEmail); // userId = userNumber
 		return userNumber;
 	}
 
-<<<<<<< HEAD
 	public UserCommonData getUserDataByUemail(String uemail) {
 		UserCommonData userData = userEmailDao.getUserDataByUser(uemail);
 		return userData;
-=======
+	}
+
 	public UserCommonData getUserDataFullyByUemail(String uemail) {
 		return userEmailDao.getUserDataByUemail(uemail);
 	}
@@ -60,7 +62,6 @@ public class MemberService {
 	public boolean checkPassword(String currPw, String upassword) {
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		return passwordEncoder.matches(currPw, upassword);
->>>>>>> branch 'master' of https://github.com/mingyeongwon/matdongsan_back_end.git
 	}
 
 }
