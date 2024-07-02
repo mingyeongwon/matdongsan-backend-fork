@@ -50,8 +50,10 @@ public class MemberService {
 		return userNumber;
 	}
 
+	//map타입으로 리턴하도록 바꿔야함
 	public UserCommonData getUserDataByUemail(String uemail) {
 		UserCommonData userData = userEmailDao.getUserDataByUser(uemail);
+		
 		return userData;
 	}
 
