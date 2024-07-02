@@ -1,6 +1,8 @@
 package com.mycompany.matdongsan.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.MemberDao;
@@ -25,8 +27,8 @@ public class MemberService {
 	public String getUserRole(String name) {
 		return userEmailDao.getUserRoleByUserName(name);
 	}
-	public void getUserRole(String name,boolean isDeactivate) {
-		userEmailDao.getUserDataByUserName(name,isDeactivate);
+	public void deleteAccount(String uemail, Boolean isDeactivate) {
+		userEmailDao.deleteUser(uemail, isDeactivate);
 	}
 
 	public int getMemberNumberByMemberEmail(String name) {
@@ -44,6 +46,15 @@ public class MemberService {
 	public int getUnumberByUemail(String userEmail) {
 		int userNumber = userEmailDao.getUserIdByUsername(userEmail); // userId = userNumber
 		return userNumber;
+	}
+
+	public UserCommonData getUserDataFullyByUemail(String uemail) {
+		return userEmailDao.getUserDataByUemail(uemail);
+	}
+
+	public boolean checkPassword(String currPw, String upassword) {
+		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		return passwordEncoder.matches(currPw, upassword);
 	}
 
 }

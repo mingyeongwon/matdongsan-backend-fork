@@ -12,14 +12,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
-import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
-import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,12 +75,21 @@ public class HomeController {
 		log.info(map+"");
 		return map;
 	}
-
+	
 	// 탈퇴
 	@PutMapping("/MyPage/DeleteAccount")
-	public void activateAccount(Authentication authentication) {
-		boolean isDeactivate = true;
-		memberService.getUserRole(authentication.getName(), isDeactivate);
+	public void activateAccount(@RequestBody Map<String, String> payload, Authentication authentication) {
+		String currPw = payload.get("currPw");
+		log.info("탈퇴 currPw : " + currPw);
+		String uemail = authentication.getName();
+		log.info("탈퇴 uemail : " + uemail);
+		UserCommonData user = memberService.getUserDataFullyByUemail(uemail);
+		boolean isDeactivate = true; // 비활성화 여부
+		
+		// 비밀번호 일치 여부
+		if(memberService.checkPassword(currPw, user.getUpassword())) {
+			memberService.deleteAccount(uemail, isDeactivate);
+		}
 	}
 
 

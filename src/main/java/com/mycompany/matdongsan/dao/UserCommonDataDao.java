@@ -17,9 +17,13 @@ public interface UserCommonDataDao {
 	public UserCommonData selectByUnumber(String username);
 
 	public int getUserIdByUsername(String username);
-
-	public void getUserDataByUserName(String name,boolean isDeactivate);
+	
+	// 탈퇴
+	public void deleteUser(String uemail, Boolean isDeactivate);
 
 	public String getUserRoleByUserName(String name);
+	
+	// 전체 정보 가져오기
+	public UserCommonData getUserDataByUemail(String uemail);
 
 }

@@ -29,9 +29,19 @@
 		select urole from user_common_data
 		where uemail = #{name}
 	</select>
-	<update id="getUserDataByUserName" parameterType="map">
-		update user_common_data set
-		uremoved=#{isDeactivate}
-		where uemail=#{name}
+	
+	<!-- 탈퇴 -->
+	<update id="deleteUser" parameterType="map">
+		update user_common_data 
+		set uremoved=#{isDeactivate}
+		where uemail=#{uemail}
 	</update>
+	
+	<!-- 이메일로 전체 정보 가져오기 -->
+	<select id="getUserDataByUemail" parameterType="String"
+		resultType="UserCommonData">
+		select * 
+		from user_common_data 
+		where uemail = #{uemail}
+	</select>	
 </mapper>
