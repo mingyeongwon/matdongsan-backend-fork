@@ -97,7 +97,9 @@ public class HomeController {
 	@GetMapping("/Mypage/MyInfomation/{uemail}")
 	public UserCommonData getUserDataByUemail(@PathVariable String uemail) {
 		log.info(uemail);
+		Map<String,Object> map = new HashMap<>();
 		UserCommonData userData = memberService.getUserDataByUemail(uemail);
+		map.put("userData",userData);
 		return userData;
 	}
 

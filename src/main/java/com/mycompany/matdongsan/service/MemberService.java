@@ -1,5 +1,8 @@
 package com.mycompany.matdongsan.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,7 +56,6 @@ public class MemberService {
 	//map타입으로 리턴하도록 바꿔야함
 	public UserCommonData getUserDataByUemail(String uemail) {
 		UserCommonData userData = userEmailDao.getUserDataByUser(uemail);
-		
 		return userData;
 	}
 
