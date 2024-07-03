@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.Favorite;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
@@ -86,12 +85,15 @@ public class PropertyController {
 
 //	유저 매물 리스트
 	@GetMapping("/Mypage/ManageMyProperty")
-	public List<Property> getUserPropertyList(Authentication authentication) {
+	public List<Property> getUserPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+												Authentication authentication, HttpSession session) {
 		
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
 		
-		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber);
+		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
+		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 9, 5, "userPropertyList");
+		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
 		return userPropertyList;
 	}
 

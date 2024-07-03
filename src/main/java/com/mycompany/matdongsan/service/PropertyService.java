@@ -260,8 +260,13 @@ public class PropertyService {
 	}
 	
 	// 유저 매물 리스트
-	public List<Property> getAllUserPropertyList(int unumber) {
-		return propertyDao.getUserPropertyListByUnumber(unumber);
+	public List<Property> getAllUserPropertyList(int unumber, Pager pager) {
+		return propertyDao.getUserPropertyListByUnumber(unumber, pager);
+	}
+	
+	// 유저 매물 총 개수
+	public int getAllUserPropertyCount(int unumber) {
+		return propertyDao.getAllUserPropertyCountByUnumber(unumber);
 	}
 
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyListing;
 
@@ -42,7 +43,10 @@ public interface PropertyDao {
 	public int isPropertyOwnerByComment(@Param("pnumber") int pnumber, @Param("userNumber") int userNumber);
 	
 	// 유저 매물 리스트
-	public List<Property> getUserPropertyListByUnumber(int unumber);
+	public List<Property> getUserPropertyListByUnumber(int unumber, Pager pager);
+	
+	// 유저 매물 총 개수
+	public int getAllUserPropertyCountByUnumber(int unumber);
 
 
 
