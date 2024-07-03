@@ -138,12 +138,18 @@ public class AgentController {
 		// 중개인 리뷰정보
 		int totalRows = agentService.getTotalReviews(anumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
-		log.info(pager.toString());
 		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber, sort, pager);
+		
+		for (AgentReview agentReview : agentReviewList) {
+			String memberName = memberService.getUserEmailByMemberNumber(agentReview.getArMnumber());
+			agentReview.setMembername(memberName);
+		}
+		log.info(agentReviewList.toString());
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
 		map.put("agentReviewList", agentReviewList);
+	
 		return map;
 	}
 
@@ -158,6 +164,7 @@ public class AgentController {
 		int userNumber = agentService.getUserIdByUserName(userName);
 		String userRole = memberService.getUserRole(userName);
 		Map<String, Object> map = new HashMap<>();
+		map.put("userRole",userRole);
 		// 일반 유저일 경우
 		if (userRole.equals("MEMBER")) {
 			Member member = memberService.getMemberDataFullyByUserNumber(userNumber);

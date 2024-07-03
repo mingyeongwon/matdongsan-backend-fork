@@ -12,5 +12,6 @@ public class AgentReview {
    private Date ardate;
    private int arAnumber;
    private int arMnumber;
+   private String membername;
 }
 

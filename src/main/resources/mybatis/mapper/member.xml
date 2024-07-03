@@ -13,7 +13,12 @@
 		#{mphone}, #{mprofileoname}, #{mprofiledata}, #{mprofiletype},
 		#{mUnumber})
 	</insert>
-
+	<select id="getMemberDataByMemberNumber" parameterType="int" resultType="Member">
+	select * from member where mnumber = #{mnumber}
+	</select>
+	<select id="getMemberNameByarMnumber" parameterType="int" resultType="String">
+		select mname from member where mnumber = #{arMnumber}
+	</select>
 	<select id="getMemberNumberByMemberEmail" parameterType="int"
 		resultType="int">
 		select mnumber from member

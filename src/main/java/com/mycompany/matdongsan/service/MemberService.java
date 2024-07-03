@@ -68,4 +68,15 @@ public class MemberService {
 		return passwordEncoder.matches(currPw, upassword);
 	}
 
+	public String getUserEmailByMemberNumber(int arMnumber) {
+		String memberName= memberDao.getMemberNameByarMnumber(arMnumber);
+		return memberName;
+		
+	}
+
+	public Member getMemberDataByMemberNumber(int mnumber) {
+		Member member = memberDao.getMemberDataByMemberNumber(mnumber);
+		return member;
+	}
+
 }

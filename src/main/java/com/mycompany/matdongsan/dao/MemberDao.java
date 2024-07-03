@@ -16,4 +16,8 @@ public interface MemberDao {
 
 	public Member getMemberDataByUserNumber(int userNumber);
 
+	public String getMemberNameByarMnumber(int arMnumber);
+
+	public Member getMemberDataByMemberNumber(int mnumber);
+
 }
