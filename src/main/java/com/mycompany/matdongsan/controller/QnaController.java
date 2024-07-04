@@ -224,26 +224,16 @@ public class QnaController {
 			
 			// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
 			Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "customerInquiry");
-			
+			log.info("컨트롤러 pageNo: "+pageNo.toString());
 			// 해당 페이지의 게시물 목록 가져오기
 			List<Question> list = qnaService.getQuestionList(pager);
 			
 			// 여러 객체를 리턴하기 위해 Map 객체 생성		
 			Map<String, Object> map = new HashMap<>();
-			
-//			// list가 Question 객체의 리스트라고 가정
-//			int[] hasAnswer = new int[list.size()];
-	//
-//			// 리스트 순회하여 hasAnswer 배열에 결과 저장
-//			for (int i = 0; i < list.size(); i++) {
-//			    Question item = list.get(i);
-//			    hasAnswer[i] = qnaService.hasAnswer(item.getQnumber());
-//			}
-			
+						
 			// map에 데이터 넣기
 			map.put("question", list);
 			map.put("pager", pager);
-//			map.put("hasAnswer", hasAnswer);
 			
 			return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
 //		} return "관리자 권한이 없습니다.";

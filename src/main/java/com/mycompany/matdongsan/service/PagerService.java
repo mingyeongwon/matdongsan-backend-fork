@@ -19,7 +19,7 @@ public class PagerService {
 
 		Pager pager = (Pager) session.getAttribute(sessionAttributeKey);
 		if (pager == null) {
-			pager = new Pager(rowsPerPage, pagesPerGroup, totalRows, 1); // 페이지 번호를 1로 초기화
+			pager = new Pager(rowsPerPage, pagesPerGroup, totalRows, Integer.parseInt(pageNo)); // 페이지 번호를 1로 초기화
 			session.setAttribute(sessionAttributeKey, pager);
 			return pager;// 세션에 페이저 객체 저장
 		}
