@@ -111,10 +111,12 @@ public class PropertyController {
 		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 9, 5, "propertyComment");
 		List<UserComment> propertyCommentList = propertyService.getCommentByPnumber(pnumber, date, pager);
+		List<Integer> ppnumbers = propertyService.getPpnumbers(pnumber); // pk 값 가져오기
 		
 		Map<String, Object> propertyMap = new HashMap<>();
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
+		propertyMap.put("ppnumbers", ppnumbers);
 		
 		return propertyMap;
 	}
@@ -460,6 +462,31 @@ public class PropertyController {
 			log.error(e.toString());
 		}
 
+	}
+	
+	
+//	매물 디테일 사진 다운로드
+	@GetMapping("/detailPattach/{ppnumber}")
+	public PropertyPhoto downloadPropertyDetailPattach(@PathVariable int ppnumber, HttpServletResponse response) {
+		
+		// 해당 게시물 가져오기
+		PropertyPhoto propertyPhoto = propertyService.getPropertyPhoto(ppnumber);
+		
+		// 파일 이름이 한글이면, 브라우저에서 한글 이름으로 다운받기 위한 코드
+		try {
+			String fileName = new String(propertyPhoto.getPpattachoname().getBytes("UTF-8"), "ISO-8859-1");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+			// 파일 타입을 헤더에 추가
+			response.setContentType(propertyPhoto.getPpattachtype());
+			// 응답 바디에 파일 데이터를 출력
+			OutputStream os = response.getOutputStream();
+			os.write(propertyPhoto.getPpattachdata());
+			os.flush();
+			os.close();
+		} catch (IOException e) {
+			log.error(e.toString());
+		}
+		return propertyPhoto;
 	}
 	
 

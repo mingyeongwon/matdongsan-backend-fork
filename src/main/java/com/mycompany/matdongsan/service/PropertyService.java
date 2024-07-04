@@ -273,8 +273,6 @@ public class PropertyService {
 	public List<Property> getPopularPropertyList() {
 		return propertyDao.getPopularPropertyListByHitcount();
 	}
-
-
-
+	
 
 }
