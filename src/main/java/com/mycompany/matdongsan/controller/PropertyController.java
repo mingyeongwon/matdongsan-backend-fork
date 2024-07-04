@@ -466,8 +466,8 @@ public class PropertyController {
 //	메인페이지 인기 상품	
 	@GetMapping("/popularProperty")
 	public List<Property> getPopularProperty() {
-		
 		List<Property> popularPropertyList = propertyService.getPopularPropertyList();
+		log.info("인기 매물" + popularPropertyList);
 		return popularPropertyList;
 	}
 }
