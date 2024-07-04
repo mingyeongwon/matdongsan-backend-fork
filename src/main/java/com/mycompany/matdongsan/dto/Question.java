@@ -17,6 +17,7 @@ public class Question {
    private String qattachtype;
    private Date qdate;
    private int qUnumber;
+   private int qIsAnswer;
    
    private MultipartFile qattach;
 }

@@ -87,7 +87,7 @@ public class QnaController {
 	// 고객 문의 사항 디테일 읽기 
 	//@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/ReadCustomerInquiry")
-	public String readQuestionAdmin(int qnumber, int qUnumber, Authentication authentication) {
+	public String readQuestion(int qnumber, int qUnumber, Authentication authentication) {
 		// 매개변수에 qnumber와 qUnumber는 일단 받아와야 함
 		
 		// 로그인 여부 확인
@@ -208,6 +208,7 @@ public class QnaController {
 		// map에 데이터 넣기
 		map.put("question", list);
 		map.put("pager", pager);
+
 		
 		return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
 	}
@@ -215,9 +216,9 @@ public class QnaController {
 	// getList - all
 	// 고객 문의 사항 리스트 전부 가져오기(전체 문의 사항 - 관리자페이지)
 	@GetMapping("/CustomerInquiryList")
-	public String CustomerInquiryList(@RequestParam(defaultValue = "1") String pageNo, HttpSession session, Authentication authentication){
+	public Map<String, Object> CustomerInquiryList(@RequestParam(defaultValue = "1") String pageNo, HttpSession session, Authentication authentication){
 		// 유저 정보가 admin이면 리스트 가져오기
-		if(memberService.getUserRole(authentication.getName()).equals("ADMIN")) {
+//		if(memberService.getUserRole(authentication.getName()).equals("ADMIN")) {
 			// 공지사항 갯수
 			int totalRows = qnaService.getQuestionCount(); 
 			
@@ -230,15 +231,24 @@ public class QnaController {
 			// 여러 객체를 리턴하기 위해 Map 객체 생성		
 			Map<String, Object> map = new HashMap<>();
 			
+//			// list가 Question 객체의 리스트라고 가정
+//			int[] hasAnswer = new int[list.size()];
+	//
+//			// 리스트 순회하여 hasAnswer 배열에 결과 저장
+//			for (int i = 0; i < list.size(); i++) {
+//			    Question item = list.get(i);
+//			    hasAnswer[i] = qnaService.hasAnswer(item.getQnumber());
+//			}
+			
 			// map에 데이터 넣기
 			map.put("question", list);
 			map.put("pager", pager);
+//			map.put("hasAnswer", hasAnswer);
 			
-			return map.toString(); // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
-		} return "관리자 권한이 없습니다.";
+			return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
+//		} return "관리자 권한이 없습니다.";
 	}
-	
-	
+
 	
 //	-------------------------------------------------------------------------------------------------------------------------------------
 	// Answer 문의사항 답변
@@ -247,6 +257,7 @@ public class QnaController {
 	@PostMapping("/AdminInquiryAnswer")
 	public Answer createAnswer(Answer answer) {
 		qnaService.insertAnswer(answer);
+		qnaService.insertIsAnswer(answer.getAQnumber()); // 답변을 생성하면 question 테이블에 답변 여부를 넣어준다.
 		return answer;
 	}
 	
@@ -266,7 +277,8 @@ public class QnaController {
 	
 	// 문의 답변 삭제
 	@DeleteMapping("/AdminInquiryAnswerDelete")
-	public int deleteAnswer(int anumber) {
+	public int deleteAnswer(int anumber, int qnumber) {
+		qnaService.updateRemoveAnswer(qnumber);
 		return qnaService.deleteAnswer(anumber);
 	}
 	

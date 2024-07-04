@@ -20,5 +20,6 @@ public interface QuestionDao {
 	public List<Question> getUsersQuestionList(Map<String, Object> usersQuestion);
 	public int getQuestionCount();
 	public List<Question> getQuestionList(Pager pager);
-	
+	public int insertIsAnswer(int qnumber);
+	public int updateRemoveAnswer(int qnumber);
 }

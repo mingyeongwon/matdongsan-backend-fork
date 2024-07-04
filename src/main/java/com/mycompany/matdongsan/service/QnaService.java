@@ -93,6 +93,15 @@ public class QnaService {
 		return answerDao.deleteAnswer(anumber);
 	}
 	
+	// 문의 답변을 하면 q_isAnswer에 1을 넣기
+	public int insertIsAnswer(int qnumber) {
+		return questionDao.insertIsAnswer(qnumber);
+	}
+	
+	// 문의 답변을 지우면 q_isanswer값 지우기
+	public int updateRemoveAnswer(int qnumber) {
+		return questionDao.updateRemoveAnswer(qnumber);
+	}
 	
 	// Notice 공지 사항---------------------//////////////////////////////////////////////////////////////////////
 	

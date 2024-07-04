@@ -18,14 +18,14 @@
 	<!-- 이미지 데이터는 빼고 가져 온다. -->
 	<select id="getQuestionByQUnumbers" parameterType="map" resultType="question">
 		select qnumber, qcategory, qtitle, qcontent, qattachoname,  
-			qattachtype, qdate, q_unumber 
+			qattachtype, qdate, q_unumber, q_isanswer as qIsAnswer
 		from question
 		where qnumber = #{qnumber} and q_unumber = #{ qUnumber }
 	</select>
 	
 	<select id="getQuestionByQnumber" parameterType="int" resultType="question">
 		select qnumber, qcategory, qtitle, qcontent, qattachoname,  
-			qattachtype, qdate, q_unumber 
+			qattachtype, qdate, q_unumber, q_isanswer as qIsAnswer
 		from question
 		where qnumber = #{qnumber}
 	</select>
@@ -56,11 +56,11 @@
 	<!-- 해당하는 회원의 문의 리스트 가져오기 -->
 	<select id="getUsersQuestionList" parameterType="Map" resultType="question">
 		<![CDATA[
-		select rnum, qtitle, qdate, qnumber, q_unumber
+		select rnum, qtitle, qdate, qnumber, q_unumber, qcontent, qIsAnswer
 		from(
-			select rownum as rnum, qtitle, qdate, qnumber, q_unumber
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber, qcontent,qIsAnswer
 			from(
-				select qtitle, qdate, qnumber, q_unumber
+				select qtitle, qdate, qnumber, q_unumber, qcontent , q_isanswer as qIsAnswer
 				from question
 				where q_unumber = #{qUnumber}
 				order by qdate desc
@@ -80,11 +80,11 @@
 	<!-- 문의 리스트 가져오기 -->
 	<select id="getQuestionList" parameterType="pager" resultType="question">
 		<![CDATA[
-		select rnum, qtitle, qdate, qnumber, q_unumber
+		select rnum, qtitle, qdate, qnumber, q_unumber, qIsAnswer
 		from(
-			select rownum as rnum, qtitle, qdate, qnumber, q_unumber
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber,qIsAnswer
 			from(
-				select qtitle, qdate, qnumber, q_unumber
+				select qtitle, qdate, qnumber, q_unumber, q_isanswer as qIsAnswer
 				from question
 				order by qdate desc
 				)
@@ -93,4 +93,14 @@
 		where rnum >= #{startRowNo}
 		]]>
 	</select>
+	
+	<!-- 고객 문의에 답변이 되었다는 값 넣기 -->
+	<update id="insertIsAnswer" parameterType="int">
+		update question set q_isanswer = 1 where qnumber = #{qnumber}
+	</update>
+	
+	<!-- 고객 문의에 답변을 삭제하면 답변이 되었다는 값을 없애기 -->
+	<update id="updateRemoveAnswer" parameterType="int">
+		update question set q_isanswer = null where qnumber = #{qnumber}
+	</update>
 </mapper>
