@@ -71,7 +71,9 @@ public class HomeController {
 				
 				log.info("유저넘버: "+agentService.getAgentNumberByUserNumber(userNum)+"");
 				map.put("userRoleNumber",agentService.getAgentNumberByUserNumber(userNum)+"");
-			}else {
+			}else if(userRole.equals("MEMBER")) {
+				log.info("멤버입니다.");
+				log.info(memberService.getMemberNumberByMemberEmail(uemail)+"");
 				map.put("userRoleNumber", memberService.getMemberNumberByMemberEmail(uemail)+"");
 			}
 			// JSON 응답

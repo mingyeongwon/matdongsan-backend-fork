@@ -43,9 +43,9 @@
 		agent_review
 		where arnumber=#{arnumber}
 		and ar_anumber = #{anumber}
-		and
-		ar_mnumber = #{userNumber}
+		and ar_mnumber = #{userNumber}
 	</delete>
+	
 	<update id="updateAgentReview" parameterType="AgentReview">
 		update agent_review
 		set

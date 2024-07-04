@@ -13,7 +13,7 @@ public interface AgentReviewDao {
 
 	void createAgentReviewByMember(AgentReview agentReview);
 
-	void deleteAgentReview(int arnumber, int anumber, int userNumber);
+	void deleteAgentReview(int anumber, int arnumber, int userNumber);
 
 	List<AgentReview> getAgentReviewByAnumber(@Param("anumber") int anumber, String sort,@Param("pager") Pager pager);
 

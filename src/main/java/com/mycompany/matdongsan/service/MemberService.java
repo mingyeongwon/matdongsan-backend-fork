@@ -13,6 +13,9 @@ import com.mycompany.matdongsan.dao.UserCommonDataDao;
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class MemberService {
 	@Autowired
@@ -37,8 +40,9 @@ public class MemberService {
 	}
 
 	public int getMemberNumberByMemberEmail(String name) {
-		int userName = userEmailDao.getUserIdByUsername(name);
-		int memberNumber = memberDao.getMemberNumberByMemberEmail(userName);
+		int userNumber = userEmailDao.getUserIdByUsername(name);
+		log.info(userNumber+"");
+		int memberNumber = memberDao.getMemberNumberByMemberEmail(userNumber);
 		return memberNumber;
 
 	}

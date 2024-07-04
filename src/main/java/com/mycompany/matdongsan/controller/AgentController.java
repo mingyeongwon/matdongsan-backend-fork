@@ -250,9 +250,9 @@ public class AgentController {
 	@DeleteMapping("/Agent/{anumber}/{arnumber}")
 	public void deleteAgentReview(@PathVariable int anumber, @PathVariable int arnumber,
 			Authentication authentication) {
+		log.info("댓글 삭제실행");
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getMemberNumberByMemberEmail(userEmail);
-
 		// 리뷰글번호,중개인번호,유저번호로 글 삭제
 		agentService.deleteAgentReview(anumber, arnumber, userNumber);
 	}
