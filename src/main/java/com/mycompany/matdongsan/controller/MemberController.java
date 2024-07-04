@@ -90,6 +90,8 @@ public class MemberController {
 	//일반 유저 프로필 사진
 	@GetMapping("/mattach/{mnumber}")
 	public void downloadAgentProfile(@PathVariable int mnumber, HttpServletResponse response) {
+		
+		log.info("백엔드 사진 실행");
 		// 해당 게시물 가져오기
 		Member memeber = memberService.getMemberDataByMemberNumber(mnumber);
 		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
