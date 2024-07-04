@@ -15,7 +15,10 @@
 		(#{anumber},#{aname}, #{abrand}, #{aphone}, #{aaddress},
 		#{aprofiledata},#{aprofileoname},#{aprofiletype},#{alatitude},#{alongitude},#{apostcode},#{aaddressdetail},#{aUnumber})
 	</insert>
-
+	<select id="getAgentNumberByUserNumber" parameterType="int" resultType="int">
+	select anumber from agent
+	where a_unumber = #{userNumber}
+	</select>
 	<!-- 전체 중개인 수 -->
 	<select id="getAllAgentCount" resultType="int">
 		select
