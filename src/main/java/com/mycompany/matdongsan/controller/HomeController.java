@@ -20,6 +20,7 @@ import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
+import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class HomeController {
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private AgentService agentService;
 	@Autowired
 	private JwtProvider jwtProvider;
 	@Autowired
@@ -62,9 +65,19 @@ public class HomeController {
 		if (checkResult && !checkActivation) {
 			// AccessToken을 생성
 			String accessToken = jwtProvider.createAccessToken(uemail, userDetails.getUser().getUrole());
+			String userRole = memberService.getUserRole(uemail);
+			if(userRole.equals("AGENT")) {
+				int userNum = agentService.getUserIdByUserName(uemail);
+				
+				log.info("유저넘버: "+agentService.getAgentNumberByUserNumber(userNum)+"");
+				map.put("userRoleNumber",agentService.getAgentNumberByUserNumber(userNum)+"");
+			}else {
+				map.put("userRoleNumber", memberService.getMemberNumberByMemberEmail(uemail)+"");
+			}
 			// JSON 응답
 			map.put("result", "success");
 			map.put("uemail", uemail);
+			map.put("userRole", userRole);
 			map.put("accessToken", accessToken);
 
 		} else if (checkActivation) { // 비활성화(삭제된) 유저의 경우 removed라고 map에 값을 넣음

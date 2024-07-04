@@ -90,8 +90,7 @@ public class AgentService {
 	}
 
 	public int getAgentNumberByUserNumber(int userNum) {
-		// TODO Auto-generated method stub
-		return agentDao.getAgentDataByUserNumber(userNum).getAnumber();
+		return agentDao.getAgentNumberByUserNumber(userNum);
 	}
 
 	public Agent getAgentDataByUserNumber(int anumber) {

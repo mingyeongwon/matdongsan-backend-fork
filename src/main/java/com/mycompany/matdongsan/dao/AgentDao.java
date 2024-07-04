@@ -17,8 +17,8 @@ public interface AgentDao {
 	void insertNewAgentData(Agent agent);
 	void joinByAgent(Agent agent);
 	int getAllAgentCount();
+	int getAgentNumberByUserNumber(int userNumber);
 	Agent getAgentDataByUserNumber(int userNumber);
 	Agent getAgentDataByAgentNumber(int agentNumber);
 	void updateAgentData(Agent agent);
-
 }
