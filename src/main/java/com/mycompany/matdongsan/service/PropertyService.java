@@ -163,8 +163,8 @@ public class PropertyService {
 	}
 	
 	// 읽기 - propertyDetail
-	public PropertyPhoto getPropertyPhotoByPpPnumber(int pnumber) {
-		PropertyPhoto propertyPhoto = propertyPhotoDao.selectPropertyPhotoByPpPnumber(pnumber);
+	public List<PropertyPhoto> getPropertyPhotoByPpPnumber(int pnumber) {
+		List<PropertyPhoto> propertyPhoto = propertyPhotoDao.selectPropertyPhotoByPpPnumber(pnumber);
 		return propertyPhoto;
 	}
 	

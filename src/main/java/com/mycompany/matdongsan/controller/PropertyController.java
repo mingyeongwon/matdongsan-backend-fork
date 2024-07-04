@@ -105,7 +105,9 @@ public class PropertyController {
 		// property 정보
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
-		totalProperty.setPropertyPhoto(propertyService.getPropertyPhotoByPpPnumber(pnumber));
+		
+		// photos는 여러 개라서 따로 리스트 설정 
+		List<PropertyPhoto> propertyPhotos = propertyService.getPropertyPhotoByPpPnumber(pnumber);
 		
 		// property Comment
 		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
@@ -117,7 +119,8 @@ public class PropertyController {
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
 		propertyMap.put("ppnumbers", ppnumbers);
-		
+		propertyMap.put("propertyPhotos", propertyPhotos);
+		log.info(""+totalProperty);
 		return propertyMap;
 	}
 	
