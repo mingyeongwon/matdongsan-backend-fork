@@ -260,7 +260,6 @@ public class PropertyController {
 	@Transactional
 	@DeleteMapping("/deleteProperty/{pnumber}")
 	public void deleteProperty(@PathVariable int pnumber) {
-
 		propertyService.deleteProperty(pnumber);
 	}
 
@@ -440,7 +439,7 @@ public class PropertyController {
 		}
 	}
 	
-	//매물 썸네일 사진 다운로드
+//	매물 썸네일 사진 다운로드
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/pattach/{pnumber}")
 	public void downloadPropertyThumbnail(@PathVariable int pnumber, HttpServletResponse response) {
@@ -461,5 +460,14 @@ public class PropertyController {
 			log.error(e.toString());
 		}
 
+	}
+	
+
+//	메인페이지 인기 상품	
+	@GetMapping("/popularProperty")
+	public List<Property> getPopularProperty() {
+		
+		List<Property> popularPropertyList = propertyService.getPopularPropertyList();
+		return popularPropertyList;
 	}
 }

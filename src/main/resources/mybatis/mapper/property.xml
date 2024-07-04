@@ -158,10 +158,24 @@
 	</select> 
    
    <!-- 유저 매물 총 개수 -->
-   <select id="getAllUserPropertyCountByUnumber" resultType="int">
+   <select id="getPopularPropertyListByHitcount" resultType="int">
       select 
       	count(*) 
       from property
       where p_unumber=#{unumber}
-   </select>      	
+   </select>
+   
+   <!-- 인기 매물 -->
+	<select id="selectProductListRandomly" resultType="Property">
+	<![CDATA[
+		select * 
+		from (
+				select * 
+				from property 
+				order by hitcount
+				where pstatus=거래완료
+		)
+		where rownum <= 4
+	]]>
+	</select>         	
 </mapper>

@@ -47,6 +47,9 @@ public interface PropertyDao {
 	
 	// 유저 매물 총 개수
 	public int getAllUserPropertyCountByUnumber(int unumber);
+	
+	// 인기 매물
+	public List<Property> getPopularPropertyListByHitcount();
 
 
 

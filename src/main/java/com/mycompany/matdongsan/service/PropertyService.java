@@ -268,6 +268,11 @@ public class PropertyService {
 	public int getAllUserPropertyCount(int unumber) {
 		return propertyDao.getAllUserPropertyCountByUnumber(unumber);
 	}
+	
+	// 인기있는 매물 
+	public List<Property> getPopularPropertyList() {
+		return propertyDao.getPopularPropertyListByHitcount();
+	}
 
 
 
