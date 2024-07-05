@@ -501,4 +501,13 @@ public class PropertyController {
 		log.info("인기 매물" + popularPropertyList);
 		return popularPropertyList;
 	}
+	//구매내역이 존재한다면 true 아니면 false
+	@GetMapping("/paymentHistory")
+	public boolean checkPaymentHistory(Authentication authentication) {
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+		boolean hasHistory=false;
+		hasHistory=propertyService.checkPropertyListingHistory(userNumber);
+		return hasHistory;
+	}
 }

@@ -36,7 +36,6 @@ public class HomeController {
 	private JwtProvider jwtProvider;
 	@Autowired
 	private AppUserDetailsService userDetailsService;
-
 	@GetMapping("/")
 	public String home() {
 		log.info("실행");
@@ -66,15 +65,15 @@ public class HomeController {
 			// AccessToken을 생성
 			String accessToken = jwtProvider.createAccessToken(uemail, userDetails.getUser().getUrole());
 			String userRole = memberService.getUserRole(uemail);
-			if(userRole.equals("AGENT")) {
+			if (userRole.equals("AGENT")) {
 				int userNum = agentService.getUserIdByUserName(uemail);
-				
-				log.info("유저넘버: "+agentService.getAgentNumberByUserNumber(userNum)+"");
-				map.put("userRoleNumber",agentService.getAgentNumberByUserNumber(userNum)+"");
-			}else if(userRole.equals("MEMBER")) {
+
+				log.info("유저넘버: " + agentService.getAgentNumberByUserNumber(userNum) + "");
+				map.put("userRoleNumber", agentService.getAgentNumberByUserNumber(userNum) + "");
+			} else if (userRole.equals("MEMBER")) {
 				log.info("멤버입니다.");
-				log.info(memberService.getMemberNumberByMemberEmail(uemail)+"");
-				map.put("userRoleNumber", memberService.getMemberNumberByMemberEmail(uemail)+"");
+				log.info(memberService.getMemberNumberByMemberEmail(uemail) + "");
+				map.put("userRoleNumber", memberService.getMemberNumberByMemberEmail(uemail) + "");
 			}
 			// JSON 응답
 			map.put("result", "success");
@@ -88,10 +87,10 @@ public class HomeController {
 		} else { // 로그인에 실패한 경우(비밀번호, 아이디 문제) fail 표시
 			map.put("result", "fail");
 		}
-		log.info(map+"");
+		log.info(map + "");
 		return map;
 	}
-	
+
 	// 탈퇴
 	@PutMapping("/MyPage/DeleteAccount")
 	public void activateAccount(@RequestBody Map<String, String> payload, Authentication authentication) {
@@ -101,22 +100,21 @@ public class HomeController {
 		log.info("탈퇴 uemail : " + uemail);
 		UserCommonData user = memberService.getUserDataFullyByUemail(uemail);
 		boolean isDeactivate = true; // 비활성화 여부
-		
+
 		// 비밀번호 일치 여부
-		if(memberService.checkPassword(currPw, user.getUpassword())) {
+		if (memberService.checkPassword(currPw, user.getUpassword())) {
 			memberService.deleteAccount(uemail, isDeactivate);
 		}
 	}
 
-	//유저정보 불러오기
+	// 유저정보 불러오기
 	@GetMapping("/Mypage/MyInfomation/{uemail}")
 	public UserCommonData getUserDataByUemail(@PathVariable String uemail) {
 		log.info(uemail);
-		Map<String,Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		UserCommonData userData = memberService.getUserDataByUemail(uemail);
-		map.put("userData",userData);
+		map.put("userData", userData);
 		return userData;
 	}
 
-	
 }

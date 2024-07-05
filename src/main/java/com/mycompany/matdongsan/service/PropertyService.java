@@ -273,6 +273,10 @@ public class PropertyService {
 	public List<Property> getPopularPropertyList() {
 		return propertyDao.getPopularPropertyListByHitcount();
 	}
+
+	public boolean checkPropertyListingHistory(int userNumber) {
+		return propertyListingDao.checkUserDataInPropertyListing(userNumber)>0? true: false;
+	}
 	
 
 }
