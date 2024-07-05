@@ -396,16 +396,19 @@ public class PropertyController {
 	
 
 //	매물 신고
-	@PostMapping("/Property/{pnumber}/report")
+	@PostMapping("/createPropertyReport/{pnumber}")
 	public Report createPropertyReport(@PathVariable int pnumber, @ModelAttribute Report report,
 			Authentication authentication) {
-
+		
+		log.info("report : " + report.toString());
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
 		report.setRPnumber(pnumber);
 		report.setRUnumber(userNumber);
 		
+		log.info("매물 신고 실행 중 : " + report.getRcontent());
 		propertyService.createPropertyReport(report);
+		
 		return report;
 	}
 

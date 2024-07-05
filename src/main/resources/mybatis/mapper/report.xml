@@ -7,7 +7,6 @@
 			select seq_rnumber.nextval from dual
 		</selectKey>	
 		insert into report (rnumber, rcontent, rdate, r_pnumber, r_unumber)
-		
 		values(#{rnumber}, #{rcontent}, sysdate, #{rPnumber}, #{rUnumber})
 	</insert>	
 </mapper>
