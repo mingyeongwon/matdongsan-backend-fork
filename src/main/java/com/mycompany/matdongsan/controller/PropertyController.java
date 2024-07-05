@@ -113,12 +113,10 @@ public class PropertyController {
 		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 9, 5, "propertyComment");
 		List<UserComment> propertyCommentList = propertyService.getCommentByPnumber(pnumber, date, pager);
-		List<Integer> ppnumbers = propertyService.getPpnumbers(pnumber); // pk 값 가져오기
 		
 		Map<String, Object> propertyMap = new HashMap<>();
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
-		propertyMap.put("ppnumbers", ppnumbers);
 		propertyMap.put("propertyPhotos", propertyPhotos);
 		log.info(""+totalProperty);
 		return propertyMap;
