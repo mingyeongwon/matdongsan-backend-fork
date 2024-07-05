@@ -278,5 +278,15 @@ public class PropertyService {
 		return propertyListingDao.checkUserDataInPropertyListing(userNumber)>0? true: false;
 	}
 	
+	// 유저 허위 신고 총 개수
+	public int getAllUserReportCount(int unumber) {
+		return reportDao.getAllUserReportCountByUnumber(unumber);
+	}
+	
+	// 유저 허위 매물 리스트
+	public List<Report> getAllUserReportList(int unumber, Pager pager) {
+		return reportDao.getUserReportListByUnumber(unumber, pager);
+	}
+	
 
 }

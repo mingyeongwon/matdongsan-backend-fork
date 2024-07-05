@@ -9,4 +9,31 @@
 		insert into report (rnumber, rcontent, rdate, r_pnumber, r_unumber)
 		values(#{rnumber}, #{rcontent}, sysdate, #{rPnumber}, #{rUnumber})
 	</insert>	
+	
+   <!-- 유저 허위 신고 총 개수 -->
+   <select id="getAllUserReportCountByUnumber" resultType="int">
+      select 
+      	count(*) 
+      from report
+      where r_unumber=#{unumber}
+   </select>	
+   
+   	<!-- 유저 매물 리스트 -->
+	<select id="getUserReportListByUnumber" parameterType="Pager"
+		resultType="Report">
+		<![CDATA[
+		select rnum, rnumber, rcontent, rdate, r_pnumber, r_unumber
+		from (
+				select rownum as rnum, rnumber, rcontent, rdate, r_pnumber, r_unumber
+		from(
+			select rnumber, rcontent, rdate, r_pnumber, r_unumber
+			from report
+			where r_unumber=#{unumber}
+			order by rnumber
+		)
+		where rownum <= #{pager.endRowNo}
+		)
+		where rnum >= #{pager.startRowNo}
+		]]>
+	</select>    
 </mapper>

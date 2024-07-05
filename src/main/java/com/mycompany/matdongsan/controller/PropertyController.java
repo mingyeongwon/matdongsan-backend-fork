@@ -411,6 +411,21 @@ public class PropertyController {
 		
 		return report;
 	}
+	
+	
+//	유저 매물 신고 리스트
+	@GetMapping("/Mypage/ReportFalseListing")
+	public List<Report> getUserReportList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+												Authentication authentication, HttpSession session) {
+		
+		String uemail = authentication.getName();
+		int unumber = memberService.getUnumberByUemail(uemail);
+		
+		int totalUserReportRows = propertyService.getAllUserReportCount(unumber);
+		Pager pager = pagerService.preparePager(session, pageNo, totalUserReportRows, 9, 5, "userReportList");
+		List<Report> userReportList = propertyService.getAllUserReportList(unumber, pager);
+		return userReportList;
+	}
 
 	
 //	등록권 구매

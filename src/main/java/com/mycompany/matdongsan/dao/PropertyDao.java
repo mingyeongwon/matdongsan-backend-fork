@@ -50,6 +50,7 @@ public interface PropertyDao {
 	
 	// 인기 매물
 	public List<Property> getPopularPropertyListByHitcount();
+	
 
 
 
