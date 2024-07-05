@@ -1,25 +1,26 @@
 package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mycompany.matdongsan.dao.QuestionDao;
 import com.mycompany.matdongsan.dto.Answer;
 import com.mycompany.matdongsan.dto.Notice;
 import com.mycompany.matdongsan.dto.Pager;
@@ -29,8 +30,6 @@ import com.mycompany.matdongsan.service.PagerService;
 import com.mycompany.matdongsan.service.QnaService;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -50,7 +49,8 @@ public class QnaController {
 	// 고객 문의 생성
 	//@PreAuthorize("hasAuthority('ROLE_USER')")
 	@PostMapping("/CustomerInquiryForm")
-	public String createQuestion(Question question, Authentication authentication) {
+	public Question createQuestion(Question question, Authentication authentication) {
+		
 		// 로그인 정보가 있는 사람만 작성 가능
 		if(!authentication.getName().equals("")) {
 			if(question.getQattach() != null && !question.getQattach().isEmpty()) {
@@ -78,55 +78,47 @@ public class QnaController {
 			// json 반환할 때 json으로 변환할 수 없는 multipartfile이나 byte배열같은 타입은 빼야 한다.
 			question.setQattach(null);
 			question.setQattachdata(null);
-			return question.toString();
+			return question;
 		}
-		return "로그인 정보가 없습니다.";
+		return question;
 	}
 	
 	// Read
 	// 고객 문의 사항 디테일 읽기 
 	//@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/ReadCustomerInquiry")
-	public String readQuestion(int qnumber, int qUnumber, Authentication authentication) {
-		// 매개변수에 qnumber와 qUnumber는 일단 받아와야 함
+	public Question readQuestion(int qnumber, @RequestParam(required = false) int qUnumber, Authentication authentication) {
+		// 매개변수에 qUnumber는 문의 작성자이다.
+		Question question = new Question();
 		
 		// 로그인 여부 확인
 		if(authentication.getName() == null || authentication.getName() == "") {
 			log.info("로그인 정보가 없습니다.");
-			return "로그인 정보가 없습니다."; // 
+			return question; // 비어있는 객체
+		}else {
+			// 로그인 정보가 있다면
+			// admin 권한 확인
+			if(memberService.getUserRole(authentication.getName()).equals("ADMIN")){
+				log.info("ADMIN 권한 입니다.");
+				// admin의 경우 qnumber만으로 게시물을 읽을 수 있다.
+				question = qnaService.getQuestionByQnumber(qnumber);
+				return question;
+				
+			// Role이 관리자가 아니면서 고객문의를 요청한 사용자와 문의를 작성한 사용자가 같을 경우에 
+			// qUnumber와 qnumber 모두를 가지고 고객 문의 정보를 가져온다.
+			} else if(qUnumber == memberService.getUnumberByUemail(authentication.getName())) {
+				log.info("USER 권한 입니다.");
+				Map<String, Integer> QUnumber = new HashMap<>();
+				QUnumber.put("qnumber", qnumber);
+				QUnumber.put("qUnumber", qUnumber);
+				question = qnaService.getQuestionByQUnumbers(QUnumber);
+				
+				return question;
+				
+			}
+			return question;// 비어있는 객체
 		}
 		
-		// admin 권한 확인
-		if(memberService.getUserRole(authentication.getName()).equals("ADMIN")){
-			log.info("ADMIN 권한 입니다.");
-			// admin의 경우 qnumber만으로 게시물을 읽을 수 있다.
-			Question question = qnaService.getQuestionByQnumber(qnumber);
-			
-			if(question != null) {
-				String result = "관리자 권한으로 가져온 고객 문의: " + question.toString(); 
-				return result;
-			} else {
-				return "해당하는 게시물이 없습니다.";
-			}
-			
-		// Role이 관리자가 아니면서 고객문의를 요청한 사용자와 문의를 작성한 사용자가 같을 경우에 
-		// qUnumber와 qnumber 모두를 가지고 고객 문의 정보를 가져온다.
-		} else if(!memberService.getUserRole(authentication.getName()).equals("ADMIN") 
-				&& qUnumber == memberService.getUnumberByUemail(authentication.getName())) {
-			log.info("USER 권한 입니다.");
-			Map<String, Integer> QUnumber = new HashMap<>();
-			QUnumber.put("qnumber", qnumber);
-			QUnumber.put("qUnumber", qUnumber);
-			Question question = qnaService.getQuestionByQUnumbers(QUnumber);
-			
-			if(question != null) {
-				String result = "유저 권한으로 가져온 고객 문의: " + question.toString(); 
-				return result;
-			} else {
-				return "해당하는 게시물이 없습니다.";
-			}
-		}
-		return "잘못된 접근입니다.";
 	}
 	
 	// Update
@@ -135,8 +127,11 @@ public class QnaController {
 	@PutMapping("/MyCustomerInquiryUpdate")
 	public String updateQuestion(Question question, Authentication authentication) {
 		
+		log.info("받아온 문의 확인: "+question.toString());
 		// 수정할 게시물의 unumber랑 로그인 한 사용자의 unumber랑 같아야 수정 할 수 있음
 		if(question.getQUnumber() == memberService.getUnumberByUemail(authentication.getName())) {
+			log.info("사용자 같음");
+			
 			if(question.getQattach() != null && !question.getQattach().isEmpty()) {
 				log.info("첨부 파일 있음");
 				
@@ -169,17 +164,15 @@ public class QnaController {
 	// 고객 문의 사항 삭제 -> 고객만 할 수 있다.
 	//@PreAuthorize("hasAuthority('ROLE_USER')")
 	@DeleteMapping("/MyCustomerInquiryDelete")
-	public String deleteQuestion(int qnumber, int qUnumber, Authentication authentication) {
+	public int deleteQuestion(int qnumber, int qUnumber, Authentication authentication) {
 		// 삭제할 게시물의 unumber랑 로그인 한 사용자의 unumber랑 같아야 삭제 할 수 있음
 		if(qUnumber == memberService.getUnumberByUemail(authentication.getName())) {
 			int result = qnaService.deleteQuestionByQnumber(qnumber); // 정상적으로 삭제가 되면 1을 반환, 없는 게시물을 삭제하려고 하면 0을 반환
 			log.info("결과 값", result);
-			return result + "";
-		} else {
-			return "잘못된 접근입니다.";
+			return result;
 		}
-		
-	}
+		return 0;
+	} 
 	
 	// getList - user
 	// 특정 고객이 문의한 고객 문의 사항 리스트 가져오기(특정 회원이 문의한 문의사항-마이페이지에서 사용할 예정)
@@ -223,8 +216,8 @@ public class QnaController {
 			int totalRows = qnaService.getQuestionCount(); 
 			
 			// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
-			Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "customerInquiry");
-			log.info("컨트롤러 pageNo: "+pageNo.toString());
+			Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "adminCustomerInquiry");
+			
 			// 해당 페이지의 게시물 목록 가져오기
 			List<Question> list = qnaService.getQuestionList(pager);
 			
@@ -234,9 +227,43 @@ public class QnaController {
 			// map에 데이터 넣기
 			map.put("question", list);
 			map.put("pager", pager);
+
 			
 			return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
 //		} return "관리자 권한이 없습니다.";
+	}
+	
+	//@PreAuthorize("hasAuthority('ROLE_USER')") // 메소드를 실행하기 전에 권한을 체크한다.
+	@GetMapping("/qattach/{qnumber}")
+	public void download(@PathVariable int qnumber, HttpServletResponse response) {
+		// 해당 게시물 가져오기
+		Question question = qnaService.getQuestionImgByQnumber(qnumber);
+		log.info("가져왔니?"+question.toString());
+		
+		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
+		try {
+			String fileName = new String(question.getQattachoname().getBytes("UTF-8"), "ISO-8859-1");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+			
+			// 파일 타입을 헤더에 추가
+			response.setContentType(question.getQattachtype());
+			
+			// 응답 바디에 파일 데이터를 출력
+			OutputStream os = response.getOutputStream();
+			os.write(question.getQattachdata());
+			os.flush();
+			os.close();
+			
+		} catch (IOException e) {
+			log.error(e.toString());
+		}
+	}
+	
+	// 문의 작성자 이름 가져오기
+	@GetMapping("/getQuestionWriter")
+	public String getQuestionWriter(int qUnumber) {
+		String qwriter = qnaService.getWriterByQunumber(qUnumber);
+		return qwriter;
 	}
 
 	

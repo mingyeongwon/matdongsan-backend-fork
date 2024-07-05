@@ -22,4 +22,6 @@ public interface QuestionDao {
 	public List<Question> getQuestionList(Pager pager);
 	public int insertIsAnswer(int qnumber);
 	public int updateRemoveAnswer(int qnumber);
+	public Question getQuestionImgByQnumber(int qnumber);
+	public String getWriterByQunumber(int qUnumber);
 }

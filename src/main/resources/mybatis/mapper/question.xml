@@ -30,6 +30,13 @@
 		where qnumber = #{qnumber}
 	</select>
 	
+	<!-- 이미지 데이터만 가져온다. -->
+	<select id="getQuestionImgByQnumber" parameterType="int" resultType="question">
+		select qnumber, qattachoname, qattachtype, q_unumber, qattachdata
+		from question
+		where qnumber = #{qnumber}
+	</select>
+	
 	<!-- 문의 수정하기 -->
 	<update id="updateQuestion" parameterType="question">
 		update question set qcategory = #{qcategory}, qtitle = #{qtitle}, 
@@ -103,4 +110,9 @@
 	<update id="updateRemoveAnswer" parameterType="int">
 		update question set q_isanswer = null where qnumber = #{qnumber}
 	</update>
+	
+	<!-- 고객 문의 작성자 가져오기 -->
+	<select id="getWriterByQunumber" parameterType="int" resultType="String">
+		select uemail from user_common_data where unumber = #{qUnumber} 
+	</select>
 </mapper>

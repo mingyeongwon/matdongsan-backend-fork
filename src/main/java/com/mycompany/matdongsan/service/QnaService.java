@@ -71,6 +71,16 @@ public class QnaService {
 		return questionDao.getQuestionList(pager);
 	}
 	
+	// 문의 첨부파일 가져오기
+	public Question getQuestionImgByQnumber(int qnumber) {
+		return questionDao.getQuestionImgByQnumber(qnumber);
+	}
+	
+	// 문의 작성자 가져오기
+	public String getWriterByQunumber(int qUnumber) {
+		return questionDao.getWriterByQunumber(qUnumber);
+	}
+	
 	// Answer 고객 문의 답변-------------------/////////////////////////////////////////////////////////////////////
 	
 	// 문의 답변 생성
