@@ -15,9 +15,10 @@
 		(#{anumber},#{aname}, #{abrand}, #{aphone}, #{aaddress},
 		#{aprofiledata},#{aprofileoname},#{aprofiletype},#{alatitude},#{alongitude},#{apostcode},#{aaddressdetail},#{aUnumber})
 	</insert>
-	<select id="getAgentNumberByUserNumber" parameterType="int" resultType="int">
-	select anumber from agent
-	where a_unumber = #{userNumber}
+	<select id="getAgentNumberByUserNumber" parameterType="int"
+		resultType="int">
+		select anumber from agent
+		where a_unumber = #{userNumber}
 	</select>
 	<!-- 전체 중개인 수 -->
 	<select id="getAllAgentCount" resultType="int">
@@ -37,7 +38,8 @@
         WHERE 1=1 ]]>
 		<if test="keyword != null and keyword != ''">
 			AND a.abrand LIKE '%' || #{keyword} || '%'
-			OR a.aname LIKE '%' || #{keyword} || '%'
+			OR a.aname LIKE
+			'%' || #{keyword} || '%'
 			OR a.aaddress LIKE '%' || #{keyword} || '%'
 		</if>
     <![CDATA[
@@ -75,10 +77,15 @@
 	</select>
 	<update id="updateAgentData" parameterType="Agent">
 		update agent set
-		abrand=#{abrand},aname=#{aname}, aphone=#{aphone},aaddress=#{aaddress},
-		,aprofileoname=#{aprofileoname},
+		abrand=#{abrand},aname=#{aname},
+		aphone=#{aphone},aaddress=#{aaddress},
+		
+		<if test="aprofileoname != null">
+		aprofileoname=#{aprofileoname},
 		aprofiletype=#{aprofiletype},
 		aprofiledata=#{aprofiledata},
+		</if>
+
 		apostcode=#{apostcode},aaddressdetail=#{aaddressdetail},alatitude=#{alatitude},alongitude=#{alongitude}
 		where anumber=#{anumber}
 	</update>

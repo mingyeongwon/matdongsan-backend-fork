@@ -35,6 +35,7 @@ import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
 import com.mycompany.matdongsan.service.PagerService;
+import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +49,8 @@ public class AgentController {
 	private MemberService memberService;
 	@Autowired
 	private PagerService pagerService;
+	@Autowired
+	private PropertyService propertyService;
 
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
@@ -139,7 +142,7 @@ public class AgentController {
 		int totalRows = agentService.getTotalReviews(anumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
 		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber, sort, pager);
-		
+
 		for (AgentReview agentReview : agentReviewList) {
 			String memberName = memberService.getUserEmailByMemberNumber(agentReview.getArMnumber());
 			agentReview.setMembername(memberName);
@@ -149,7 +152,7 @@ public class AgentController {
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
 		map.put("agentReviewList", agentReviewList);
-	
+
 		return map;
 	}
 
@@ -158,56 +161,60 @@ public class AgentController {
 	@GetMapping("/Mypage/MyInfomation")
 	public Map<String, Object> getMypagePropertyInfo(Authentication autentication) {
 		String userName = autentication.getName();
-		log.info("username이다: "+userName);
+		log.info("username이다: " + userName);
 		// 로그인한 중개인의 데이터 수정
 		// 아이디로 중개인의 정보 가져옴
 		int userNumber = agentService.getUserIdByUserName(userName);
 		String userRole = memberService.getUserRole(userName);
 		Map<String, Object> map = new HashMap<>();
-		map.put("userRole",userRole);
+		map.put("userRole", userRole);
 		// 일반 유저일 경우
 		if (userRole.equals("MEMBER")) {
 			Member member = memberService.getMemberDataFullyByUserNumber(userNumber);
 			map.put("member", member);
+
 		} else {
 			// 중개인일 경우
 			AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(userNumber);
 			map.put("agentSignupData", agentSignupData);
 		}
-
+		int propertyListing = propertyService.getUserPropertyListingQuantity(userNumber);
+		map.put("propertyListing", propertyListing);
 		return map;
 
 	}
 
 	// 중개업자 정보 업데이트
-	@PutMapping("/Mypage/MyInfomation")
-	public void updateMypagePropertyInfo(@ModelAttribute AgentSignupData agentSignupData) {
+	@Transactional
+	@PutMapping("/Agent/Mypage/MyInfomation")
+	public void updateMypagePropertyInfo(@ModelAttribute AgentSignupData agentSignupData,
+			Authentication authentication) {
 		Agent agent = agentSignupData.getAgent();
 		AgentDetail agentDetail = agentSignupData.getAgentDetail();
-		UserCommonData userEmail = agentSignupData.getUserEmail();
 		// 프로필사진 & 등록증 사진
-		MultipartFile agentProfile = agent.getAprofile();
-		MultipartFile agentDetailFile = agentDetail.getAdattach();
+		if (agent.getAprofile() != null) {
+			MultipartFile agentProfile = agent.getAprofile();
 
-		// 파일 이름을 설정
-		agent.setAprofileoname(agentProfile.getOriginalFilename());
-		agentDetail.setAdattachoname(agentDetailFile.getOriginalFilename());
-		// 파일 종류를 설정
-		agent.setAprofiletype(agentProfile.getContentType());
-		agentDetail.setAdattachtype(agentDetail.getAdattachtype());
-		try {
-			// 파일 데이터를 설정
-			agent.setAprofiledata(agentProfile.getBytes());
-			agentDetail.setAdattachdata(agentDetailFile.getBytes());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// 파일 이름을 설정
+			agent.setAprofileoname(agentProfile.getOriginalFilename());
+			// 파일 종류를 설정
+			agent.setAprofiletype(agentProfile.getContentType());
+			agentDetail.setAdattachtype(agentDetail.getAdattachtype());
+			try {
+				// 파일 데이터를 설정
+				agent.setAprofiledata(agentProfile.getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		int userNum = agentService.getUserIdByUserName(userEmail.getUemail()); // 유저 번호
+
+		int userNum = agentService.getUserIdByUserName(authentication.getName()); // 유저 번호
 		int Anumber = agentService.getAgentNumberByUserNumber(userNum); // 중개인 번호
 		agent.setAnumber(Anumber);
 		agentDetail.setAdAnumber(Anumber);
 		// 수정하기
+		log.info(agentDetail.toString());
 		agentService.updateAgentData(agent, agentDetail);
 	}
 
@@ -227,9 +234,9 @@ public class AgentController {
 
 		if (role.equals("MEMBER")) {
 			agentService.createAgentReview(agentReview);
-			return 1; //멤버인 경우 리턴 1과 서비스 실행
+			return 1; // 멤버인 경우 리턴 1과 서비스 실행
 		} else {
-			return 0; //role이 멤버가 아닌경우 리턴 0
+			return 0; // role이 멤버가 아닌경우 리턴 0
 		}
 
 	}
@@ -257,7 +264,7 @@ public class AgentController {
 		agentService.deleteAgentReview(anumber, arnumber, userNumber);
 	}
 
-	//중개인 프로파일 다운로드
+	// 중개인 프로파일 다운로드
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/aattach/{anumber}")
 	public void downloadAgentProfile(@PathVariable int anumber, HttpServletResponse response) {

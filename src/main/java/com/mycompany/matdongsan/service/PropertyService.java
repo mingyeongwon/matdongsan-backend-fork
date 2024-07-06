@@ -298,5 +298,13 @@ public class PropertyService {
 		return reportDao.checkUserPropertyReport(unumber, pnumber) > 0 ? true : false;
 	}
 	
-
+	public int getUserPropertyListingQuantity(int userNumber) {
+		boolean hasUser = propertyListingDao.checkPropertyListingByUserNumber(userNumber)>0? true : false;
+		if(hasUser) {
+			int quantity = propertyListingDao.getQuantityByUserNumber(userNumber);
+			return quantity;
+		}
+		return 0;
+	}
+	
 }

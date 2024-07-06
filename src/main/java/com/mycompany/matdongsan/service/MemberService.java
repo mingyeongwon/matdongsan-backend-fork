@@ -83,4 +83,9 @@ public class MemberService {
 		return member;
 	}
 
+	public void updateMemberData(Member member) {
+		memberDao.updateMemberData(member);
+		
+	}
+
 }

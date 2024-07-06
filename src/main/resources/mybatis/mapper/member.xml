@@ -24,6 +24,18 @@
 		select mnumber from member
 		where m_unumber = #{userNumber}
 	</select>
+	<update id="updateMemberData" parameterType="Member">
+		update member set
+		mname=#{mname},mphone=#{mphone}
+		
+		
+		<if test="mprofileoname != null">
+		,mprofileoname=#{mprofileoname},
+		mprofiletype=#{mprofiletype},
+		mprofiledata=#{mprofiledata}
+		</if>
+		where mnumber=#{mnumber}
+	</update>
 	<select id="getMemberDataByUserNumber" parameterType="int"
 		resultType="Member">
 		select * from member

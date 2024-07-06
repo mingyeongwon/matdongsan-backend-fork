@@ -20,4 +20,6 @@ public interface MemberDao {
 
 	public Member getMemberDataByMemberNumber(int mnumber);
 
+	public void updateMemberData(Member member);
+
 }

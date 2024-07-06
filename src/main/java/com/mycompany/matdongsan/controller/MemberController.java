@@ -2,19 +2,16 @@ package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,12 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
-import com.mycompany.matdongsan.security.AppUserDetails;
-import com.mycompany.matdongsan.security.AppUserDetailsService;
-import com.mycompany.matdongsan.security.JwtProvider;
 import com.mycompany.matdongsan.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 	@Autowired
 	private MemberService memberService;
-
 	// 로그인
 
 	// 회원가입
@@ -111,8 +103,37 @@ public class MemberController {
 			}
 		}
 	
-
 	}
+	
+	// 일반 멤버 정보 업데이트
+		@Transactional
+		@PutMapping("/Mypage/MyInfomation")
+		public void updateMypagePropertyInfo(@ModelAttribute Member memberData,
+				Authentication authentication) {
+			Member member =  memberData;
+			// 프로필사진 & 등록증 사진
+			if (member.getMprofile() != null) {
+				MultipartFile memberProfile = member.getMprofile();
+
+				// 파일 이름을 설정
+				member.setMprofileoname(memberProfile.getOriginalFilename());
+				// 파일 종류를 설정
+				member.setMprofiletype(memberProfile.getContentType());
+				try {
+					// 파일 데이터를 설정
+					member.setMprofiledata(memberProfile.getBytes());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			int memberNum = memberService.getMemberNumberByMemberEmail(authentication.getName()); // 멤버 넘버
+			member.setMnumber(memberNum);
+			// 수정하기
+			memberService.updateMemberData(member);
+		}
+
 	// 비밀번호 수정
 
 	//

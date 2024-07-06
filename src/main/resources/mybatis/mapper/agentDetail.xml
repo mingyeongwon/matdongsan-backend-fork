@@ -22,9 +22,7 @@
 
 	<update id="updateAgentDetailData" parameterType="AgentDetail">
 		update agent_detail set
-		adattachoname=#{adattachoname},adattachdata=#{adattachdata},
-		,adattachtype=#{adattachtype},
-		adbrandnumber=#{adbrandnumber},
+		adbrandnumber=#{adbrandnumber}
 		where
 		ad_anumber=#{adAnumber}
 	</update>
