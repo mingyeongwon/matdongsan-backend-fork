@@ -35,5 +35,19 @@
 		)
 		where rnum >= #{pager.startRowNo}
 		]]>
-	</select>    
+	</select> 
+	
+	<!-- 허위 매물 신고 삭제 -->
+	<delete id="deleteUserReport" parameterType="int">
+		delete 
+		from report
+		where r_pnumber=#{pnumber} and r_unumber=#{unumber}
+	</delete>	  
+	
+	<!-- 허위 매물 신고 여부 -->
+	<select id="checkUserPropertyReport" parameterType="int" resultType="int">
+		select count(*) 
+		from report
+		where r_pnumber=#{pnumber} and r_unumber=#{unumber}
+	</select>	 
 </mapper>

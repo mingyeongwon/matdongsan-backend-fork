@@ -18,5 +18,11 @@ public interface ReportDao {
 	
 	// 유저 허위 매물 리스트
 	public List<Report> getUserReportListByUnumber(int unumber, Pager pager);
+	
+	// 허위 매물 신고 삭제
+	public int deleteUserReport(int pnumber, int unumber);
+	
+	// 허위 매물 신고 여부
+	public int checkUserPropertyReport(int unumber, int pnumber);
 
 }

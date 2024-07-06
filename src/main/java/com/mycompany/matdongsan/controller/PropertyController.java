@@ -397,19 +397,38 @@ public class PropertyController {
 
 //	매물 신고
 	@PostMapping("/createPropertyReport/{pnumber}")
-	public Report createPropertyReport(@PathVariable int pnumber, @ModelAttribute Report report,
+	public Boolean createPropertyReport(@PathVariable int pnumber, @ModelAttribute Report report,
 			Authentication authentication) {
 		
 		log.info("report : " + report.toString());
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
-		report.setRPnumber(pnumber);
-		report.setRUnumber(userNumber);
 		
-		log.info("매물 신고 실행 중 : " + report.getRcontent());
-		propertyService.createPropertyReport(report);
+		// 유저가 이전에 신고한 적 있는지
+		boolean hasPropertyReport = propertyService.checkPropertyReport(userNumber, pnumber); 
 		
-		return report;
+		if(!hasPropertyReport) {			
+			report.setRPnumber(pnumber);
+			report.setRUnumber(userNumber);
+			propertyService.createPropertyReport(report);
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+
+//	매물 신고 삭제
+//	@PreAuthorize("hasAuthority('ROLE_USER')")	
+	@DeleteMapping("/deletePropertyReport/{pnumber}")
+	public void deletePropertyReport(@PathVariable int pnumber, Authentication authentication) {
+		
+		log.info("pnumber : " + pnumber);
+		String uemail = authentication.getName();
+		int unumber = memberService.getUnumberByUemail(uemail);
+		
+		propertyService.deletePropertyReport(pnumber, unumber);
 	}
 	
 	
@@ -424,6 +443,7 @@ public class PropertyController {
 		int totalUserReportRows = propertyService.getAllUserReportCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserReportRows, 9, 5, "userReportList");
 		List<Report> userReportList = propertyService.getAllUserReportList(unumber, pager);
+		log.info(userReportList.toString());
 		return userReportList;
 	}
 
@@ -464,6 +484,7 @@ public class PropertyController {
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/pattach/{pnumber}")
 	public void downloadPropertyThumbnail(@PathVariable int pnumber, HttpServletResponse response) {
+		
 		// 해당 게시물 가져오기
 		Property property = propertyService.getProperty(pnumber);
 		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드

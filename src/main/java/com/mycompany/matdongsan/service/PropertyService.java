@@ -288,5 +288,15 @@ public class PropertyService {
 		return reportDao.getUserReportListByUnumber(unumber, pager);
 	}
 	
+	// 허위 매물 신고 삭제
+	public void deletePropertyReport(int pnumber, int unumber) {
+		reportDao.deleteUserReport(pnumber, unumber);
+	}
+	
+	// 허위 매물 신고 여부
+	public boolean checkPropertyReport(int unumber, int pnumber) {
+		return reportDao.checkUserPropertyReport(unumber, pnumber) > 0 ? true : false;
+	}
+	
 
 }
