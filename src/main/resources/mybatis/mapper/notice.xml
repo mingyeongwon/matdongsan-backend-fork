@@ -51,7 +51,7 @@
 			from(
 				select ntitle, ndate, nnumber
 				from notice]]>
-				<if test="keyword != null">
+				<if test="keyword == null">
 					<![CDATA[
 					where ntitle LIKE '%'||#{keyword}||'%'
 					]]>

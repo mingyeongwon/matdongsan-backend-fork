@@ -66,9 +66,14 @@ public class QnaService {
 		return questionDao.getQuestionCount();
 	}
 	
+	// 고객 문의 갯수 가져오기(타입별)
+	public int getQuestionCountByType(String type) {
+		return questionDao.getQuestionCountByType(type);
+	}
+	
 	// 고객 문의 리스트 가져오기(전체)
-	public List<Question> getQuestionList(Pager pager){
-		return questionDao.getQuestionList(pager);
+	public List<Question> getQuestionList(Map<String, Object> mapForFilter){
+		return questionDao.getQuestionList(mapForFilter);
 	}
 	
 	// 문의 첨부파일 가져오기
@@ -94,8 +99,8 @@ public class QnaService {
 	}
 	
 	// 문의 답변 가져오기
-	public Answer getAnswer(int anumber) {
-		return answerDao.getAnswer(anumber);
+	public Answer getAnswerByAqnumber(int aQnumber) {
+		return answerDao.getAnswerByAqnumber(aQnumber);
 	}
 	
 	// 문의 답변 삭제하기

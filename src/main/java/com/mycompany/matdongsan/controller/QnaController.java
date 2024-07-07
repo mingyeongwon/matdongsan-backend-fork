@@ -209,27 +209,56 @@ public class QnaController {
 	// getList - all
 	// 고객 문의 사항 리스트 전부 가져오기(전체 문의 사항 - 관리자페이지)
 	@GetMapping("/CustomerInquiryList")
-	public Map<String, Object> CustomerInquiryList(@RequestParam(defaultValue = "1") String pageNo, HttpSession session, Authentication authentication){
+	public Map<String, Object> CustomerInquiryList(@RequestParam(defaultValue = "1") String pageNo, @RequestParam(required = false) String type, HttpSession session, Authentication authentication){
 		// 유저 정보가 admin이면 리스트 가져오기
 //		if(memberService.getUserRole(authentication.getName()).equals("ADMIN")) {
-			// 공지사항 갯수
-			int totalRows = qnaService.getQuestionCount(); 
-			
-			// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
-			Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "adminCustomerInquiry");
-			
-			// 해당 페이지의 게시물 목록 가져오기
-			List<Question> list = qnaService.getQuestionList(pager);
-			
-			// 여러 객체를 리턴하기 위해 Map 객체 생성		
-			Map<String, Object> map = new HashMap<>();
-						
-			// map에 데이터 넣기
-			map.put("question", list);
-			map.put("pager", pager);
+			if(type == null || type.equals("")) {
+				// 공지사항 갯수
+				int totalRows = qnaService.getQuestionCount(); 
+				
+				// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
+				Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "adminCustomerInquiry");
+				
+				Map<String, Object> mapForFilter = new HashMap<>();
+				
+				mapForFilter.put("pager",pager);
+				
+				// 해당 페이지의 게시물 목록 가져오기
+				List<Question> list = qnaService.getQuestionList(mapForFilter);
+				
+				// 여러 객체를 리턴하기 위해 Map 객체 생성		
+				Map<String, Object> map = new HashMap<>();
+							
+				// map에 데이터 넣기
+				map.put("question", list);
+				map.put("pager", pager);
 
+				
+				return map;
+			} 	// 타입별 공지사항 갯수
+				int totalRows = qnaService.getQuestionCountByType(type); 
+				
+				// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
+				Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "adminCustomerInquiry");
+				
+				Map<String, Object> mapForFilter = new HashMap<>();
+				mapForFilter.put("pager",pager);
+				mapForFilter.put("type", type);
+				
+				// 해당 페이지의 게시물 목록 가져오기
+				List<Question> list = qnaService.getQuestionList(mapForFilter);
+				
+				// 여러 객체를 리턴하기 위해 Map 객체 생성		
+				Map<String, Object> map = new HashMap<>();
+							
+				// map에 데이터 넣기
+				map.put("question", list);
+				map.put("pager", pager);
+
+				
+				return map;
 			
-			return map; // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
+			 // return 값은 JSON으로 변환되어 응답 본문에 들어간다. {"pager":{}, "notice":[]};
 //		} return "관리자 권한이 없습니다.";
 	}
 	
@@ -288,8 +317,8 @@ public class QnaController {
 	
 	// 문의 답변 읽기
 	@GetMapping("/AdminInquiryAnswerDetail")
-	public Answer readAnswer(int anumber) {
-		return qnaService.getAnswer(anumber);
+	public Answer readAnswer(int aQnumber) {
+		return qnaService.getAnswerByAqnumber(aQnumber);
 	}
 	
 	// 문의 답변 삭제
@@ -331,6 +360,7 @@ public class QnaController {
 	// 공지 사항 삭제
 	@DeleteMapping("/NoticeDetailDelete")
 	public int deleteNotice(int nnumber) {
+		//log.info("nnumber: "+nnumber);
 		return qnaService.deleteNotice(nnumber);
 	}
 		
@@ -340,18 +370,25 @@ public class QnaController {
 			, @RequestParam(required = false) String searchKeyword
 			, @RequestParam(required = false) String sort, HttpSession session)
 		{
+		// 받아온 값 확인
+		log.info("매개변수: "+pageNo+ searchKeyword+ sort);
+		
 		// 검색 된 공지사항 갯수
 		int totalNoticeRows;
 		
 		// 검색어가 없으면 전체 공지사항의 갯수를 반환하고 아니면 검색된 공지사항의 갯수를 반환
-		if(searchKeyword == "") {
+		if(searchKeyword.equals("") || searchKeyword == null) {
 			totalNoticeRows = qnaService.getCountNotice();
 		}else {
 			totalNoticeRows = qnaService.getCountOfSearchedNotices(searchKeyword);
 		}
 		
+		log.info(totalNoticeRows+"총 갯수");
+		
 		// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
 		Pager pager= pagerService.preparePager(session, pageNo, totalNoticeRows, 10, 5, "Notice");
+		
+		log.info(pager.getTotalPageNo()+"총 페이지 넘버");
 		
 		// 검색된 페이지 불러오기 위한 Map 생성 (Mybatis는 parameter을 하나의 타입만 보낼 수 있어서 map에 담아서 매개변수를 넣는다.)
 		Map<String, Object> mapForSearch = new HashMap<>();

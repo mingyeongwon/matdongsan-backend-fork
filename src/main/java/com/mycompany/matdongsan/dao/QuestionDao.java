@@ -19,9 +19,10 @@ public interface QuestionDao {
 	public int getQuestionCountByUnumber(int qUnumber);
 	public List<Question> getUsersQuestionList(Map<String, Object> usersQuestion);
 	public int getQuestionCount();
-	public List<Question> getQuestionList(Pager pager);
+	public List<Question> getQuestionList(Map<String, Object> mapForFilter);
 	public int insertIsAnswer(int qnumber);
 	public int updateRemoveAnswer(int qnumber);
 	public Question getQuestionImgByQnumber(int qnumber);
 	public String getWriterByQunumber(int qUnumber);
+	public int getQuestionCountByType(String type);
 }

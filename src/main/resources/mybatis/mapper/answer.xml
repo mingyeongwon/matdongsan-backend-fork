@@ -22,9 +22,9 @@
 	</update>
 	
 	<!-- 문의 답변 읽기 -->
-	<select id="getAnswer" parameterType="int" resultType="answer">
+	<select id="getAnswerByAqnumber" parameterType="int" resultType="answer">
 		select acontent, adate, anumber, a_qnumber from answer
-		where anumber = #{anumber}
+		where a_qnumber = #{aQnumber} 
 	</select>
 	
 	<!-- 문의 답변 삭제 -->

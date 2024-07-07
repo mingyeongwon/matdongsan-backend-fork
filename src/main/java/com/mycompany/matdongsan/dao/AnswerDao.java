@@ -9,6 +9,6 @@ public interface AnswerDao {
 	
 	public int insertAnswer(Answer answer);
 	public int updateAnswer(Answer answer);
-	public Answer getAnswer(int anumber);
+	public Answer getAnswerByAqnumber(int aQnumber);
 	public int deleteAnswer(int anumber);
 }

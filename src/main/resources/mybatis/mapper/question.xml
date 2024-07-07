@@ -63,11 +63,11 @@
 	<!-- 해당하는 회원의 문의 리스트 가져오기 -->
 	<select id="getUsersQuestionList" parameterType="Map" resultType="question">
 		<![CDATA[
-		select rnum, qtitle, qdate, qnumber, q_unumber, qcontent, qIsAnswer
+		select rnum, qtitle, qdate, qnumber, q_unumber, qcontent, qIsAnswer, qcategory
 		from(
-			select rownum as rnum, qtitle, qdate, qnumber, q_unumber, qcontent,qIsAnswer
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber, qcontent,qIsAnswer, qcategory
 			from(
-				select qtitle, qdate, qnumber, q_unumber, qcontent , q_isanswer as qIsAnswer
+				select qtitle, qdate, qnumber, q_unumber, qcontent , q_isanswer as qIsAnswer, qcategory
 				from question
 				where q_unumber = #{qUnumber}
 				order by qdate desc
@@ -83,21 +83,33 @@
 		select count(*) from question 
 	</select>
 	
+	<!-- 해당하는 회원의 문의 갯수 가져오기 -->
+	<select id="getQuestionCountByType" parameterType="String" resultType="int">
+		select count(*) from question where qcategory = #{type}
+	</select>
+	
 	
 	<!-- 문의 리스트 가져오기 -->
-	<select id="getQuestionList" parameterType="pager" resultType="question">
+	<select id="getQuestionList" parameterType="Map" resultType="question">
 		<![CDATA[
-		select rnum, qtitle, qdate, qnumber, q_unumber, qIsAnswer
+		select rnum, qtitle, qdate, qnumber, q_unumber, qIsAnswer, qcategory
 		from(
-			select rownum as rnum, qtitle, qdate, qnumber, q_unumber,qIsAnswer
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber,qIsAnswer, qcategory
 			from(
-				select qtitle, qdate, qnumber, q_unumber, q_isanswer as qIsAnswer
+				select qtitle, qdate, qnumber, q_unumber, q_isanswer as qIsAnswer, qcategory
 				from question
+				]]>
+				<if test="type != null">
+					<![CDATA[
+					where qcategory = #{type}
+					]]>
+				</if>
+				<![CDATA[
 				order by qdate desc
 				)
-			where rownum <= #{endRowNo}
+			where rownum <= #{pager.endRowNo}
 		)
-		where rnum >= #{startRowNo}
+		where rnum >= #{pager.startRowNo}
 		]]>
 	</select>
 	
