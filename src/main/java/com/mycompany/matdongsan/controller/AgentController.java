@@ -31,6 +31,7 @@ import com.mycompany.matdongsan.dto.AgentReview;
 import com.mycompany.matdongsan.dto.AgentSignupData;
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.Pager;
+import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
@@ -78,18 +79,39 @@ public class AgentController {
 
 		return map;
 	}
-	
+
+	// 중개인별 리뷰 개수와 별점 총합 가져오기
 	@GetMapping("/Agent/AgentReview/{anumber}")
-	public Map<String,String> getAgentReview(@PathVariable int anumber) {
-		Map<String,String> map = new HashMap<>();
+	public Map<String, String> getAgentReview(@PathVariable int anumber) {
+		Map<String, String> map = new HashMap<>();
 		String reviewRateAvg = agentService.getReviewAvgByanumber(anumber);
 		String totalReviewsByAgent = agentService.getReviewCountByAnumber(anumber);
-		log.info("reviewRateAvg: " + totalReviewsByAgent); 
-		log.info("totalReviewsByAgent: " + totalReviewsByAgent); 
+		log.info("reviewRateAvg: " + totalReviewsByAgent);
+		log.info("totalReviewsByAgent: " + totalReviewsByAgent);
 		map.put("sum", reviewRateAvg);
 		map.put("total", totalReviewsByAgent);
 		return map;
 	}
+
+	// 중개인별 매물 데이터 가져오기
+	@GetMapping("/Agent/Property/{anumber}")
+	public Map<String,Object> getAgentPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+			@PathVariable int anumber, HttpSession session) {
+		log.info("중개인 매물 실행");
+		//유저번호
+		int unumber = agentService.getUserNumberByAnumber(anumber);
+		log.info(unumber+"이게 anumber로받은 번호");
+		
+		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
+		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 9, 5, "agentPropertyList");
+		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
+		log.info(userPropertyList.toString());
+		Map<String,Object> map = new HashMap<>();
+		map.put("pager", pager);
+		map.put("agentProperty", userPropertyList);
+		return map;
+	}
+
 	// 부동산 등록
 	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
 	// agent관련 DTO를 만들어서 코드 바꿀것
@@ -143,7 +165,7 @@ public class AgentController {
 	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
-		log.info("페이지넘버입니다.: "+pageNo);
+		log.info("페이지넘버입니다.: " + pageNo);
 		// 중개인 정보
 		Agent agent = agentService.getAgentDataByUserNumber(anumber);
 		// 중개인 상세정보

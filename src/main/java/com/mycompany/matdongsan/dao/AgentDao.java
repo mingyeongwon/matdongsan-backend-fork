@@ -21,4 +21,5 @@ public interface AgentDao {
 	Agent getAgentDataByUserNumber(int userNumber);
 	Agent getAgentDataByAgentNumber(int agentNumber);
 	void updateAgentData(Agent agent);
+	int getUserNumberByAnumber(int anumber);
 }

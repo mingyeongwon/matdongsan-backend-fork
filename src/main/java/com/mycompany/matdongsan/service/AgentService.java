@@ -138,5 +138,11 @@ public class AgentService {
 		return count;
 	}
 
+	public int getUserNumberByAnumber(int anumber) {
+		int userNumber = agentDao.getUserNumberByAnumber(anumber);
+		return userNumber;
+	}
+	
 
 }
+

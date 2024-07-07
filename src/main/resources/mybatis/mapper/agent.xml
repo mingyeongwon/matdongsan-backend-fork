@@ -89,4 +89,9 @@
 		apostcode=#{apostcode},aaddressdetail=#{aaddressdetail},alatitude=#{alatitude},alongitude=#{alongitude}
 		where anumber=#{anumber}
 	</update>
+	
+	<select id="getUserNumberByAnumber" parameterType="int" resultType="int">
+		select a_unumber from agent
+		where anumber = #{anumber}
+	</select>
 </mapper>
