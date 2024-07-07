@@ -78,7 +78,18 @@ public class AgentController {
 
 		return map;
 	}
-
+	
+	@GetMapping("/Agent/AgentReview/{anumber}")
+	public Map<String,String> getAgentReview(@PathVariable int anumber) {
+		Map<String,String> map = new HashMap<>();
+		String reviewRateAvg = agentService.getReviewAvgByanumber(anumber);
+		String totalReviewsByAgent = agentService.getReviewCountByAnumber(anumber);
+		log.info("reviewRateAvg: " + totalReviewsByAgent); 
+		log.info("totalReviewsByAgent: " + totalReviewsByAgent); 
+		map.put("sum", reviewRateAvg);
+		map.put("total", totalReviewsByAgent);
+		return map;
+	}
 	// 부동산 등록
 	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
 	// agent관련 DTO를 만들어서 코드 바꿀것
@@ -132,27 +143,27 @@ public class AgentController {
 	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
-
-		log.info("readAgentInfoByNumber 실행, anumber={}", anumber);
+		log.info("페이지넘버입니다.: "+pageNo);
 		// 중개인 정보
 		Agent agent = agentService.getAgentDataByUserNumber(anumber);
 		// 중개인 상세정보
 		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
 		// 중개인 리뷰정보
 		int totalRows = agentService.getTotalReviews(anumber);
-		Pager pager = pagerService.preparePager(session, pageNo, totalRows, 9, 5, "agentReview");
+		Pager pager = pagerService.preparePager(session, pageNo, totalRows, 5, 5, "agentReview");
 		List<AgentReview> agentReviewList = agentService.getAgentReviewListByAnumber(anumber, sort, pager);
 
 		for (AgentReview agentReview : agentReviewList) {
 			String memberName = memberService.getUserEmailByMemberNumber(agentReview.getArMnumber());
 			agentReview.setMembername(memberName);
 		}
-		log.info(agentReviewList.toString());
+		log.info("페이지네이션으로 호출됨");
+		log.info(pager.toString());
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
 		map.put("agentReviewList", agentReviewList);
-
+		map.put("pager", pager);
 		return map;
 	}
 

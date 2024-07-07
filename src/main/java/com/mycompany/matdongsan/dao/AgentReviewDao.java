@@ -21,4 +21,6 @@ public interface AgentReviewDao {
 
 	int getTotalReviewRows(int anumber);
 
+	int getAgentReviewRateAvgByAnumber(int anumber);
+
 }

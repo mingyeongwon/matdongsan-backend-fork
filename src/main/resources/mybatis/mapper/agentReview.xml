@@ -45,7 +45,9 @@
 		and ar_anumber = #{anumber}
 		and ar_mnumber = #{userNumber}
 	</delete>
-	
+	<select id="getAgentReviewRateAvgByAnumber" parameterType="int" resultType="int">
+	 <![CDATA[SELECT COALESCE(SUM(arrate), 0) FROM agent_review WHERE ar_anumber = #{anumber}]]>
+	</select>
 	<update id="updateAgentReview" parameterType="AgentReview">
 		update agent_review
 		set

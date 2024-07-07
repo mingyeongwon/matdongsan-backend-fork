@@ -128,4 +128,15 @@ public class AgentService {
 		return totalRows;
 	}
 
+	public String getReviewAvgByanumber(int anumber) {
+		String avg = Integer.toString(agentReviewDao.getAgentReviewRateAvgByAnumber(anumber));
+		return avg;
+	}
+
+	public String getReviewCountByAnumber(int anumber) {
+		String count = Integer.toString(agentReviewDao.getTotalReviewRows(anumber));
+		return count;
+	}
+
+
 }
