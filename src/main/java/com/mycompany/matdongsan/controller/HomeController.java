@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mycompany.matdongsan.dao.UserCommonDataDao;
 import com.mycompany.matdongsan.dto.Agent;
+import com.mycompany.matdongsan.dto.AgentSignupData;
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.security.AppUserDetails;
@@ -123,9 +124,21 @@ public class HomeController {
 	
 	// 유저정보 불러오기 by unumber
 	@GetMapping("/getUserData/{unumber}")
-	public UserCommonData getUserDataByUnumber(@PathVariable int unumber) {
-		UserCommonData userData = memberService.getUserDataByUnumber(unumber);
-		return userData;
+	public Map<String, Object> getUserDataByUnumber(@PathVariable int unumber) {
+		
+		Map<String, Object> userTotalInfo = new HashMap<>();
+		UserCommonData userCommonData = memberService.getUserDataByUnumber(unumber);
+		userTotalInfo.put("userCommonData", userCommonData);
+		
+		if(userCommonData.getUrole().equals("MEMBER")) {
+			Member member = memberService.getMemberDataFullyByUserNumber(unumber);
+			userTotalInfo.put("member", member);
+		} else {
+			// 중개인일 경우
+			Agent agent = agentService.getAgentDataByUserNumber(unumber);
+			userTotalInfo.put("agent", agent);
+		}
+		return userTotalInfo;
 	}	
 	
 	

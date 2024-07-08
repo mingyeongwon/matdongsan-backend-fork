@@ -290,17 +290,14 @@ public class PropertyController {
 		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부
 		log.info(isPropertyOwner + "");
 		if (userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
-			if (!userRole.equals("MEMBER")) {
-				// agent가 댓글 못달게 처리하기
+			if (!userRole.equals("MEMBER") || isPropertyOwner) {
+				// agent 또는 매물 주인이면 댓글 못달게 처리하기
 			}
-			if (isPropertyOwner) {
-				// member여도 매물 주인이면 댓글 못달게 처리
-			} else {
+			else {
 				userComment.setUcUnumber(userNumber);
 			}
 			userComment.setUcparentnumber(0);
 		} else { // 부모 댓글 있음
-
 			if (userRole.equals("MEMBER")) { // 기존 댓글 주인 여부 파악하기 위해 member / agent 나눠서 처리
 				boolean isFirstCommentOwner = propertyService.isFirstCommentOwner(userComment.getUcUnumber(), pnumber);
 				if (!isFirstCommentOwner) {
