@@ -21,5 +21,9 @@ public interface MemberDao {
 	public Member getMemberDataByMemberNumber(int mnumber);
 
 	public void updateMemberData(Member member);
+	
+	public String findEmail(Member member);
+	
+	public int checkMember(Member member);
 
 }

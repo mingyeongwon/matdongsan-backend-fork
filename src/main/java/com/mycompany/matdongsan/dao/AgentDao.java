@@ -22,4 +22,6 @@ public interface AgentDao {
 	Agent getAgentDataByAgentNumber(int agentNumber);
 	void updateAgentData(Agent agent);
 	int getUserNumberByAnumber(int anumber);
+	public String findEmail(Agent agent);
+	public int checkAgent(Agent agent);
 }
