@@ -33,6 +33,7 @@ import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.Report;
 import com.mycompany.matdongsan.dto.TotalProperty;
 import com.mycompany.matdongsan.dto.UserComment;
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
 import com.mycompany.matdongsan.service.PagerService;
@@ -290,17 +291,14 @@ public class PropertyController {
 		boolean isPropertyOwner = propertyService.isPropertyOwner(pnumber, userNumber); // 매물 주인 여부
 		log.info(isPropertyOwner + "");
 		if (userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
-			if (!userRole.equals("MEMBER")) {
-				// agent가 댓글 못달게 처리하기
+			if (!userRole.equals("MEMBER") || isPropertyOwner) {
+				// agent 또는 매물 주인이면 댓글 못달게 처리하기
 			}
-			if (isPropertyOwner) {
-				// member여도 매물 주인이면 댓글 못달게 처리
-			} else {
+			else {
 				userComment.setUcUnumber(userNumber);
 			}
 			userComment.setUcparentnumber(0);
 		} else { // 부모 댓글 있음
-
 			if (userRole.equals("MEMBER")) { // 기존 댓글 주인 여부 파악하기 위해 member / agent 나눠서 처리
 				boolean isFirstCommentOwner = propertyService.isFirstCommentOwner(userComment.getUcUnumber(), pnumber);
 				if (!isFirstCommentOwner) {
@@ -381,6 +379,20 @@ public class PropertyController {
 		}
 		
 	}
+	
+	
+//	상품 좋아요 리스트
+	@GetMapping("/FavoriteProperty")
+	public void favoriteList(Authentication authentication) {
+		String uemail = authentication.getName();
+		UserCommonData userCommonData = memberService.getUserDataFullyByUemail(uemail);
+		List<Favorite> favoritePropertyList;
+		if(userCommonData.getUrole().equals("MEMBER")) {
+			favoritePropertyList = propertyService.getAllUserFavoriteList(userCommonData.getUnumber());
+			
+		}
+	}
+	
 	
 	
 //	상품 좋아요 취소

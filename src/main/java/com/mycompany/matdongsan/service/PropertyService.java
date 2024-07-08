@@ -312,4 +312,10 @@ public class PropertyService {
 		return count;
 	}
 	
+	// 좋아요 리스트
+	public List<Favorite> getAllUserFavoriteList(int unumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }
