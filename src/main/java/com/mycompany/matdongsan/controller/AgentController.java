@@ -69,10 +69,11 @@ public class AgentController {
 		log.info(pager.getStartRowIndex() + "");
 		List<Agent> list = new ArrayList<>();
 
-			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword,byRate,byComment,byDate);
+		list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword, byRate, byComment,
+				byDate);
 
-			//list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage());
-
+		// list = agentService.getAgentList(pager.getStartRowIndex(),
+		// pager.getRowsPerPage());
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", list);
@@ -163,13 +164,13 @@ public class AgentController {
 	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
-		log.info("페이지넘버입니다.: " + pageNo);
+		
 		// 거래완료 개수파악을 위한 유저넘버
 		int userNumber = agentService.getUserNumberByAnumber(anumber);
 		int tradeCount = propertyService.getTradeCountByAgentWithUserNumber(userNumber);
-		//유저 가입 날짜 가져오기
+		// 유저 가입 날짜 가져오기
 		UserCommonData userData = memberService.getUserDataByUnumber(userNumber);
-		
+
 		// 중개인 정보
 		Agent agent = agentService.getAgentDataByUserNumber(anumber);
 		// 중개인 상세정보
