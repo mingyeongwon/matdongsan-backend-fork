@@ -28,5 +28,6 @@ public interface UserCommonDataDao {
 
 	public UserCommonData getUserDataByUser(String uemail);
 
+	public UserCommonData getUserDataByUnumber(int unumber);
 
 }

@@ -46,5 +46,11 @@
 		select * 
 		from user_common_data 
 		where uemail = #{uemail}
-	</select>	
+	</select>
+	
+	<!-- unumber로 전체 정보 가져오기 -->
+	<select id="getUserDataByUnumber" parameterType="int" resultType="UserCommonData">
+	select * from USER_COMMON_DATA
+	where unumber = #{unumber}
+	</select>		
 </mapper>

@@ -117,11 +117,19 @@ public class HomeController {
 	@GetMapping("/Mypage/MyInfomation/{uemail}")
 	public UserCommonData getUserDataByUemail(@PathVariable String uemail) {
 		log.info(uemail);
-		Map<String, Object> map = new HashMap<>();
 		UserCommonData userData = memberService.getUserDataByUemail(uemail);
-		map.put("userData", userData);
 		return userData;
 	}
+	
+	// 유저정보 불러오기 by unumber
+	@GetMapping("/getUserData/{unumber}")
+	public UserCommonData getUserDataByUnumber(@PathVariable int unumber) {
+		UserCommonData userData = memberService.getUserDataByUnumber(unumber);
+		return userData;
+	}	
+	
+	
+
 	
 	// 중개인 아이디 찾기
 	@PostMapping("/login/findAgentEmail")

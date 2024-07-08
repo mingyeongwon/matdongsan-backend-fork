@@ -24,6 +24,7 @@ public class MemberService {
 	@Autowired
 	private UserCommonDataDao userEmailDao;
 
+	
 	public void joinUserByMember(UserCommonData userEmail) {
 		userEmailDao.insertUserDataByUser(userEmail);
 	}
@@ -97,6 +98,10 @@ public class MemberService {
 	// 해당하는 회원이 있는지 찾기
 	public int checkMember(Member member) {
 		return memberDao.checkMember(member);
+	}
+
+	public UserCommonData getUserDataByUnumber(int unumber) {
+		return userEmailDao.getUserDataByUnumber(unumber);
 	}
 
 }
