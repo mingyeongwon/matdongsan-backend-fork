@@ -104,7 +104,6 @@ public class AgentController {
 		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 9, 5, "agentPropertyList");
 		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
-		log.info(userPropertyList.toString());
 		Map<String, Object> map = new HashMap<>();
 		map.put("pager", pager);
 		map.put("agentProperty", userPropertyList);
@@ -165,6 +164,12 @@ public class AgentController {
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
 		log.info("페이지넘버입니다.: " + pageNo);
+		// 거래완료 개수파악을 위한 유저넘버
+		int userNumber = agentService.getUserNumberByAnumber(anumber);
+		int tradeCount = propertyService.getTradeCountByAgentWithUserNumber(userNumber);
+		//유저 가입 날짜 가져오기
+		UserCommonData userData = memberService.getUserDataByUnumber(userNumber);
+		
 		// 중개인 정보
 		Agent agent = agentService.getAgentDataByUserNumber(anumber);
 		// 중개인 상세정보
@@ -179,9 +184,10 @@ public class AgentController {
 			agentReview.setMembername(memberName);
 		}
 		log.info("페이지네이션으로 호출됨");
-		log.info(agentReviewList.toString());
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
+		map.put("tradeCount", tradeCount);
+		map.put("joinDate", userData.getUjoindate());
 		map.put("agentDetail", agentDetail);
 		map.put("agentReviewList", agentReviewList);
 		map.put("pager", pager);
