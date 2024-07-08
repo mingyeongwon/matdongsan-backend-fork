@@ -143,6 +143,15 @@ public class AgentService {
 		return userNumber;
 	}
 	
+	// 아이디 찾기
+	public String findEmail(Agent agent) {
+		return agentDao.findEmail(agent);
+	}
+	
+	// 해당하는 회원이 있는지 찾기
+	public int checkAgent(Agent agent) {
+		return agentDao.checkAgent(agent);
+	}
 
 }
 

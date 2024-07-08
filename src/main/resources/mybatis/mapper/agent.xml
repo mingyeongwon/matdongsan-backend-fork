@@ -94,4 +94,17 @@
 		select a_unumber from agent
 		where anumber = #{anumber}
 	</select>
+	
+		<!-- 아이디 찾기 -->
+	<select id="findEmail" parameterType="agent" resultType="String">
+		select uemail from user_common_data
+		where unumber in (select a_unumber
+							from agent
+							where aname = #{aname} and aphone =#{aphone})
+	</select>
+	
+	<!-- 회원의 정보가 일치하는 지 확인 -->
+	<select id="checkAgent" parameterType="agent" resultType="int">
+		select count(*) from agent where aname = #{aname} and aphone =#{aphone}
+	</select>
 </mapper>

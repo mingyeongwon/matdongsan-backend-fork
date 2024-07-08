@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mycompany.matdongsan.dao.UserCommonDataDao;
+import com.mycompany.matdongsan.dto.Agent;
+import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.security.AppUserDetails;
 import com.mycompany.matdongsan.security.AppUserDetailsService;
@@ -36,6 +40,8 @@ public class HomeController {
 	private JwtProvider jwtProvider;
 	@Autowired
 	private AppUserDetailsService userDetailsService;
+	@Autowired
+	private UserCommonDataDao userCommonDataDao;
 	@GetMapping("/")
 	public String home() {
 		log.info("실행");
@@ -116,5 +122,96 @@ public class HomeController {
 		map.put("userData", userData);
 		return userData;
 	}
+	
+	// 중개인 아이디 찾기
+	@PostMapping("/login/findAgentEmail")
+	public Map<String, String> getAgentEmail(Agent agent){
+		// 이메일 가져오기
+		String aemail = agentService.findEmail(agent);
+		
+		// 통신 결과를 map에 담아 보내기 
+		Map<String, String> result = new HashMap<>();
+		
+		if(aemail != null) {
+			result.put("success", aemail);
+		} else {
+			result.put("fail", "이메일을 찾을 수 없습니다.");
+		}
+		return result;
+	}
+	
+	// 일반인 아이디 찾기 -> 개인 정보는 form데이터로 받기 위해 post매핑 함
+	@PostMapping("/login/findMemberEmail")
+	public Map<String, String> getMemberEmail(Member member){
+		log.info("받아온 매개변수 없다고 뜬다."+member.toString());
+		
+		// 이메일 가져오기
+		String memail = memberService.findEmail(member);
+		
+		// 통신 결과를 map에 담아 보내기
+		Map<String, String> result = new HashMap<>();
+		
+		// memail이 빈값이 아닐 경우 memail데이터를 반환
+		if(memail != null) {
+			result.put("success", memail);
+		} else {
+			result.put("fail", "이메일을 찾을 수 없습니다.");
+		}
+		
+		return result;
+		
+	}
+	
+	// 비밀번호 찾기 위한 회원 인증
+	@PostMapping("/canResetPassword")
+	public Map<String, String> canResetPassword(
+			@RequestParam("name") String name
+			, @RequestParam("phone") String phone
+			, @RequestParam("email") String email){
+		// 리턴 값 반환 할 map
+		Map<String, String> result = new HashMap<>();
+		
+		// 아이디가 존재 하는지 확인
+		UserCommonData userData = userCommonDataDao.getUserDataByUser(email);
+		
+		if(userData == null) {
+			result.put("noUser", "해당 아이디를 찾을 수 없습니다");
+			return result;
+		}
+		
+		if(userData.getUemail() != null) {
+			// 존재 한다면 입력한 정보가 맞는지 확인
+			if(userData.getUrole().equals("MEMBER")) {
+				// 일반 회원이면 member에서 찾기
+				Member member = new Member();
+				member.setMname(name);
+				member.setMphone(phone);
+				// 회원이 있다면
+				log.info("회원 존재 여부"+memberService.checkMember(member)+"");
+				if(memberService.checkMember(member) > 0) {
+					result.put("success", "일반회원존재");
+				} else {
+					result.put("notFoundMember", "아이디와 정보가 일치하지 않습니다.");
+				}
+			} else if(userData.getUrole().equals("AGENT")) {
+				// 중개인 회원이면 agent에서 찾기
+				Agent agent = new Agent();
+				agent.setAname(name);
+				agent.setAphone(phone);
+				// 회원이 있다면
+				if(agentService.checkAgent(agent) > 0) {
+					result.put("success", "중개사회원존재");
+				} else {
+					result.put("notFoundMember", "아이디와 정보가 일치하지 않습니다.");
+				}
+			} else {
+				log.info("여기로 오면 안됨");
+			}
+		} 
+		
+		return result;
+	}
+	
+	
 
 }

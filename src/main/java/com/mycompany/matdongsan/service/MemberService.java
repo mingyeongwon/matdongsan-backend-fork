@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.MemberDao;
 import com.mycompany.matdongsan.dao.UserCommonDataDao;
+import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
 
@@ -86,6 +87,16 @@ public class MemberService {
 	public void updateMemberData(Member member) {
 		memberDao.updateMemberData(member);
 		
+	}
+	
+	// 아이디(이메일) 찾기
+	public String findEmail(Member member) {
+		return memberDao.findEmail(member);
+	}
+	
+	// 해당하는 회원이 있는지 찾기
+	public int checkMember(Member member) {
+		return memberDao.checkMember(member);
 	}
 
 }

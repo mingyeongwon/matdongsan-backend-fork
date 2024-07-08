@@ -41,4 +41,17 @@
 		select * from member
 		where m_unumber = #{userNumber}
 	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="findEmail" parameterType="member" resultType="String">
+		select uemail from user_common_data
+		where unumber in (select m_unumber
+							from member
+							where mname = #{mname} and mphone =#{mphone})
+	</select>
+	
+	<!-- 회원의 정보가 일치하는 지 확인 -->
+	<select id="checkMember" parameterType="member" resultType="int">
+		select count(*) from member where mname = #{mname} and mphone =#{mphone}
+	</select>
 </mapper>
