@@ -119,7 +119,6 @@ public class PropertyController {
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
 		propertyMap.put("propertyPhotos", propertyPhotos);
-		log.info(""+totalProperty);
 		return propertyMap;
 	}
 	
@@ -318,7 +317,9 @@ public class PropertyController {
 		userComment.setUcUnumber(userNumber);
 		userComment.setUcPnumber(pnumber);
 		userComment.setUcremoved(false);
+		log.info(userComment.toString() + "userComment 실행 중");
 		propertyService.createPropertyComment(userComment);
+		log.info(userComment.toString() + "userComment 실행 끝");
 
 		return userComment;
 	}
