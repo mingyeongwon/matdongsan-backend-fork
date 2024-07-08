@@ -29,24 +29,59 @@
 	</select>
 
 	<!-- 전체 중개인 리스트 -->
-	<select id="getAgentListByKeyword" resultType="Agent">
+<select id="getAgentListByKeyword" resultType="Agent">
     <![CDATA[
     SELECT *
     FROM (
-        SELECT a.*, ROW_NUMBER() OVER (ORDER BY a.anumber desc) AS rnum
+        SELECT a.*, 
+               COALESCE(ar.commentCount, 0) AS commentCount, 
+               COALESCE(ar.arrate, 0) AS arrate,
+               ROW_NUMBER() OVER (
+    ]]>
+    <choose>
+        <when test="byComment == 'many'">
+            <![CDATA[ORDER BY COALESCE(ar.commentCount, 0) DESC]]>
+        </when>
+        <when test="byComment == 'less'">
+            <![CDATA[ORDER BY COALESCE(ar.commentCount, 0) ASC]]>
+        </when>
+        <when test="byRate == 'high'">
+            <![CDATA[ORDER BY COALESCE(ar.arrate, 0) DESC]]>
+        </when>
+        <when test="byRate == 'low'">
+            <![CDATA[ORDER BY COALESCE(ar.arrate, 0) ASC]]>
+        </when>
+        <when test="byDate == 'desc'">
+            <![CDATA[ORDER BY a.anumber DESC]]>
+        </when>
+        <when test="byDate == 'asc'">
+            <![CDATA[ORDER BY a.anumber ASC]]>
+        </when>
+        <otherwise>
+            <![CDATA[ORDER BY a.anumber DESC]]>
+        </otherwise>
+    </choose>
+    <![CDATA[
+               ) AS rnum
         FROM Agent a
-        WHERE 1=1 ]]>
-		<if test="keyword != null and keyword != ''">
-			AND a.abrand LIKE '%' || #{keyword} || '%'
-			OR a.aname LIKE
-			'%' || #{keyword} || '%'
-			OR a.aaddress LIKE '%' || #{keyword} || '%'
-		</if>
+        LEFT JOIN (
+            SELECT ar_anumber, COUNT(*) AS commentCount, AVG(arrate) AS arrate
+            FROM agent_review
+            GROUP BY ar_anumber
+        ) ar ON a.anumber = ar.ar_anumber
+    ]]>
+    <if test="keyword != null and keyword != ''">
+        <![CDATA[
+        AND (a.abrand LIKE '%' || #{keyword} || '%'
+        OR a.aname LIKE '%' || #{keyword} || '%'
+        OR a.aaddress LIKE '%' || #{keyword} || '%')
+        ]]>
+    </if>
     <![CDATA[
     )
     WHERE rnum BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     ]]>
-	</select>
+</select>
 
 
 	<!-- 전체 중개인 리스트 -->
@@ -79,18 +114,19 @@
 		update agent set
 		abrand=#{abrand},aname=#{aname},
 		aphone=#{aphone},aaddress=#{aaddress},
-		
+
 		<if test="aprofileoname != null">
-		aprofileoname=#{aprofileoname},
-		aprofiletype=#{aprofiletype},
-		aprofiledata=#{aprofiledata},
+			aprofileoname=#{aprofileoname},
+			aprofiletype=#{aprofiletype},
+			aprofiledata=#{aprofiledata},
 		</if>
 
 		apostcode=#{apostcode},aaddressdetail=#{aaddressdetail},alatitude=#{alatitude},alongitude=#{alongitude}
 		where anumber=#{anumber}
 	</update>
-	
-	<select id="getUserNumberByAnumber" parameterType="int" resultType="int">
+
+	<select id="getUserNumberByAnumber" parameterType="int"
+		resultType="int">
 		select a_unumber from agent
 		where anumber = #{anumber}
 	</select>

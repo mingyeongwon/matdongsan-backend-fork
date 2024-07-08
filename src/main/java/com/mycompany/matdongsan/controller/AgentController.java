@@ -56,22 +56,23 @@ public class AgentController {
 	// 부동산 정보 리스트 출력
 	@GetMapping("/Agent")
 	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
-			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword) {
-
+			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
+			@RequestParam(required = false) String byRate, @RequestParam(required = false) String byComment,
+			@RequestParam(required = false) String byDate) {
+		log.info("Received filters: byRate={}, byComment={}, byDate={}", byRate, byComment, byDate); // 로그 출력 수정
 		// 무한 스크롤
 		int totalAgentRows = agentService.getAllAgentCount();
 		Pager pager = new Pager(size, pageNo, totalAgentRows);
-
 		// 검색 내용 찾기
 		// 부동산 이름, 대표 이름, 주소명
 		// 키워드 유무 확인
 		log.info(pager.getStartRowIndex() + "");
 		List<Agent> list = new ArrayList<>();
-		if (keyword != null) {
-			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword);
-		} else {
-			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage());
-		}
+
+			list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword,byRate,byComment,byDate);
+
+			//list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage());
+
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", list);
@@ -86,8 +87,6 @@ public class AgentController {
 		Map<String, String> map = new HashMap<>();
 		String reviewRateAvg = agentService.getReviewAvgByanumber(anumber);
 		String totalReviewsByAgent = agentService.getReviewCountByAnumber(anumber);
-		log.info("reviewRateAvg: " + totalReviewsByAgent);
-		log.info("totalReviewsByAgent: " + totalReviewsByAgent);
 		map.put("sum", reviewRateAvg);
 		map.put("total", totalReviewsByAgent);
 		return map;
@@ -95,18 +94,18 @@ public class AgentController {
 
 	// 중개인별 매물 데이터 가져오기
 	@GetMapping("/Agent/Property/{anumber}")
-	public Map<String,Object> getAgentPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+	public Map<String, Object> getAgentPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@PathVariable int anumber, HttpSession session) {
 		log.info("중개인 매물 실행");
-		//유저번호
+		// 유저번호
 		int unumber = agentService.getUserNumberByAnumber(anumber);
-		log.info(unumber+"이게 anumber로받은 번호");
-		
+		log.info(unumber + "이게 anumber로받은 번호");
+
 		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 9, 5, "agentPropertyList");
 		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
 		log.info(userPropertyList.toString());
-		Map<String,Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("pager", pager);
 		map.put("agentProperty", userPropertyList);
 		return map;
@@ -180,7 +179,7 @@ public class AgentController {
 			agentReview.setMembername(memberName);
 		}
 		log.info("페이지네이션으로 호출됨");
-		log.info(pager.toString());
+		log.info(agentReviewList.toString());
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", agent);
 		map.put("agentDetail", agentDetail);
