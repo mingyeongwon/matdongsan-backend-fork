@@ -33,6 +33,7 @@ import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.Report;
 import com.mycompany.matdongsan.dto.TotalProperty;
 import com.mycompany.matdongsan.dto.UserComment;
+import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
 import com.mycompany.matdongsan.service.PagerService;
@@ -378,6 +379,20 @@ public class PropertyController {
 		}
 		
 	}
+	
+	
+//	상품 좋아요 리스트
+	@GetMapping("/FavoriteProperty")
+	public void favoriteList(Authentication authentication) {
+		String uemail = authentication.getName();
+		UserCommonData userCommonData = memberService.getUserDataFullyByUemail(uemail);
+		List<Favorite> favoritePropertyList;
+		if(userCommonData.getUrole().equals("MEMBER")) {
+			favoritePropertyList = propertyService.getAllUserFavoriteList(userCommonData.getUnumber());
+			
+		}
+	}
+	
 	
 	
 //	상품 좋아요 취소
