@@ -22,11 +22,21 @@
 		from(
 			select arnumber,arcontent,arrate,ardate,ar_anumber,ar_mnumber
 			from agent_review
-			where AR_anumber =#{anumber}
-			order by arnumber ]]>
+			where AR_anumber =#{anumber} ]]>
+		<if test="sort == 'lowRate'">
+			order by arrate asc
+		</if>
+		<if test="sort == 'highRate'">
+			order by arrate desc
+		</if>
+
 		<if test="sort == 'desc'">
-			desc
-		</if><![CDATA[
+			order by arnumber desc
+		</if>
+		<if test="sort == 'asc'">
+			order by arnumber asc
+		</if>
+		<![CDATA[
 		)
 		where rownum <= #{pager.endRowNo}
 		)
@@ -43,9 +53,11 @@
 		agent_review
 		where arnumber=#{arnumber}
 		and ar_anumber = #{anumber}
-		and ar_mnumber = #{userNumber}
+		and
+		ar_mnumber = #{userNumber}
 	</delete>
-	<select id="getAgentReviewRateAvgByAnumber" parameterType="int" resultType="int">
+	<select id="getAgentReviewRateAvgByAnumber" parameterType="int"
+		resultType="int">
 	 <![CDATA[SELECT COALESCE(SUM(arrate), 0) FROM agent_review WHERE ar_anumber = #{anumber}]]>
 	</select>
 	<update id="updateAgentReview" parameterType="AgentReview">
