@@ -60,7 +60,7 @@ public class HomeController {
 		boolean checkActivation = userDetails.isEnabled();
 
 		// Spring security 인증 처리
-		if (checkResult && !checkActivation) {
+		if (checkResult != false && !checkActivation) {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
 					userDetails.getAuthorities());
 
@@ -91,7 +91,7 @@ public class HomeController {
 		} else if (checkActivation) { // 비활성화(삭제된) 유저의 경우 removed라고 map에 값을 넣음
 			map.put("result", "removed");
 
-		} else { // 로그인에 실패한 경우(비밀번호, 아이디 문제) fail 표시
+		} else { // 로그인에 실패한 경우(비밀번호 문제) fail 표시
 			map.put("result", "fail");
 		}
 		log.info(map + "");
@@ -198,7 +198,7 @@ public class HomeController {
 		if(userData == null) {
 			result.put("noUser", "해당 아이디를 찾을 수 없습니다");
 			return result;
-		}
+		} 
 		
 		if(userData.getUemail() != null) {
 			// 존재 한다면 입력한 정보가 맞는지 확인
@@ -210,9 +210,9 @@ public class HomeController {
 				// 회원이 있다면
 				log.info("회원 존재 여부"+memberService.checkMember(member)+"");
 				if(memberService.checkMember(member) > 0) {
-					result.put("success", "일반회원존재");
+					result.put("success", userData.getUemail());
 				} else {
-					result.put("notFoundMember", "아이디와 정보가 일치하지 않습니다.");
+					result.put("notFoundUser", "아이디와 정보가 일치하지 않습니다.");
 				}
 			} else if(userData.getUrole().equals("AGENT")) {
 				// 중개인 회원이면 agent에서 찾기
@@ -221,17 +221,58 @@ public class HomeController {
 				agent.setAphone(phone);
 				// 회원이 있다면
 				if(agentService.checkAgent(agent) > 0) {
-					result.put("success", "중개사회원존재");
+					result.put("success", userData.getUemail());
 				} else {
-					result.put("notFoundMember", "아이디와 정보가 일치하지 않습니다.");
+					result.put("notFoundUser", "아이디와 정보가 일치하지 않습니다.");
 				}
-			} else {
-				log.info("여기로 오면 안됨");
-			}
+			} 
 		} 
 		
 		return result;
 	}
+	
+	// 비밀번호 변경
+	@PutMapping("/updatePassword")
+	public Map<String, String> updatePassword(UserCommonData userData) {
+		Map<String, String> map = new HashMap<>();
+		
+		// 비밀번호 암호화
+		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		userData.setUpassword(passwordEncoder.encode(userData.getUpassword()));
+		
+		// 비밀번호 변경
+		int result = userCommonDataDao.updatePassword(userData);
+		
+		// result가 0이면 수정 안됨, 1이면 된 것이다.
+		if(result>0) {
+			map.put("success", "변경이 완료되었습니다.");
+		}else {
+			map.put("fail", "변경을 실패하였습니다.");
+		}
+		
+		return map;
+	}
+	
+	// 비밀번호 맞는지 확인
+	@PostMapping("/checkOldPassword")
+	public Map<String, String> checkOldPassword(UserCommonData userData) {
+		// 사용자 상세 정보 얻기
+		AppUserDetails userDetails = (AppUserDetails) userDetailsService.loadUserByUsername(userData.getUemail());
+		// 비밀번호 체크
+		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		boolean checkResult = passwordEncoder.matches(userData.getUpassword(), userDetails.getUser().getUpassword());
+		
+		Map<String, String> map = new HashMap<>();
+		if(checkResult) {
+			map.put("result", "맞음");
+		} else {
+			map.put("result", "틀림");
+		}
+		
+		return map;
+	}
+
+
 	
 	
 

@@ -52,5 +52,11 @@
 	<select id="getUserDataByUnumber" parameterType="int" resultType="UserCommonData">
 	select * from USER_COMMON_DATA
 	where unumber = #{unumber}
-	</select>		
+	</select>
+	<!-- 비밀번호 변경하기 -->
+	<update id="updatePassword" parameterType="UserCommonData">
+		update user_common_data
+		set upassword = #{upassword}
+		where uemail = #{uemail}
+	</update>	
 </mapper>

@@ -217,7 +217,7 @@ public class AgentController {
 			AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(userNumber);
 			map.put("agentSignupData", agentSignupData);
 		}
-		int propertyListing = propertyService.getUserPropertyListingQuantity(userNumber);
+		int propertyListing = propertyService.getUserPropertyListingRemain(userNumber);
 		map.put("propertyListing", propertyListing);
 		return map;
 

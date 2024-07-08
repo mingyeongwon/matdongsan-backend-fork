@@ -13,7 +13,7 @@ public interface PropertyListingDao {
 
 	void updateRemainPropertyListing(int userNumber);
 
-	int getQuantityByUserNumber(int userNumber);
+	int getRemainByUserNumber(int userNumber);
 
 	int checkPropertyListingByUserNumber(int userNumber);
 
