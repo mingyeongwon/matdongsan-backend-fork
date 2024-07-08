@@ -20,5 +20,49 @@
 		delete 
 		from favorite
 		where f_pnumber=#{pnumber} and f_mnumber = #{userNumber}
-	</delete>	   		
+	</delete>	
+	
+	<!-- 좋아요 리스트 by filter and keyword -->   
+	<select id="getUserFavoriteList" parameterType="map" resultType="Property">
+		<![CDATA[
+		    select *
+		    from (
+		        select p.*, row_number() over (order by p.pnumber desc) as rnum
+		        from property p 
+		]]>
+		        <where>
+			      	<if test="rentType != null">
+			      		and pcategory=#{rentType}
+			      	</if>
+			      	<if test="keyword != null and keyword != ''">
+			      		and (
+			                p.paddress like '%' || #{keyword} || '%' 
+			                or p.paddressdetail like '%' || #{keyword} || '%'
+			            )
+			      	</if>
+		       </where>	
+		        order by
+					<if test="price=='lowPrice'">
+						pdeposite asc
+					</if>
+					<if test="price=='highPrice'">
+						pdeposite desc
+					</if>	
+					<if test="price != null and date != null">
+					,
+					</if>
+					<!-- pmoveindate로 바꾸기 -->
+					<if test="date=='older'">
+						pdate asc
+					</if>
+					<if test="date=='newer'">
+						pdate desc
+					</if>	 
+					<if test="price==null and date==null">
+						pnumber desc
+					</if>				        
+		<![CDATA[ )
+		    where rnum between #{offset} + 1 and #{offset} + #{limit}
+	    ]]>
+	</select>     		
 </mapper>

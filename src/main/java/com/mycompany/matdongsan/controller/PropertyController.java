@@ -283,7 +283,7 @@ public class PropertyController {
 	@PostMapping("/Property/{pnumber}")
 	public UserComment createPropertyComment(@PathVariable int pnumber, @ModelAttribute UserComment userComment,
 			Authentication authentication) {
-
+		log.info("pnumber in boot : " + pnumber);
 		String userEmail = authentication.getName();
 		String userRole = memberService.getUserRole(userEmail);
 		int userNumber = memberService.getUnumberByUemail(userEmail);
