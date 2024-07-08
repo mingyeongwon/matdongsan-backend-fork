@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       String headerValue = httpServletRequest.getHeader("Authorization");
       if (headerValue != null && headerValue.startsWith("Bearer")) {
          accessToken = headerValue.substring(7);
-         log.info(accessToken);
+         //log.info(accessToken);
       }
       
       //쿼리스트링으로 전달될 AccessToken 얻기
@@ -57,9 +57,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          Jws<Claims> jws = jwtProvider.validateToken(accessToken);
          if (jws != null) {
             // 유효한 경우
-            log.info("AccessToken 유효함");
+            //log.info("AccessToken 유효함");
             String userId = jwtProvider.getUserId(jws);
-            log.info("user ID: " + userId);
+            //log.info("user ID: " + userId);
             
             //사용자 상세 정보 얻기
             UserDetails userDetails = userDetailsService.loadUserByUsername(userId);

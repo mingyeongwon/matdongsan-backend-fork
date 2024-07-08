@@ -177,5 +177,13 @@
 		)
 		where rownum <= 4
 	]]>
-	</select>         	
+	</select>  
+	
+	<!-- 완료된 거래 개수 -->
+	<select id="getTradeCountByUserNumber" parameterType="int" resultType="int">
+		select count(*) from property
+		where pstatus='거래완료'
+		and p_unumber = #{userNumber}
+	</select>
+	       	
 </mapper>

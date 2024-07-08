@@ -13,7 +13,7 @@ public interface AgentDao {
 	int getAgentCount();
 	//전체 중개인 데이터 리스트
 	List<Agent> getAgentList(@Param("offset") int offset, @Param("limit") int limit);
-	List<Agent> getAgentListByKeyword(@Param("offset") int offset, @Param("limit") int limit,@Param("keyword") String keyword);
+	List<Agent> getAgentListByKeyword(int offset, int limit, String keyword,String byRate,String byComment,String byDate);
 	void insertNewAgentData(Agent agent);
 	void joinByAgent(Agent agent);
 	int getAllAgentCount();

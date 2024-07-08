@@ -306,5 +306,10 @@ public class PropertyService {
 		}
 		return 0;
 	}
+
+	public int getTradeCountByAgentWithUserNumber(int userNumber) {
+		int count = propertyDao.getTradeCountByUserNumber(userNumber);
+		return count;
+	}
 	
 }
