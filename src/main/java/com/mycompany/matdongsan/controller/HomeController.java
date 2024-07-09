@@ -196,7 +196,7 @@ public class HomeController {
 		UserCommonData userData = userCommonDataDao.getUserDataByUser(email);
 		
 		if(userData == null) {
-			result.put("noUser", "해당 아이디를 찾을 수 없습니다");
+			result.put("noUser", "해당 회원을 찾을 수 없습니다");
 			return result;
 		} 
 		
