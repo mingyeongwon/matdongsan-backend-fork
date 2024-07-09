@@ -37,7 +37,7 @@
 	<select id="getRemainByUserNumber" parameterType="int"
 		resultType="int">
 		select PLREMAIN from property_listing
-		where pl_unumber = #{userNumber}
+		where pl_unumber = #{userNumber} and plremain != 0
 	</select>
 	<!-- remain 개수 수정 -->
 	<update id="updateRemainPropertyListing" parameterType="int">

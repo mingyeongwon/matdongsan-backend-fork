@@ -307,6 +307,7 @@ public class PropertyService {
 		return 0;
 	}
 	
+	// 매물 등록권 잔여 개수
 	public int getUserPropertyListingRemain(int userNumber) {
 		boolean hasUser = propertyListingDao.checkPropertyListingByUserNumber(userNumber)>0? true : false;
 		if(hasUser) {
