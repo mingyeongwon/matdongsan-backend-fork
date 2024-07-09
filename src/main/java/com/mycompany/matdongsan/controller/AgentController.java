@@ -60,13 +60,13 @@ public class AgentController {
 			@RequestParam(required = false) String byRate, @RequestParam(required = false) String byComment,
 			@RequestParam(required = false) String byDate) {
 		log.info("Received filters: byRate={}, byComment={}, byDate={}", byRate, byComment, byDate); // 로그 출력 수정
+		log.info("이게 키워드?: " + keyword);
 		// 무한 스크롤
 		int totalAgentRows = agentService.getAllAgentCount();
 		Pager pager = new Pager(size, pageNo, totalAgentRows);
 		// 검색 내용 찾기
 		// 부동산 이름, 대표 이름, 주소명
 		// 키워드 유무 확인
-		log.info(pager.getStartRowIndex() + "");
 		List<Agent> list = new ArrayList<>();
 
 		list = agentService.getAgentList(pager.getStartRowIndex(), pager.getRowsPerPage(), keyword, byRate, byComment,
@@ -74,7 +74,7 @@ public class AgentController {
 
 		// list = agentService.getAgentList(pager.getStartRowIndex(),
 		// pager.getRowsPerPage());
-
+		log.info(list.size()+" 사이즈");
 		Map<String, Object> map = new HashMap<>();
 		map.put("agent", list);
 		map.put("pager", pager);
@@ -164,7 +164,7 @@ public class AgentController {
 	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
-		
+
 		// 거래완료 개수파악을 위한 유저넘버
 		int userNumber = agentService.getUserNumberByAnumber(anumber);
 		int tradeCount = propertyService.getTradeCountByAgentWithUserNumber(userNumber);

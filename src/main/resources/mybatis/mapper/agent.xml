@@ -69,6 +69,7 @@
             FROM agent_review
             GROUP BY ar_anumber
         ) ar ON a.anumber = ar.ar_anumber
+        WHERE 1=1
     ]]>
     <if test="keyword != null and keyword != ''">
         <![CDATA[
@@ -82,6 +83,7 @@
     WHERE rnum BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     ]]>
 </select>
+
 
 
 	<!-- 전체 중개인 리스트 -->
