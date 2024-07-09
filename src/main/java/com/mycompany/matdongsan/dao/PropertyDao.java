@@ -27,14 +27,14 @@ public interface PropertyDao {
 	public int getAllPropertyCount();
 	
 	// property 개수 by filter and keyword
-	public int getPropertyCountByFilter(@Param("keyword") String keyword, @Param("price") String price, @Param("date") String date, @Param("rentType") String rentType);
+	public int getPropertyCountByFilter(@Param("keyword") String keyword, @Param("price") String price, @Param("date") String date, @Param("rentType") String rentType,String platitude,String plongitude);
 	
 	// property 전체 리스트
 	public List<Property> getAllPropertyList(@Param("offset") int offset, @Param("limit") int limit);
 	
 	// property 리스트 by filter and keyword
 	public List<Property> getPropertyListByFilter(@Param("offset") int offset, @Param("limit") int limit, @Param("keyword") String keyword, 
-			@Param("price") String price, @Param("date") String date, @Param("rentType") String rentType);
+			@Param("price") String price, @Param("date") String date, @Param("rentType") String rentType,@Param("platitude")String platitude,@Param("plongitude") String plongitude);
 	
 	// 삭제
 	public int deletePropertyByPnumber(int pnumber);

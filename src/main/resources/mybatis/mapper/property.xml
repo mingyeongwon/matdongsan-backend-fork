@@ -64,6 +64,10 @@
                 or paddressdetail like '%' || #{keyword} || '%'
             )
       	</if>
+      	<if test="platitude != null">
+      	and PLATITUDE = #{platitude}
+      	and plongitude = #{plongitude}
+      	</if>
       </where>
    </select>      
 
@@ -97,6 +101,10 @@
 			                or p.paddressdetail like '%' || #{keyword} || '%'
 			            )
 			      	</if>
+			      		<if test="platitude != '' and plongitude !=''">
+			      		and PLATITUDE = #{platitude}
+			      		and PLONGITUDE = #{plongitude}
+			      		</if>
 		       </where>	
 		        order by
 					<if test="price=='lowPrice'">

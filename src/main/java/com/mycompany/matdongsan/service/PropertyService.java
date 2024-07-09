@@ -121,8 +121,8 @@ public class PropertyService {
 	}
 	
 	// property 개수 by filter and keyword
-	public int getPropertyCountByFilter(String keyword, String price, String date, String rentType) {
-		int totalPropertyRows = propertyDao.getPropertyCountByFilter(keyword, price, date, rentType);
+	public int getPropertyCountByFilter(String keyword, String price, String date, String rentType,String lat,String lng) {
+		int totalPropertyRows = propertyDao.getPropertyCountByFilter(keyword, price, date, rentType,lat,lng);
 		return totalPropertyRows;
 	}
 	
@@ -134,8 +134,8 @@ public class PropertyService {
 
 	// property 리스트 by filter and keyword
 	public List<Property> getPropertyListByFilter(int offset, int limit, String keyword, String price,
-			String date, String rentType) {
-		List<Property> propertyList = propertyDao.getPropertyListByFilter(offset, limit, keyword, price, date, rentType);
+			String date, String rentType,String lat,String lng) {
+		List<Property> propertyList = propertyDao.getPropertyListByFilter(offset, limit, keyword, price, date, rentType,lat,lng);
 		return propertyList;
 	}
 	

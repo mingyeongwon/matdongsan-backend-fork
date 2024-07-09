@@ -59,18 +59,20 @@ public class PropertyController {
 	public Map<String, Object> getPropertyList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
-			@RequestParam(required = false) String rentType) {
-
+			@RequestParam(required = false) String rentType, @RequestParam(required = false) String lat,
+			@RequestParam(required = false) String lng) {
+		//log.info(lat+" "+ lng + "입니당");
 		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType
 		int totalPropertyRows;
 		Pager pager;
 		List<Property> Propertylist;
 
-		if (keyword != null || price != null || date != null || rentType != null) {
-			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType);
+		if (keyword != null || price != null || date != null || rentType != null || lat != null || lng != null) {
+			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType, lat, lng);
 			pager = new Pager(size, pageNo, totalPropertyRows);
 			Propertylist = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(),
-					keyword, price, date, rentType);
+					keyword, price, date, rentType, lat, lng);
+
 		} else { // 전체 리스트
 			totalPropertyRows = propertyService.getAllPropertyCount();
 			pager = new Pager(size, pageNo, totalPropertyRows);
@@ -194,7 +196,7 @@ public class PropertyController {
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@PutMapping("/PropertyForm/{pnumber}")
 	public TotalProperty updateProperty(@ModelAttribute TotalProperty totalProperty) throws IOException {
-		
+
 		log.info("수정 실행 시작");
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
@@ -254,7 +256,7 @@ public class PropertyController {
 		property.setPthumbnaildata(null);
 		propertyPhoto.setPpattach(null);
 		propertyPhoto.setPpattachdata(null);
-		
+
 		log.info("수정 실행 끝");
 
 		return totalProperty;
@@ -381,19 +383,19 @@ public class PropertyController {
 
 	}
 
-
 //	상품 좋아요 리스트
 	@GetMapping("/FavoriteProperty")
 	public Map<String, Object> favoriteList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, Authentication authentication) {
-		
+
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
 		Member member = memberService.getMemberDataFullyByUserNumber(unumber);
 
 		int totalFavoriteRows = propertyService.getAllFavoriteCount(member.getMnumber());
 		Pager pager = new Pager(size, pageNo, totalFavoriteRows);
-		List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(pager.getStartRowIndex(), pager.getRowsPerPage());
+		List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(pager.getStartRowIndex(),
+				pager.getRowsPerPage());
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("favorite", favoritePropertyList);
@@ -412,20 +414,20 @@ public class PropertyController {
 		propertyService.cancelLikeButton(pnumber, memberNumber);
 		log.info("좋아요 취소 완료");
 	}
-	
+
 	// 좋아요 여부
 	@GetMapping("/isPropertyLiked/{pnumber}")
 	public Boolean isPropertyLiked(@PathVariable int pnumber, Authentication authentication) {
-	    String userEmail = authentication.getName();
-	    int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
+		String userEmail = authentication.getName();
+		int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
 
-	    return propertyService.existsFavorite(pnumber, memberNumber);
-	    
+		return propertyService.existsFavorite(pnumber, memberNumber);
+
 //	    Map<String, Boolean> response = new HashMap<>();
 //	    response.put("liked", isLiked);
 //
 //	    return response;
-	}	
+	}
 
 //	매물 신고
 	@PostMapping("/createPropertyReport/{pnumber}")
