@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.matdongsan.dto.Favorite;
+import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.Pager;
 import com.mycompany.matdongsan.dto.Property;
 import com.mycompany.matdongsan.dto.PropertyDetail;
@@ -82,16 +83,15 @@ public class PropertyController {
 		map.put("pager", pager);
 		return map; // { "property" : {}, "pager" : {}}
 	}
-	
 
 //	유저 매물 리스트
 	@GetMapping("/Mypage/ManageMyProperty")
 	public List<Property> getUserPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
-												Authentication authentication, HttpSession session) {
-		
+			Authentication authentication, HttpSession session) {
+
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
-		
+
 		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 9, 5, "userPropertyList");
 		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
@@ -100,28 +100,28 @@ public class PropertyController {
 
 //	읽기
 	@GetMapping("/Property/{pnumber}")
-	public Map<String, Object> readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty, @RequestParam(defaultValue = "1", required = false) String pageNo, 
+	public Map<String, Object> readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty,
+			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String date, HttpSession session) {
-		
+
 		// property 정보
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
-		
-		// photos는 여러 개라서 따로 리스트 설정 
+
+		// photos는 여러 개라서 따로 리스트 설정
 		List<PropertyPhoto> propertyPhotos = propertyService.getPropertyPhotoByPpPnumber(pnumber);
-		
+
 		// property Comment
 		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 9, 5, "propertyComment");
 		List<UserComment> propertyCommentList = propertyService.getCommentByPnumber(pnumber, date, pager);
-		
+
 		Map<String, Object> propertyMap = new HashMap<>();
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
 		propertyMap.put("propertyPhotos", propertyPhotos);
 		return propertyMap;
 	}
-	
 
 //	등록
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
@@ -129,15 +129,15 @@ public class PropertyController {
 	@PostMapping("/PropertyForm")
 	public boolean createProperty(@ModelAttribute TotalProperty totalProperty, Authentication authentication)
 			throws IOException {
-		
+
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
-		
+
 		// 유저가 이전에 결제한 적 있는지, 있다면 남아있는 개수가 있는지
-		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); 
-		
-		if(hasPropertyListing) {
-			
+		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber);
+
+		if (hasPropertyListing) {
+
 			Property property = totalProperty.getProperty();
 			PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 			PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
@@ -145,7 +145,7 @@ public class PropertyController {
 			// 추후 authentication 설정하기
 			property.setPUnumber(userNumber);
 			property.setPstatus("활성화");
-			
+
 			// property 파일 첨부 여부
 			if (property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
 				MultipartFile mf = property.getPthumbnail();
@@ -153,12 +153,12 @@ public class PropertyController {
 				property.setPthumbnailtype(mf.getContentType());
 				property.setPthumbnaildata(mf.getBytes());
 			}
-			
+
 			propertyService.createProperty(property, propertyDetail);
-			
+
 			// propertyPhoto
 			log.info("propertyPhotos null 여부 : " + propertyPhoto.getPpattach().isEmpty());
-			
+
 			// propertyPhoto 파일 첨부 여부
 			if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
 				List<MultipartFile> files = propertyPhoto.getPpattach();
@@ -173,21 +173,20 @@ public class PropertyController {
 					}
 				}
 			}
-			
+
 			// JSON으로 변환되지 않는 필드는 null 처리
 			property.setPthumbnail(null);
 			property.setPthumbnaildata(null);
 			propertyPhoto.setPpattach(null);
 			propertyPhoto.setPpattachdata(null);
-			
+
 			propertyService.updateRemainPropertyListing(userNumber);
-			
+
 			return true;
 		} else { // 등록권 없음
-			// 등록권 소개 페이지로 이동 
+			// 등록권 소개 페이지로 이동
 			return false;
 		}
-		
 
 	}
 
@@ -269,10 +268,10 @@ public class PropertyController {
 //	상태 변경 (비활성화, 거래완료)
 	@PatchMapping("/updatePropertyStatus")
 	public Property updatePropertyStatus(@RequestBody Map<String, Object> requestData) {
-		
+
 		int pnumber = (int) requestData.get("pnumber");
 		String pstatus = (String) requestData.get("pstatus");
-		
+
 		Property property = propertyService.getProperty(pnumber);
 		property.setPstatus(pstatus);
 		propertyService.updateProperty(property);
@@ -292,8 +291,7 @@ public class PropertyController {
 		if (userComment.getUcparentnumber() == 0) { // 부모 댓글 없음
 			if (!userRole.equals("MEMBER") || isPropertyOwner) {
 				// agent 또는 매물 주인이면 댓글 못달게 처리하기
-			}
-			else {
+			} else {
 				userComment.setUcUnumber(userNumber);
 			}
 			userComment.setUcparentnumber(0);
@@ -323,7 +321,6 @@ public class PropertyController {
 
 		return userComment;
 	}
-	
 
 //	댓글 수정
 	@PutMapping("/Property/{pnumber}/{ucnumber}")
@@ -358,69 +355,88 @@ public class PropertyController {
 			propertyService.deletePropertyComment(pnumber, ucnumber, userNumber);
 		}
 	}
-	
-	
+
 //	상품 좋아요 추가
-	@PostMapping("/Property/{pnumber}/favorite")
+	@PostMapping("/likeProperty/{pnumber}")
 	public boolean addLikeButton(@PathVariable int pnumber, @ModelAttribute Favorite favorite,
 			Authentication authentication) {
-		
+
 		String userEmail = authentication.getName();
 		int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
-		
+
 		boolean existsFavorite = propertyService.existsFavorite(pnumber, memberNumber); // 이미 좋아요 눌렀는지
-		
-		if(!existsFavorite) { // 좋아요 존재하지 않아서 추가하기
+
+		if (!existsFavorite) { // 좋아요 존재하지 않아서 추가하기
 			favorite.setFPnumber(pnumber);
 			favorite.setFMnumber(memberNumber);
 			propertyService.addLikeButton(favorite);
+			log.info("좋아요 추가 완료");
 			return true;
 		} else {
 			return false;
 		}
-		
+
 	}
-	
-	
+
+
 //	상품 좋아요 리스트
 	@GetMapping("/FavoriteProperty")
-	public void favoriteList(Authentication authentication) {
+	public Map<String, Object> favoriteList(@RequestParam(defaultValue = "1") int pageNo,
+			@RequestParam(defaultValue = "10") int size, Authentication authentication) {
+		
 		String uemail = authentication.getName();
-		UserCommonData userCommonData = memberService.getUserDataFullyByUemail(uemail);
-		List<Favorite> favoritePropertyList;
-		if(userCommonData.getUrole().equals("MEMBER")) {
-			favoritePropertyList = propertyService.getAllUserFavoriteList(userCommonData.getUnumber());
-			
-		}
+		int unumber = memberService.getUnumberByUemail(uemail);
+		Member member = memberService.getMemberDataFullyByUserNumber(unumber);
+
+		int totalFavoriteRows = propertyService.getAllFavoriteCount(member.getMnumber());
+		Pager pager = new Pager(size, pageNo, totalFavoriteRows);
+		List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(pager.getStartRowIndex(), pager.getRowsPerPage());
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("favorite", favoritePropertyList);
+		map.put("pager", pager);
+		return map; // { "property" : {}, "pager" : {}}
 	}
-	
-	
-	
+
 //	상품 좋아요 취소
-	@DeleteMapping("/Property/{pnumber}/favorite")
+	@DeleteMapping("/cancelLikeProperty/{pnumber}")
 	public void cancelLikeButton(@PathVariable int pnumber, @ModelAttribute Favorite favorite,
 			Authentication authentication) {
-		
+
 		String userEmail = authentication.getName();
 		int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
-		
+
 		propertyService.cancelLikeButton(pnumber, memberNumber);
-	}	
+		log.info("좋아요 취소 완료");
+	}
 	
+	// 좋아요 여부
+	@GetMapping("/isPropertyLiked/{pnumber}")
+	public Boolean isPropertyLiked(@PathVariable int pnumber, Authentication authentication) {
+	    String userEmail = authentication.getName();
+	    int memberNumber = memberService.getMemberNumberByMemberEmail(userEmail);
+
+	    return propertyService.existsFavorite(pnumber, memberNumber);
+	    
+//	    Map<String, Boolean> response = new HashMap<>();
+//	    response.put("liked", isLiked);
+//
+//	    return response;
+	}	
 
 //	매물 신고
 	@PostMapping("/createPropertyReport/{pnumber}")
 	public Boolean createPropertyReport(@PathVariable int pnumber, @ModelAttribute Report report,
 			Authentication authentication) {
-		
+
 		log.info("report : " + report.toString());
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
-		
+
 		// 유저가 이전에 신고한 적 있는지
-		boolean hasPropertyReport = propertyService.checkPropertyReport(userNumber, pnumber); 
-		
-		if(!hasPropertyReport) {			
+		boolean hasPropertyReport = propertyService.checkPropertyReport(userNumber, pnumber);
+
+		if (!hasPropertyReport) {
 			report.setRPnumber(pnumber);
 			report.setRUnumber(userNumber);
 			propertyService.createPropertyReport(report);
@@ -428,31 +444,29 @@ public class PropertyController {
 		} else {
 			return false;
 		}
-		
+
 	}
-	
 
 //	매물 신고 삭제
 //	@PreAuthorize("hasAuthority('ROLE_USER')")	
 	@DeleteMapping("/deletePropertyReport/{pnumber}")
 	public void deletePropertyReport(@PathVariable int pnumber, Authentication authentication) {
-		
+
 		log.info("pnumber : " + pnumber);
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
-		
+
 		propertyService.deletePropertyReport(pnumber, unumber);
 	}
-	
-	
+
 //	유저 매물 신고 리스트
 	@GetMapping("/Mypage/ReportFalseListing")
 	public List<Report> getUserReportList(@RequestParam(defaultValue = "1", required = false) String pageNo,
-												Authentication authentication, HttpSession session) {
-		
+			Authentication authentication, HttpSession session) {
+
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
-		
+
 		int totalUserReportRows = propertyService.getAllUserReportCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserReportRows, 9, 5, "userReportList");
 		List<Report> userReportList = propertyService.getAllUserReportList(unumber, pager);
@@ -460,7 +474,6 @@ public class PropertyController {
 		return userReportList;
 	}
 
-	
 //	등록권 구매
 	@PostMapping("/Payment/PaymentResult/{quantity}")
 	public boolean purchasePropertyListing(Authentication authentication, @PathVariable int quantity) {
@@ -470,9 +483,10 @@ public class PropertyController {
 		// 유저 번호
 		String userName = authentication.getName();
 		int userNumber = agentService.getUserIdByUserName(userName);
-		
-		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지, 있다면 남아있는 개수가 있는지
-		
+
+		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지, 있다면 남아있는
+																							// 개수가 있는지
+
 		log.info(hasPropertyListing + "");
 		if (!hasPropertyListing) {
 			propertyListing.setPlquantity(quantity);
@@ -492,12 +506,12 @@ public class PropertyController {
 			return false; // 아직 등록권이 존재하는 유저라면 false를 리턴
 		}
 	}
-	
+
 //	매물 썸네일 사진 다운로드
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@GetMapping("/pattach/{pnumber}")
 	public void downloadPropertyThumbnail(@PathVariable int pnumber, HttpServletResponse response) {
-		
+
 		// 해당 게시물 가져오기
 		Property property = propertyService.getProperty(pnumber);
 		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
@@ -516,15 +530,14 @@ public class PropertyController {
 		}
 
 	}
-	
-	
+
 //	매물 디테일 사진 다운로드
 	@GetMapping("/detailPattach/{ppnumber}")
 	public PropertyPhoto downloadPropertyDetailPattach(@PathVariable int ppnumber, HttpServletResponse response) {
-		
+
 		// 해당 게시물 가져오기
 		PropertyPhoto propertyPhoto = propertyService.getPropertyPhoto(ppnumber);
-		
+
 		// 파일 이름이 한글이면, 브라우저에서 한글 이름으로 다운받기 위한 코드
 		try {
 			String fileName = new String(propertyPhoto.getPpattachoname().getBytes("UTF-8"), "ISO-8859-1");
@@ -541,7 +554,6 @@ public class PropertyController {
 		}
 		return propertyPhoto;
 	}
-	
 
 //	메인페이지 인기 상품	
 	@GetMapping("/popularProperty")
@@ -550,13 +562,14 @@ public class PropertyController {
 		log.info("인기 매물" + popularPropertyList);
 		return popularPropertyList;
 	}
-	//구매내역이 존재한다면 true 아니면 false
+
+	// 구매내역이 존재한다면 true 아니면 false
 	@GetMapping("/paymentHistory")
 	public boolean checkPaymentHistory(Authentication authentication) {
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
-		boolean hasHistory=false;
-		hasHistory=propertyService.checkPropertyListingHistory(userNumber);
+		boolean hasHistory = false;
+		hasHistory = propertyService.checkPropertyListingHistory(userNumber);
 		return hasHistory;
 	}
 }

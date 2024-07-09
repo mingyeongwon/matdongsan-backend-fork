@@ -245,8 +245,8 @@ public class PropertyService {
 	}
 	
 	// 좋아요 여부
-	public boolean existsFavorite(int pnumber, int userNumber) {
-		return favoriteDao.existsFavorite(pnumber, userNumber) != 0 ? true : false;
+	public boolean existsFavorite(int pnumber, int mnumber) {
+		return favoriteDao.existsFavorite(pnumber, mnumber) != 0 ? true : false;
 	}
 	
 	// 좋아요 취소
@@ -312,9 +312,15 @@ public class PropertyService {
 		return count;
 	}
 	
+	
 	// 좋아요 리스트
-	public List<Favorite> getAllUserFavoriteList(int unumber) {
-		return favoriteDao.getUserFavoriteList(unumber);
+	public List<Favorite> getAllUserFavoriteList(int offset, int limit) {
+		return favoriteDao.getUserFavoriteList(offset, limit);
+	}
+	
+	// 좋아요 총 개수
+	public int getAllFavoriteCount(int mnumber) {
+		return favoriteDao.getUserFavoriteCountByUnumber(mnumber);
 	}
 	
 }
