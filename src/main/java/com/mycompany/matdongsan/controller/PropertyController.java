@@ -194,7 +194,8 @@ public class PropertyController {
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@PutMapping("/PropertyForm/{pnumber}")
 	public TotalProperty updateProperty(@ModelAttribute TotalProperty totalProperty) throws IOException {
-
+		
+		log.info("수정 실행 시작");
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
@@ -253,6 +254,8 @@ public class PropertyController {
 		property.setPthumbnaildata(null);
 		propertyPhoto.setPpattach(null);
 		propertyPhoto.setPpattachdata(null);
+		
+		log.info("수정 실행 끝");
 
 		return totalProperty;
 	}

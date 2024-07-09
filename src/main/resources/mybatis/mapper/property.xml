@@ -149,7 +149,7 @@
 			select pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
 			from property
 			where p_unumber=#{unumber}
-			order by pnumber
+			order by pnumber desc
 		)
 		where rownum <= #{pager.endRowNo}
 		)
