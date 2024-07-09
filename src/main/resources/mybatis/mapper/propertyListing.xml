@@ -29,6 +29,11 @@
 		and plremain > 0
 	</select>
 	<!-- 유저 넘버에 따른 등록권 개수 -->
+	<select id="getQuantityByUserNumber" parameterType="int">
+		select PLQUANTITY from property_listing
+		where pl_unumber = #{userNumber}
+	</select>
+	<!-- 유저 넘버에 따른 등록권 개수 -->
 	<select id="getRemainByUserNumber" parameterType="int"
 		resultType="int">
 		select PLREMAIN from property_listing
