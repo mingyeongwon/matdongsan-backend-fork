@@ -192,7 +192,7 @@ public class PropertyController {
 
 //	수정
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
-	@PutMapping("/updateProperty")
+	@PutMapping("/PropertyForm/{pnumber}")
 	public TotalProperty updateProperty(@ModelAttribute TotalProperty totalProperty) throws IOException {
 
 		Property property = totalProperty.getProperty();
