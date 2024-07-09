@@ -393,7 +393,7 @@ public class QnaController {
 		// 검색된 페이지 불러오기 위한 Map 생성 (Mybatis는 parameter을 하나의 타입만 보낼 수 있어서 map에 담아서 매개변수를 넣는다.)
 		Map<String, Object> mapForSearch = new HashMap<>();
 		mapForSearch.put("pager", pager);
-		mapForSearch.put("keyword", searchKeyword);
+		mapForSearch.put("searchKeyword", searchKeyword);
 		mapForSearch.put("sort", sort);
 		
 		// 해당 페이지의 게시물 목록 가져오기

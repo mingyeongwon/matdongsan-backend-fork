@@ -53,7 +53,7 @@
 				from notice]]>
 				<if test="keyword == null">
 					<![CDATA[
-					where ntitle LIKE '%'||#{keyword}||'%'
+					where ntitle LIKE '%'||#{searchKeyword}||'%'
 					]]>
 				</if>
 				<![CDATA[
