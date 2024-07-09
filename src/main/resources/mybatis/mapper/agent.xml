@@ -145,4 +145,9 @@
 	<select id="checkAgent" parameterType="agent" resultType="int">
 		select count(*) from agent where aname = #{aname} and aphone =#{aphone}
 	</select>
+	
+	<!-- 좌표로 중개인 번호 찾기 -->
+	<select id="getAgentNumberByPosition" resultType="int">
+	select anumber from agent where alatitude = #{lat} and alongitude =#{lng}
+	</select>
 </mapper>

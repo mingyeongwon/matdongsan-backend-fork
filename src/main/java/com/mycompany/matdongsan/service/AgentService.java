@@ -152,5 +152,10 @@ public class AgentService {
 		return agentDao.checkAgent(agent);
 	}
 
+	public int getAnumberByAgentPosition(String lat, String lng) {
+		int anumber = agentDao.getAgentNumberByPosition(lat,lng);
+		return anumber;
+	}
+
 }
 

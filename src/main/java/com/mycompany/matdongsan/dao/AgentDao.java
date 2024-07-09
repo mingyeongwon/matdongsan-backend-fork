@@ -24,4 +24,5 @@ public interface AgentDao {
 	int getUserNumberByAnumber(int anumber);
 	public String findEmail(Agent agent);
 	public int checkAgent(Agent agent);
+	int getAgentNumberByPosition(String lat, String lng);
 }

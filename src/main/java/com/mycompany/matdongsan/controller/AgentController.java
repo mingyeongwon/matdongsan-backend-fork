@@ -111,6 +111,12 @@ public class AgentController {
 		return map;
 	}
 
+	//좌표데이터로 중개인 번호 가져오기
+	@GetMapping("/Agent/Position")
+	public int getAgentNumberByAgentPosition(@RequestParam String lat,@RequestParam String lng) {
+		int anumber = agentService.getAnumberByAgentPosition(lat,lng);
+		return anumber;
+	}
 	// 부동산 등록
 	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
 	// agent관련 DTO를 만들어서 코드 바꿀것
