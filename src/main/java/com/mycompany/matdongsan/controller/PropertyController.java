@@ -247,7 +247,7 @@ public class PropertyController {
 				} else {
 					// 새로운 사진을 추가하는 경우
 					propertyPhoto.setPpnumber(0); // 새로운 사진의 경우 ppnumber는 0(null)로 설정하고, DB에서 자동 생성되도록 처리
-					propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+					propertyPhoto.setPpPnumber(pnumber); // FK 값 주기
 					propertyService.createPropertyByPropertyPhoto(propertyPhoto);
 				}
 			}
