@@ -207,10 +207,12 @@ public class PropertyController {
 	public TotalProperty updateProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty)
 			throws IOException {
 
-		log.info("수정 실행 시작");
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
+		
+		log.info("pnumber 받아온 data : " + pnumber);
+		log.info("totalProperty 받아온 data : " + totalProperty.toString());
 
 		// PK 값 가져오기
 		propertyDetail.setPdnumber(propertyService.getPdnumber(pnumber));
@@ -222,12 +224,12 @@ public class PropertyController {
 			property.setPthumbnailtype(mf.getContentType());
 			property.setPthumbnaildata(mf.getBytes());
 		}
-
+		
 		propertyService.updateProperty(property, propertyDetail);
 
 		// propertyPhoto 파일 첨부 여부
 		if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
-			List<Integer> ppnumbers = propertyService.getPpnumbers(property.getPnumber()); // pk 값 가져오기
+			List<Integer> ppnumbers = propertyService.getPpnumbers(pnumber); // pk 값 가져오기
 			List<MultipartFile> files = propertyPhoto.getPpattach();
 			log.info("files.size() : " + files.size());
 			int existingPhotosCount = ppnumbers.size();
@@ -245,7 +247,7 @@ public class PropertyController {
 				} else {
 					// 새로운 사진을 추가하는 경우
 					propertyPhoto.setPpnumber(0); // 새로운 사진의 경우 ppnumber는 0(null)로 설정하고, DB에서 자동 생성되도록 처리
-					propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
+					propertyPhoto.setPpPnumber(pnumber); // FK 값 주기
 					propertyService.createPropertyByPropertyPhoto(propertyPhoto);
 				}
 			}
@@ -257,7 +259,7 @@ public class PropertyController {
 		}
 
 		// totalProperty 객체에 수정된 내용 다시 설정
-		totalProperty.setProperty(propertyService.getProperty(property.getPnumber()));
+		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetail(propertyDetail.getPdnumber()));
 		totalProperty.setPropertyPhoto(propertyService.getPropertyPhoto(propertyPhoto.getPpnumber()));
 
@@ -266,8 +268,6 @@ public class PropertyController {
 		property.setPthumbnaildata(null);
 		propertyPhoto.setPpattach(null);
 		propertyPhoto.setPpattachdata(null);
-
-		log.info("수정 실행 끝");
 
 		return totalProperty;
 	}
@@ -569,7 +569,6 @@ public class PropertyController {
 	@GetMapping("/popularProperty")
 	public List<Property> getPopularProperty() {
 		List<Property> popularPropertyList = propertyService.getPopularPropertyList();
-		log.info("인기 매물" + popularPropertyList);
 		return popularPropertyList;
 	}
 
