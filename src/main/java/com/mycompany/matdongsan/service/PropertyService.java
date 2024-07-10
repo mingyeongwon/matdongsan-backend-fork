@@ -346,5 +346,10 @@ public class PropertyService {
 		propertyDao.updatePropertyStatus(pnumber, pstatus);
 
 	}
+	// 매물 전체 데이터 (페이저X)
+	public List<Property> getAllPropertyListWithoutPager() {
+		// TODO Auto-generated method stub
+		return propertyDao.getAllPropertyListWithoutPager();
+	}
 
 }

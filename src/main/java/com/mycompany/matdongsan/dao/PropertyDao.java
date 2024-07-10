@@ -56,6 +56,9 @@ public interface PropertyDao {
 	// 매물 상태 수정
 	public void updatePropertyStatus(@Param("pnumber") int pnumber, @Param("pstatus") String pstatus);
 	
+	//매물 전체 데이터(페이저X)
+	public List<Property> getAllPropertyListWithoutPager();
+	
 
 
 

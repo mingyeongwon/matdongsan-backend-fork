@@ -218,5 +218,10 @@
 		and
 		p_unumber = #{userNumber}
 	</select>
-
+	
+	<!-- 전체 매물 데이터 (페이저X) -->
+	<select id="getAllPropertyListWithoutPager" resultType="Property">
+	select pnumber,platitude,plongitude from property
+	where pstatus != '거래완료'	
+	</select>
 </mapper>

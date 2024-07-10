@@ -77,9 +77,12 @@ public class PropertyController {
 			propertyList = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
 			log.info(propertyList.size()+" 사이즈 입니다.");
 		}
-
+		//지도 표시를 위한 전체 매물 리스트 ( 페이저 & 페이지네이션 )
+		List<Property> propertyTotalList = propertyService.getAllPropertyListWithoutPager();
+		log.info(propertyTotalList.size() +"");
 		// 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
 		Map<String, Object> map = new HashMap<>();
+		map.put("propertyTotalList", propertyTotalList);
 		map.put("property", propertyList);
 		map.put("pager", pager);
 		return map; // { "property" : {}, "pager" : {}}
