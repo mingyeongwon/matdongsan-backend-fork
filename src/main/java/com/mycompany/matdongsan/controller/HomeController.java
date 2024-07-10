@@ -27,6 +27,7 @@ import com.mycompany.matdongsan.security.AppUserDetailsService;
 import com.mycompany.matdongsan.security.JwtProvider;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
+import com.mycompany.matdongsan.service.PropertyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +44,9 @@ public class HomeController {
 	private AppUserDetailsService userDetailsService;
 	@Autowired
 	private UserCommonDataDao userCommonDataDao;
+	@Autowired
+	private PropertyService propertyService;
+	
 	@GetMapping("/")
 	public String home() {
 		log.info("실행");
@@ -267,6 +271,29 @@ public class HomeController {
 			map.put("result", "맞음");
 		} else {
 			map.put("result", "틀림");
+		}
+		
+		return map;
+	}
+	
+	@GetMapping("/getListingRemain")
+	public Map<String, Object> getListingRemain(Authentication authentication) {
+		Map<String, Object> map = new HashMap<>();
+		String userName = authentication.getName(); // 로그인 정보에서 이름 가져오기
+		if(userName == null || userName.equals("")) {
+			map.put("result", "noUser");
+		} else {
+			int userNumber = userCommonDataDao.getUserIdByUsername(userName); // 가져온 이름으로 userNumber값 가져오기 
+			boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지
+			if(hasPropertyListing) {
+				// 있다면 수량 정보 가져오기
+				int propertyListing = propertyService.getUserPropertyListingRemain(userNumber); // userNumber로 수량 가져오기
+				log.info("구매 한 적이 없으면");
+				map.put("remain", propertyListing);
+			} else {
+				map.put("result", "noRemain");
+			}
+			
 		}
 		
 		return map;
