@@ -2,12 +2,15 @@ package com.mycompany.matdongsan.dto;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
 public class PropertyDetail {
    private int pdnumber;
    private String pdcontent;
+   @DateTimeFormat(pattern = "yyyy-MM-dd") // vue -> backend에서 date 보낼 때 string으로 받는 에러 해결
    private Date pdmoveindate;
    private boolean pdbath;
    private boolean pdlift;
