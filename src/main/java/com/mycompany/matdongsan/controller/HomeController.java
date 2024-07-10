@@ -133,9 +133,9 @@ public class HomeController {
 		if(userCommonData.getUrole().equals("MEMBER")) {
 			Member member = memberService.getMemberDataFullyByUserNumber(unumber);
 			userTotalInfo.put("member", member);
-		} else {
+		} else if(userCommonData.getUrole().equals("AGENT")) {
 			// 중개인일 경우
-			Agent agent = agentService.getAgentDataByUserNumber(unumber);
+			Agent agent = agentService.getAgentDataByUnumber(unumber);
 			userTotalInfo.put("agent", agent);
 		}
 		return userTotalInfo;

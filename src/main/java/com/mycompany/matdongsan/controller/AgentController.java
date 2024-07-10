@@ -178,7 +178,7 @@ public class AgentController {
 		UserCommonData userData = memberService.getUserDataByUnumber(userNumber);
 
 		// 중개인 정보
-		Agent agent = agentService.getAgentDataByUserNumber(anumber);
+		Agent agent = agentService.getAgentDataByAnumber(anumber);
 		// 중개인 상세정보
 		AgentDetail agentDetail = agentService.getAgentDetailByAgentNumber(anumber);
 		// 중개인 리뷰정보
@@ -314,7 +314,7 @@ public class AgentController {
 	@GetMapping("/aattach/{anumber}")
 	public void downloadAgentProfile(@PathVariable int anumber, HttpServletResponse response) {
 		// 해당 게시물 가져오기
-		Agent agent = agentService.getAgentDataByUserNumber(anumber);
+		Agent agent = agentService.getAgentDataByAnumber(anumber);
 		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
 		try {
 			String fileName = new String(agent.getAprofileoname().getBytes("UTF-8"), "ISO-8859-1");

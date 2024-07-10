@@ -92,7 +92,7 @@ public class AgentService {
 		return agentDao.getAgentNumberByUserNumber(userNum);
 	}
 
-	public Agent getAgentDataByUserNumber(int anumber) {
+	public Agent getAgentDataByAnumber(int anumber) {
 		Agent agent = agentDao.getAgentDataByAgentNumber(anumber);
 		return agent;
 	}
@@ -155,6 +155,11 @@ public class AgentService {
 	public int getAnumberByAgentPosition(String lat, String lng) {
 		int anumber = agentDao.getAgentNumberByPosition(lat,lng);
 		return anumber;
+	}
+	
+	// unumber로 agent 정보 가져오기
+	public Agent getAgentDataByUnumber(int unumber) {
+		return agentDao.getAgentDataByUserNumber(unumber);
 	}
 
 }
