@@ -230,5 +230,6 @@
 		select pnumber from property
 		where platitude = #{platitude}
 		and plongitude = #{plongitude}
+		and pstatus != '거래완료'
 	</select>
 </mapper>
