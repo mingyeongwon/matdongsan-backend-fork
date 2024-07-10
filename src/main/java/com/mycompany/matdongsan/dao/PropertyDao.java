@@ -58,6 +58,8 @@ public interface PropertyDao {
 	
 	//매물 전체 데이터(페이저X)
 	public List<Property> getAllPropertyListWithoutPager();
+
+	public int getPnumberByPropertyPosition(String platitude, String plongitude);
 	
 
 

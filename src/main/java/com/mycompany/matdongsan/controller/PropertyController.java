@@ -59,7 +59,7 @@ public class PropertyController {
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
 			@RequestParam(required = false) String rentType, @RequestParam(required = false) String lat,
 			@RequestParam(required = false) String lng) {
-		log.info(lat+" "+ lng + "입니당");
+		log.info(lat + " " + lng + "입니당");
 		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType
 		int totalPropertyRows;
 		Pager pager;
@@ -75,11 +75,11 @@ public class PropertyController {
 			totalPropertyRows = propertyService.getAllPropertyCount();
 			pager = new Pager(size, pageNo, totalPropertyRows);
 			propertyList = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
-			log.info(propertyList.size()+" 사이즈 입니다.");
+			log.info(propertyList.size() + " 사이즈 입니다.");
 		}
-		//지도 표시를 위한 전체 매물 리스트 ( 페이저 & 페이지네이션 )
+		// 지도 표시를 위한 전체 매물 리스트 ( 페이저 & 페이지네이션 )
 		List<Property> propertyTotalList = propertyService.getAllPropertyListWithoutPager();
-		log.info(propertyTotalList.size() +"");
+		log.info(propertyTotalList.size() + "");
 		// 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
 		Map<String, Object> map = new HashMap<>();
 		map.put("propertyTotalList", propertyTotalList);
@@ -102,12 +102,21 @@ public class PropertyController {
 		return userPropertyList;
 	}
 
+	// 좌표에 따른 pnumber 가져오기
+	@GetMapping("/Property/Position")
+	public int getAgentNumberByAgentPosition(@RequestParam String lat, @RequestParam String lng) {
+		
+		int pnumber = propertyService.getPnumberByPropertyPosition(lat, lng);
+		log.info(pnumber+" pnumber");
+		return pnumber;
+	}
+
 //	읽기
 	@GetMapping("/Property/{pnumber}")
 	public Map<String, Object> readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String date, HttpSession session) {
-
+		log.info("매물 포지션 실행");
 		// property 정보
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
@@ -197,7 +206,8 @@ public class PropertyController {
 //	수정
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@PutMapping("/PropertyForm/{pnumber}")
-	public TotalProperty updateProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty) throws IOException {
+	public TotalProperty updateProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty)
+			throws IOException {
 
 		log.info("수정 실행 시작");
 		Property property = totalProperty.getProperty();

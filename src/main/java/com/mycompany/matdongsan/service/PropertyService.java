@@ -352,4 +352,10 @@ public class PropertyService {
 		return propertyDao.getAllPropertyListWithoutPager();
 	}
 
+	public int getPnumberByPropertyPosition(String lat, String lng) {
+		int pnumber = propertyDao.getPnumberByPropertyPosition(lat,lng);
+		log.info("pnumber in service: "+pnumber);
+		return pnumber;
+	}
+
 }

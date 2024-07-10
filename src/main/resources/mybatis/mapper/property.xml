@@ -224,4 +224,11 @@
 	select pnumber,platitude,plongitude from property
 	where pstatus != '거래완료'	
 	</select>
+	
+	<!-- 해당 좌표 pnumber 리턴 -->
+	<select id="getPnumberByPropertyPosition" resultType="int" >
+		select pnumber from property
+		where platitude = #{platitude}
+		and plongitude = #{plongitude}
+	</select>
 </mapper>
