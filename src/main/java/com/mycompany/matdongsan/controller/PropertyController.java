@@ -105,9 +105,7 @@ public class PropertyController {
 	// 좌표에 따른 pnumber 가져오기
 	@GetMapping("/Property/Position")
 	public int getAgentNumberByAgentPosition(@RequestParam String lat, @RequestParam String lng) {
-		
 		int pnumber = propertyService.getPnumberByPropertyPosition(lat, lng);
-		log.info(pnumber+" pnumber");
 		return pnumber;
 	}
 
@@ -116,7 +114,7 @@ public class PropertyController {
 	public Map<String, Object> readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String date, HttpSession session) {
-		log.info("매물 포지션 실행");
+
 		// property 정보
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
@@ -247,7 +245,7 @@ public class PropertyController {
 				} else {
 					// 새로운 사진을 추가하는 경우
 					propertyPhoto.setPpnumber(0); // 새로운 사진의 경우 ppnumber는 0(null)로 설정하고, DB에서 자동 생성되도록 처리
-					propertyPhoto.setPpPnumber(pnumber); // FK 값 주기
+					propertyPhoto.setPpPnumber(property.getPnumber()); // FK 값 주기
 					propertyService.createPropertyByPropertyPhoto(propertyPhoto);
 				}
 			}
@@ -395,20 +393,19 @@ public class PropertyController {
 	@GetMapping("/FavoriteProperty")
 	public Map<String, Object> favoriteList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, Authentication authentication) {
-
+		log.info("관심 실행");
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
 		Member member = memberService.getMemberDataFullyByUserNumber(unumber);
-
-		int totalFavoriteRows = propertyService.getAllFavoriteCount(member.getMnumber());
+		int mnumber =member.getMnumber();
+		int totalFavoriteRows = propertyService.getAllFavoriteCount(mnumber);
 		Pager pager = new Pager(size, pageNo, totalFavoriteRows);
-		List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(pager.getStartRowIndex(),
+		List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(mnumber,pager.getStartRowIndex(),
 				pager.getRowsPerPage());
-
 		Map<String, Object> map = new HashMap<>();
 		map.put("favorite", favoritePropertyList);
 		map.put("pager", pager);
-		return map; // { "property" : {}, "pager" : {}}
+		return map; // { "favorite" : {}, "pager" : {}}
 	}
 
 //	상품 좋아요 취소

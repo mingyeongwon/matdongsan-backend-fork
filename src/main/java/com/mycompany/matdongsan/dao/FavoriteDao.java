@@ -21,7 +21,7 @@ public interface FavoriteDao {
 	public void cancelLikeButton(int pnumber, int userNumber);
 	
 	// 좋아요 리스트
-	public List<Favorite> getUserFavoriteList(@Param("offset") int offset, @Param("limit") int limit);
+	public List<Favorite> getUserFavoriteList(int mnumber,@Param("offset") int offset, @Param("limit") int limit);
 	
 	// 좋아요 총 개수
 	public int getUserFavoriteCountByUnumber(int mnumber);

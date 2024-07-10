@@ -332,8 +332,8 @@ public class PropertyService {
 	}
 
 	// 좋아요 리스트
-	public List<Favorite> getAllUserFavoriteList(int offset, int limit) {
-		return favoriteDao.getUserFavoriteList(offset, limit);
+	public List<Favorite> getAllUserFavoriteList(int mnumber,int offset, int limit) {
+		return favoriteDao.getUserFavoriteList(mnumber,offset, limit);
 	}
 
 	// 좋아요 총 개수
