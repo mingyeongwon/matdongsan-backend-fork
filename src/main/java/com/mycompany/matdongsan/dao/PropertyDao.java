@@ -53,6 +53,9 @@ public interface PropertyDao {
 
 	public int getTradeCountByUserNumber(int userNumber);
 	
+	// 매물 상태 수정
+	public void updatePropertyStatus(@Param("pnumber") int pnumber, @Param("pstatus") String pstatus);
+	
 
 
 

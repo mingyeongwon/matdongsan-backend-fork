@@ -333,4 +333,10 @@ public class PropertyService {
 		return favoriteDao.getUserFavoriteCountByUnumber(mnumber);
 	}
 	
+	// 매물 상태 수정
+	public void updatePropertyStatus(int pnumber, String pstatus) {
+		propertyDao.updatePropertyStatus(pnumber, pstatus);
+		
+	}
+	
 }

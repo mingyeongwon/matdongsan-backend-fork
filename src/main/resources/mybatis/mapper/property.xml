@@ -27,6 +27,13 @@
 	      </if>
       where pnumber=#{pnumber}
    </update>
+   
+	<!-- 매물 상태 수정 -->
+   <update id="updatePropertyStatus" parameterType="map">
+		update property 
+		set pstatus=#{pstatus}
+	   	where pnumber=#{pnumber}
+   </update>   
    	
 	<!-- 조회수 -->
    <update id="updatePhitcount" parameterType="int">   

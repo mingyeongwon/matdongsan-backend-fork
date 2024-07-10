@@ -195,7 +195,7 @@ public class PropertyController {
 //	수정
 //	@PreAuthorize("hasAuthority('ROLE_USER')")
 	@PutMapping("/PropertyForm/{pnumber}")
-	public TotalProperty updateProperty(@ModelAttribute TotalProperty totalProperty) throws IOException {
+	public TotalProperty updateProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty) throws IOException {
 
 		log.info("수정 실행 시작");
 		Property property = totalProperty.getProperty();
@@ -203,7 +203,7 @@ public class PropertyController {
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
 
 		// PK 값 가져오기
-		propertyDetail.setPdnumber(propertyService.getPdnumber(property.getPnumber()));
+		propertyDetail.setPdnumber(propertyService.getPdnumber(pnumber));
 
 		// property 파일 첨부 여부
 		if (property.getPthumbnail() != null && !property.getPthumbnail().isEmpty()) {
@@ -271,16 +271,13 @@ public class PropertyController {
 	}
 
 //	상태 변경 (비활성화, 거래완료)
-	@PatchMapping("/updatePropertyStatus")
-	public Property updatePropertyStatus(@RequestBody Map<String, Object> requestData) {
+	@PutMapping("/updatePropertyStatus/{pnumber}")
+	public void updatePropertyStatus(@PathVariable int pnumber,
+									@RequestParam String pstatus) {
+		log.info("pnumber : " + pnumber);
+		log.info("pstatus + pnumber : " + pstatus);
 
-		int pnumber = (int) requestData.get("pnumber");
-		String pstatus = (String) requestData.get("pstatus");
-
-		Property property = propertyService.getProperty(pnumber);
-		property.setPstatus(pstatus);
-		propertyService.updateProperty(property);
-		return property;
+		propertyService.updatePropertyStatus(pnumber, pstatus);
 	}
 
 //	댓글 생성
