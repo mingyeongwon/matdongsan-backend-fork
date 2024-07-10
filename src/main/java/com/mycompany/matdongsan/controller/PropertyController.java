@@ -2,6 +2,7 @@ package com.mycompany.matdongsan.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +33,6 @@ import com.mycompany.matdongsan.dto.PropertyPhoto;
 import com.mycompany.matdongsan.dto.Report;
 import com.mycompany.matdongsan.dto.TotalProperty;
 import com.mycompany.matdongsan.dto.UserComment;
-import com.mycompany.matdongsan.dto.UserCommonData;
 import com.mycompany.matdongsan.service.AgentService;
 import com.mycompany.matdongsan.service.MemberService;
 import com.mycompany.matdongsan.service.PagerService;
@@ -61,27 +59,28 @@ public class PropertyController {
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
 			@RequestParam(required = false) String rentType, @RequestParam(required = false) String lat,
 			@RequestParam(required = false) String lng) {
-		//log.info(lat+" "+ lng + "입니당");
+		log.info(lat+" "+ lng + "입니당");
 		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType
 		int totalPropertyRows;
 		Pager pager;
-		List<Property> Propertylist;
+		List<Property> propertyList = new ArrayList<>();
 
-		if (keyword != null || price != null || date != null || rentType != null || lat != null || lng != null) {
+		if (keyword != null || price != null || date != null || rentType != null || lat != "" || lng != "") {
 			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType, lat, lng);
 			pager = new Pager(size, pageNo, totalPropertyRows);
-			Propertylist = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(),
+			propertyList = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(),
 					keyword, price, date, rentType, lat, lng);
 
 		} else { // 전체 리스트
 			totalPropertyRows = propertyService.getAllPropertyCount();
 			pager = new Pager(size, pageNo, totalPropertyRows);
-			Propertylist = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
+			propertyList = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
+			log.info(propertyList.size()+" 사이즈 입니다.");
 		}
 
 		// 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
 		Map<String, Object> map = new HashMap<>();
-		map.put("property", Propertylist);
+		map.put("property", propertyList);
 		map.put("pager", pager);
 		return map; // { "property" : {}, "pager" : {}}
 	}
@@ -272,8 +271,7 @@ public class PropertyController {
 
 //	상태 변경 (비활성화, 거래완료)
 	@PutMapping("/updatePropertyStatus/{pnumber}")
-	public void updatePropertyStatus(@PathVariable int pnumber,
-									@RequestParam String pstatus) {
+	public void updatePropertyStatus(@PathVariable int pnumber, @RequestParam String pstatus) {
 		log.info("pnumber : " + pnumber);
 		log.info("pstatus + pnumber : " + pstatus);
 
