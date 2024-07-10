@@ -54,6 +54,7 @@
       select 
       	count(*) 
       from property
+      where pstatus='활성화'
    </select>   
    
    <!-- property 개수 by filter and keyword -->
@@ -62,6 +63,7 @@
       	count(*) 
       from property
       <where>
+	      pstatus='활성화'
       	<if test="rentType != null">
       		and pcategory=#{rentType}
       	</if>
@@ -85,6 +87,7 @@
 		    from (
 		        select p.*, row_number() over (order by p.pnumber desc) as rnum
 		        from property p
+		        where pstatus='활성화'
 		    )
 		    where rnum between #{offset} + 1 and #{offset} + #{limit}
 	    ]]>
@@ -99,6 +102,7 @@
 		        from property p 
 		]]>
 		        <where>
+		        	pstatus='활성화'
 			      	<if test="rentType != null">
 			      		and pcategory=#{rentType}
 			      	</if>
