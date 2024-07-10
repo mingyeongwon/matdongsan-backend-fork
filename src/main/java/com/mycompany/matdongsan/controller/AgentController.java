@@ -223,8 +223,15 @@ public class AgentController {
 			AgentSignupData agentSignupData = agentService.getAgentDataFullyByUserNumber(userNumber);
 			map.put("agentSignupData", agentSignupData);
 		}
-		int propertyListing = propertyService.getUserPropertyListingRemain(userNumber);
-		map.put("propertyListing", propertyListing);
+		boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지
+		if(hasPropertyListing) {
+			int propertyListing = propertyService.getUserPropertyListingRemain(userNumber);
+			map.put("propertyListing", propertyListing);
+		} else {
+			map.put("propertyListing", 0);
+		}
+		
+		
 		return map;
 
 	}
