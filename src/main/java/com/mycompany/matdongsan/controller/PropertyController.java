@@ -131,6 +131,9 @@ public class PropertyController {
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
 		propertyMap.put("propertyPhotos", propertyPhotos);
+		
+		log.info("propertyMap : " + propertyMap.toString());
+		
 		return propertyMap;
 	}
 
