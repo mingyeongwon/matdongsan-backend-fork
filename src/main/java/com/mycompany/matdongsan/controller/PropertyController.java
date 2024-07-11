@@ -209,7 +209,7 @@ public class PropertyController {
 
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
-		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
+		
 
 		// PK 값 가져오기
 		propertyDetail.setPdnumber(propertyService.getPdnumber(pnumber));
@@ -225,7 +225,8 @@ public class PropertyController {
 		propertyService.updateProperty(property, propertyDetail);
 
 		// propertyPhoto 파일 첨부 여부
-		if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
+		if (totalProperty.getPropertyPhoto() != null) {
+			PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
 			List<Integer> ppnumbers = propertyService.getPpnumbers(pnumber); // pk 값 가져오기
 			List<MultipartFile> files = propertyPhoto.getPpattach();
 			log.info("files.size() : " + files.size());
@@ -253,21 +254,24 @@ public class PropertyController {
 			for (int i = newFilesCount; i < existingPhotosCount; i++) {
 				propertyService.deletePropertyPhoto(ppnumbers.get(i));
 			}
+			totalProperty.setPropertyPhoto(propertyService.getPropertyPhoto(propertyPhoto.getPpnumber()));
+			propertyPhoto.setPpattach(null);
+			propertyPhoto.setPpattachdata(null);
 		}
 
 		// totalProperty 객체에 수정된 내용 다시 설정
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetail(propertyDetail.getPdnumber()));
-		totalProperty.setPropertyPhoto(propertyService.getPropertyPhoto(propertyPhoto.getPpnumber()));
+
 
 		// JSON으로 변환되지 않는 필드는 null 처리
 		property.setPthumbnail(null);
 		property.setPthumbnaildata(null);
-		propertyPhoto.setPpattach(null);
-		propertyPhoto.setPpattachdata(null);
+
 
 		return totalProperty;
 	}
+	
 
 //	삭제
 //	@PreAuthorize("hasAuthority('ROLE_USER')")	
