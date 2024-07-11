@@ -140,7 +140,9 @@ public class PropertyController {
 	@PostMapping("/PropertyForm")
 	public boolean createProperty(@ModelAttribute TotalProperty totalProperty, Authentication authentication)
 			throws IOException {
-
+		
+		log.info("totalProperty 받아온 data in 등록 : " + totalProperty.toString());
+		
 		String userEmail = authentication.getName();
 		int userNumber = memberService.getUnumberByUemail(userEmail);
 
