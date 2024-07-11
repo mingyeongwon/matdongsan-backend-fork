@@ -212,9 +212,6 @@ public class PropertyController {
 		Property property = totalProperty.getProperty();
 		PropertyDetail propertyDetail = totalProperty.getPropertyDetail();
 		PropertyPhoto propertyPhoto = totalProperty.getPropertyPhoto();
-		
-		log.info("pnumber 받아온 data : " + pnumber);
-		log.info("totalProperty 받아온 data : " + totalProperty.toString());
 
 		// PK 값 가져오기
 		propertyDetail.setPdnumber(propertyService.getPdnumber(pnumber));
