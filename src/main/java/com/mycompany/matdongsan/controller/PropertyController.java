@@ -59,7 +59,6 @@ public class PropertyController {
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
 			@RequestParam(required = false) String rentType, @RequestParam(required = false) String lat,
 			@RequestParam(required = false) String lng) {
-		log.info(lat + " " + lng + "입니당");
 		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType
 		int totalPropertyRows;
 		Pager pager;
@@ -75,7 +74,6 @@ public class PropertyController {
 			totalPropertyRows = propertyService.getAllPropertyCount();
 			pager = new Pager(size, pageNo, totalPropertyRows);
 			propertyList = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
-			log.info(propertyList.size() + " 사이즈 입니다.");
 		}
 		// 지도 표시를 위한 전체 매물 리스트 ( 페이저 & 페이지네이션 )
 		List<Property> propertyTotalList = propertyService.getAllPropertyListWithoutPager();
@@ -118,10 +116,10 @@ public class PropertyController {
 		// property 정보
 		totalProperty.setProperty(propertyService.getProperty(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
-
+		
 		// photos는 여러 개라서 따로 리스트 설정
-		List<PropertyPhoto> propertyPhotos = propertyService.getPropertyPhotoByPpPnumber(pnumber);
-
+		List<Integer> propertyPhotos = propertyService.getPropertyPhotoByPpPnumber(pnumber);
+	
 		// property Comment
 		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 9, 5, "propertyComment");
@@ -171,9 +169,6 @@ public class PropertyController {
 			}
 
 			propertyService.createProperty(property, propertyDetail);
-
-			// propertyPhoto
-			log.info("propertyPhotos null 여부 : " + propertyPhoto.getPpattach().isEmpty());
 
 			// propertyPhoto 파일 첨부 여부
 			if (propertyPhoto.getPpattach() != null && !propertyPhoto.getPpattach().isEmpty()) {
@@ -545,27 +540,23 @@ public class PropertyController {
 
 //	매물 디테일 사진 다운로드
 	@GetMapping("/detailPattach/{ppnumber}")
-	public PropertyPhoto downloadPropertyDetailPattach(@PathVariable int ppnumber, HttpServletResponse response) {
+	public void downloadPropertyDetailPattach(@PathVariable int ppnumber, HttpServletResponse response) {
+	    PropertyPhoto propertyPhoto = propertyService.getPropertyPhoto(ppnumber);
 
-		// 해당 게시물 가져오기
-		PropertyPhoto propertyPhoto = propertyService.getPropertyPhoto(ppnumber);
-
-		// 파일 이름이 한글이면, 브라우저에서 한글 이름으로 다운받기 위한 코드
-		try {
-			String fileName = new String(propertyPhoto.getPpattachoname().getBytes("UTF-8"), "ISO-8859-1");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-			// 파일 타입을 헤더에 추가
-			response.setContentType(propertyPhoto.getPpattachtype());
-			// 응답 바디에 파일 데이터를 출력
-			OutputStream os = response.getOutputStream();
-			os.write(propertyPhoto.getPpattachdata());
-			os.flush();
-			os.close();
-		} catch (IOException e) {
-			log.error(e.toString());
-		}
-		return propertyPhoto;
+	    try {
+	        String fileName = new String(propertyPhoto.getPpattachoname().getBytes("UTF-8"), "ISO-8859-1");
+	        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+	        response.setContentType(propertyPhoto.getPpattachtype());
+	        
+	        OutputStream os = response.getOutputStream();
+	        os.write(propertyPhoto.getPpattachdata());
+	        os.flush();
+	        os.close();
+	    } catch (IOException e) {
+	        log.error(e.toString());
+	    }
 	}
+
 
 //	메인페이지 인기 상품	
 	@GetMapping("/popularProperty")

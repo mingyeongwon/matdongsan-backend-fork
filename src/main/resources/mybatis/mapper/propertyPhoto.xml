@@ -47,8 +47,8 @@
 	</delete>	
 	
    <!-- 읽기 -->
-   <select id="selectPropertyPhotoByPpPnumber" parameterType="int" resultType="PropertyPhoto">
-      select *
+   <select id="selectPropertyPhotoByPpPnumber" parameterType="int" resultType="int">
+      select ppnumber
       from property_photo 
       where pp_pnumber=#{ppPnumber}
    </select>	    

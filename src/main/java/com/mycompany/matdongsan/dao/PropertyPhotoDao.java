@@ -27,6 +27,6 @@ public interface PropertyPhotoDao {
 	public int deletePropertyPhotoByPpPnumber(int ppPnumber);
 	
 	// 읽기
-	public List<PropertyPhoto> selectPropertyPhotoByPpPnumber(int ppPnumber);
+	public List<Integer> selectPropertyPhotoByPpPnumber(int ppPnumber);
 
 }

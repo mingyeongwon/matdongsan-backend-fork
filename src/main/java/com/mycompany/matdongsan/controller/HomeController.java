@@ -140,6 +140,7 @@ public class HomeController {
 		} else if(userCommonData.getUrole().equals("AGENT")) {
 			// 중개인일 경우
 			Agent agent = agentService.getAgentDataByUnumber(unumber);
+			log.info("agent: "+ agent.toString());
 			userTotalInfo.put("agent", agent);
 		}
 		return userTotalInfo;
