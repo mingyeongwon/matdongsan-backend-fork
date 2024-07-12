@@ -1,8 +1,5 @@
 package com.mycompany.matdongsan.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.matdongsan.dao.MemberDao;
 import com.mycompany.matdongsan.dao.UserCommonDataDao;
-import com.mycompany.matdongsan.dto.Agent;
 import com.mycompany.matdongsan.dto.Member;
 import com.mycompany.matdongsan.dto.UserCommonData;
 
@@ -102,6 +98,10 @@ public class MemberService {
 
 	public UserCommonData getUserDataByUnumber(int unumber) {
 		return userEmailDao.getUserDataByUnumber(unumber);
+	}
+
+	public int updatePassword(UserCommonData userData) {
+		return userEmailDao.updatePassword(userData);
 	}
 
 }

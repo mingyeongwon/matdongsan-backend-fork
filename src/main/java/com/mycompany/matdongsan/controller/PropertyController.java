@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping("/Property")
 public class PropertyController {
 	@Autowired
 	private PropertyService propertyService;
@@ -53,7 +55,7 @@ public class PropertyController {
 	private PagerService pagerService;
 
 //  리스트
-	@GetMapping("/Property")
+	@GetMapping("")
 	public Map<String, Object> getPropertyList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
@@ -101,14 +103,14 @@ public class PropertyController {
 	}
 
 	// 좌표에 따른 pnumber 가져오기
-	@GetMapping("/Property/Position")
+	@GetMapping("/Position")
 	public int getAgentNumberByAgentPosition(@RequestParam String lat, @RequestParam String lng) {
 		int pnumber = propertyService.getPnumberByPropertyPosition(lat, lng);
 		return pnumber;
 	}
 
 //	읽기
-	@GetMapping("/Property/{pnumber}")
+	@GetMapping("/{pnumber}")
 	public Map<String, Object> readProperty(@PathVariable int pnumber, @ModelAttribute TotalProperty totalProperty,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String date, HttpSession session) {
@@ -291,7 +293,7 @@ public class PropertyController {
 	}
 
 //	댓글 생성
-	@PostMapping("/Property/{pnumber}")
+	@PostMapping("/{pnumber}")
 	public UserComment createPropertyComment(@PathVariable int pnumber, @ModelAttribute UserComment userComment,
 			Authentication authentication) {
 		log.info("pnumber in boot : " + pnumber);
@@ -335,7 +337,7 @@ public class PropertyController {
 	}
 
 //	댓글 수정
-	@PutMapping("/Property/{pnumber}/{ucnumber}")
+	@PutMapping("/{pnumber}/{ucnumber}")
 	public UserComment updatePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber,
 			@ModelAttribute UserComment userComment, Authentication authentication) {
 
@@ -350,7 +352,7 @@ public class PropertyController {
 	}
 
 //	댓글 삭제
-	@DeleteMapping("/Property/{pnumber}/{ucnumber}")
+	@DeleteMapping("/{pnumber}/{ucnumber}")
 	public void deletePropertyComment(@PathVariable int pnumber, @PathVariable int ucnumber,
 			Authentication authentication) {
 
@@ -578,4 +580,29 @@ public class PropertyController {
 		hasHistory = propertyService.checkPropertyListingHistory(userNumber);
 		return hasHistory;
 	}
+	
+	
+	@GetMapping("/getListingRemain")
+	public Map<String, Object> getListingRemain(Authentication authentication) {
+		Map<String, Object> map = new HashMap<>();
+		String userName = authentication.getName(); // 로그인 정보에서 이름 가져오기
+		if(userName == null || userName.equals("")) {
+			map.put("result", "noUser");
+		} else {
+			int userNumber = memberService.getUnumberByUemail(userName); // 가져온 이름으로 userNumber값 가져오기 
+			boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지
+			if(hasPropertyListing) {
+				// 있다면 수량 정보 가져오기
+				int propertyListing = propertyService.getUserPropertyListingRemain(userNumber); // userNumber로 수량 가져오기
+				log.info("구매 한 적이 없으면");
+				map.put("remain", propertyListing);
+			} else {
+				map.put("result", "noRemain");
+			}
+			
+		}
+		
+		return map;
+	}	
+	
 }

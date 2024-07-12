@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping("/Agent")
 public class AgentController {
 
 	@Autowired
@@ -54,11 +56,12 @@ public class AgentController {
 	private PropertyService propertyService;
 
 	// 부동산 정보 리스트 출력
-	@GetMapping("/Agent")
+	@GetMapping("")
 	public Map<String, Object> GetAgentList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String byRate, @RequestParam(required = false) String byComment,
 			@RequestParam(required = false) String byDate) {
+		
 		log.info("Received filters: byRate={}, byComment={}, byDate={}", byRate, byComment, byDate); // 로그 출력 수정
 		log.info("이게 키워드?: " + keyword);
 		// 무한 스크롤
@@ -83,7 +86,7 @@ public class AgentController {
 	}
 
 	// 중개인별 리뷰 개수와 별점 총합 가져오기
-	@GetMapping("/Agent/AgentReview/{anumber}")
+	@GetMapping("/AgentReview/{anumber}")
 	public Map<String, String> getAgentReview(@PathVariable int anumber) {
 		Map<String, String> map = new HashMap<>();
 		String reviewRateAvg = agentService.getReviewAvgByanumber(anumber);
@@ -94,7 +97,7 @@ public class AgentController {
 	}
 
 	// 중개인별 매물 데이터 가져오기
-	@GetMapping("/Agent/Property/{anumber}")
+	@GetMapping("/Property/{anumber}")
 	public Map<String, Object> getAgentPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@PathVariable int anumber, HttpSession session) {
 		log.info("중개인 매물 실행");
@@ -112,61 +115,16 @@ public class AgentController {
 	}
 
 	//좌표데이터로 중개인 번호 가져오기
-	@GetMapping("/Agent/Position")
+	@GetMapping("/Position")
 	public int getAgentNumberByAgentPosition(@RequestParam String lat,@RequestParam String lng) {
 		int anumber = agentService.getAnumberByAgentPosition(lat,lng);
 		return anumber;
 	}
-	// 부동산 등록
-	// 리턴값과 파라미터 값으로 agent와 agentDetail이 합쳐진 dto를 받아야함
-	// agent관련 DTO를 만들어서 코드 바꿀것
-	@Transactional
-	@PostMapping("/Signup/AgentSignup")
-	public void createAgentAccount(@ModelAttribute AgentSignupData agentSignupData) throws IOException {
-		// 객체 생성 및 데이터 설정
-		Agent agent = agentSignupData.getAgent();
-		AgentDetail agentDetail = agentSignupData.getAgentDetail();
-		UserCommonData userEmail = agentSignupData.getUserEmail();
 
-		// 비밀번호 암호화
-		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		userEmail.setUpassword(passwordEncoder.encode(userEmail.getUpassword()));
-
-		MultipartFile profileImg = agent.getAprofile();
-
-		// 중개인 프로필 사진 이미지 처리
-		if (profileImg != null && !profileImg.isEmpty()) {
-			agent.setAprofileoname(profileImg.getOriginalFilename());
-			agent.setAprofiletype(profileImg.getContentType());
-			agent.setAprofiledata(profileImg.getBytes());
-			log.info(agent.getAprofileoname());
-		}
-
-		// 사업자 등록증 이미지
-		// 사업자 등록증 첨부 파일 처리
-		if (agentDetail.getAdattach() != null && !agentDetail.getAdattach().isEmpty()) {
-			agentDetail.setAdattachoname(agentDetail.getAdattach().getOriginalFilename());
-			agentDetail.setAdattachtype(agentDetail.getAdattach().getContentType());
-			agentDetail.setAdattachdata(agentDetail.getAdattach().getBytes());
-			log.info(agentDetail.getAdattachoname());
-		}
-
-		// 데이터베이스에 저장
-		agentService.joinByUserEmail(userEmail);
-		agent.setAUnumber(userEmail.getUnumber());
-		agentService.joinByAgent(agent);
-		agentDetail.setAdAnumber(agent.getAnumber());
-		agentService.insertAgentData(agentDetail);
-		// 출력시 데이터 부분은 출력 길이가 길어서 null로 처리
-		userEmail.setUpassword(null);
-		agentDetail.setAdattachdata(null);
-		agent.setAprofiledata(null);
-//		return agentSignupData;
-	}
 
 	// 부동산 상세 정보 조회
 	// 댓글 정렬기능을 위한 sort 파라미터
-	@GetMapping("/Agent/{anumber}")
+	@GetMapping("/{anumber}")
 	public Map<String, Object> readAgentInfoByNumber(@PathVariable int anumber,
 			@RequestParam(defaultValue = "1", required = false) String pageNo,
 			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session) {
@@ -238,7 +196,7 @@ public class AgentController {
 
 	// 중개업자 정보 업데이트
 	@Transactional
-	@PutMapping("/Agent/Mypage/MyInfomation")
+	@PutMapping("/Mypage/MyInfomation")
 	public void updateMypagePropertyInfo(@ModelAttribute AgentSignupData agentSignupData,
 			Authentication authentication) {
 		Agent agent = agentSignupData.getAgent();
@@ -273,7 +231,7 @@ public class AgentController {
 	// 중개인 리뷰
 
 	// 댓글 생성
-	@PostMapping("/Agent/{anumber}")
+	@PostMapping("/{anumber}")
 	public int createAgentReview(@PathVariable int anumber, @ModelAttribute AgentReview agentReview,
 			Authentication authentication) {
 		log.info(authentication.getName());
@@ -294,7 +252,7 @@ public class AgentController {
 	}
 
 	// 댓글 수정
-	@PutMapping("/Agent/{anumber}/{arnumber}")
+	@PutMapping("/{anumber}/{arnumber}")
 	public void updateAgentReview(@PathVariable int anumber, @PathVariable int arnumber,
 			@ModelAttribute AgentReview agentReview, Authentication authentication) {
 		String userEmail = authentication.getName();
@@ -306,7 +264,7 @@ public class AgentController {
 	}
 
 	// 댓글 삭제
-	@DeleteMapping("/Agent/{anumber}/{arnumber}")
+	@DeleteMapping("/{anumber}/{arnumber}")
 	public void deleteAgentReview(@PathVariable int anumber, @PathVariable int arnumber,
 			Authentication authentication) {
 		log.info("댓글 삭제실행");
