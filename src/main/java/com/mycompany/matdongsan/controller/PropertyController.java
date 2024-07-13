@@ -59,18 +59,20 @@ public class PropertyController {
 	public Map<String, Object> getPropertyList(@RequestParam(defaultValue = "1") int pageNo,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
-			@RequestParam(required = false) String rentType, @RequestParam(required = false) String lat,
-			@RequestParam(required = false) String lng) {
-		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType
+			@RequestParam(required = false) String rentType, @RequestParam(required = false) String floorType,
+			@RequestParam(required = false) String lat,@RequestParam(required = false) String lng) {
+		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType, floorType
 		int totalPropertyRows;
 		Pager pager;
 		List<Property> propertyList = new ArrayList<>();
+		log.info("Received filters: price={}, date={}, rentType={}, floorType={}", price, date, rentType, floorType);
 
-		if (keyword != null || price != null || date != null || rentType != null || lat != "" || lng != "") {
-			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType, lat, lng);
+		if (keyword != null || price != null || date != null || floorType != null || rentType != null || lat != "" || lng != "") {
+			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType, floorType, lat, lng);
 			pager = new Pager(size, pageNo, totalPropertyRows);
 			propertyList = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(),
-					keyword, price, date, rentType, lat, lng);
+					keyword, price, date, rentType, floorType, lat, lng);
+			log.info("propertyList.size() : " + propertyList.size());
 
 		} else { // 전체 리스트
 			totalPropertyRows = propertyService.getAllPropertyCount();

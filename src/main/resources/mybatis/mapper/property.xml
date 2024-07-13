@@ -74,8 +74,11 @@
 		from property
 		<where>
 			pstatus='활성화'
-			<if test="rentType != null">
+			<if test="rentType != null and rentType != ''">
 				and pcategory=#{rentType}
+			</if>
+			<if test="floorType != null and floorType != ''">
+				and pfloortype=#{floorType}
 			</if>
 			<if test="keyword != null and keyword != ''">
 				and (
@@ -103,6 +106,8 @@
 		    where rnum between #{offset} + 1 and #{offset} + #{limit}
 	    ]]>
 	</select>
+	
+	
 
 	<!-- property 리스트 by filter and keyword -->
 	<select id="getPropertyListByFilter" parameterType="map"
@@ -115,9 +120,12 @@
     ]]>
 		<where>
 			pstatus='활성화'
-			<if test="rentType != null">
+			<if test="rentType != null and rentType != ''">
 				and pcategory=#{rentType}
 			</if>
+			<if test="floorType != null and floorType != ''">
+				and pfloortype=#{floorType}
+			</if>			
 			<if test="keyword != null and keyword != ''">
 				and (
 				p.paddress like '%' || #{keyword} || '%'
@@ -129,25 +137,44 @@
 				and PLONGITUDE like #{plongitude} || '%'
 			</if>
 		</where>
-		order by
-		<if test="price=='lowPrice'">
+<!-- 		order by
+		<if test="price=='low'">
 			pdeposite asc
 		</if>
-		<if test="price=='highPrice'">
+		<if test="price=='high'">
 			pdeposite desc
 		</if>
 		<if test="price != null and date != null">
 			,
 		</if>
-		<if test="date=='older'">
+		<if test="date=='asc'">
 			pdate asc
 		</if>
-		<if test="date=='newer'">
+		<if test="date=='desc'">
 			pdate desc
 		</if>
 		<if test="price==null and date==null">
 			pnumber desc
-		</if>                        
+		</if>   -->   
+		 
+    <choose>
+        <when test="price == 'low'">
+            <![CDATA[ORDER BY pdeposite asc]]>
+        </when>
+        <when test="price == 'high'">
+            <![CDATA[ORDER BY pdeposite desc]]>
+        </when>
+        <when test="date == 'desc'">
+            <![CDATA[ORDER BY pdate desc]]>
+        </when>
+        <when test="date == 'asc'">
+            <![CDATA[ORDER BY pdate asc]]>
+        </when>
+        <otherwise>
+            <![CDATA[ORDER BY pnumber desc]]>
+        </otherwise>
+    </choose>	
+    	                  
     <![CDATA[ )
         where rnum between #{offset} + 1 and #{offset} + #{limit}
     ]]>
