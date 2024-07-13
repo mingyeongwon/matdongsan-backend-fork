@@ -157,23 +157,23 @@
 			pnumber desc
 		</if>   -->   
 		 
-    <choose>
-        <when test="price == 'low'">
-            <![CDATA[ORDER BY pdeposite asc]]>
-        </when>
-        <when test="price == 'high'">
-            <![CDATA[ORDER BY pdeposite desc]]>
-        </when>
-        <when test="date == 'desc'">
-            <![CDATA[ORDER BY pdate desc]]>
-        </when>
-        <when test="date == 'asc'">
-            <![CDATA[ORDER BY pdate asc]]>
-        </when>
-        <otherwise>
-            <![CDATA[ORDER BY pnumber desc]]>
-        </otherwise>
-    </choose>	
+    <trim prefix="ORDER BY" prefixOverrides="," suffixOverrides=",">
+        <if test="price == 'low'">
+            pdeposite ASC,
+        </if>
+        <if test="price == 'high'">
+            pdeposite DESC,
+        </if>
+        <if test="date == 'asc'">
+            pdate ASC,
+        </if>
+        <if test="date == 'desc'">
+            pdate DESC,
+        </if>
+        <if test="price == null and date == null">
+            pnumber DESC,
+        </if>
+    </trim>	
     	                  
     <![CDATA[ )
         where rnum between #{offset} + 1 and #{offset} + #{limit}
