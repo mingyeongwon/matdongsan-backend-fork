@@ -108,7 +108,16 @@ public class PropertyController {
 		
 		return userPropertyMap;
 	}
-
+	
+	//pnumber에 따른 데이터 가져오기
+	@GetMapping("/DetailData/{pnumber}")
+	public Property getPropertyDataByPnumber(@PathVariable int pnumber) {
+		log.info("실행");
+		log.info("pnumber: "+pnumber+"");
+		Property propertyData = propertyService.getProperty(pnumber);
+		log.info(propertyData.getPtitle());
+		return propertyData;
+	}
 	// 좌표에 따른 pnumber 가져오기
 	@GetMapping("/Position")
 	public int getAgentNumberByAgentPosition(@RequestParam String lat, @RequestParam String lng) {
