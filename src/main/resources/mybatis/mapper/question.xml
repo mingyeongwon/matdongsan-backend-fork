@@ -63,11 +63,11 @@
 	<!-- 해당하는 회원의 문의 리스트 가져오기 -->
 	<select id="getUsersQuestionList" parameterType="Map" resultType="question">
 		<![CDATA[
-		select rnum, qtitle, qdate, qnumber, q_unumber, qcontent, qIsAnswer, qcategory
+		select rnum, qtitle, qdate, qnumber, q_unumber, qcontent, qIsAnswer, qcategory, qattachoname
 		from(
-			select rownum as rnum, qtitle, qdate, qnumber, q_unumber, qcontent,qIsAnswer, qcategory
+			select rownum as rnum, qtitle, qdate, qnumber, q_unumber, qcontent,qIsAnswer, qcategory, qattachoname
 			from(
-				select qtitle, qdate, qnumber, q_unumber, qcontent , q_isanswer as qIsAnswer, qcategory
+				select qtitle, qdate, qnumber, q_unumber, qcontent , q_isanswer as qIsAnswer, qcategory, qattachoname
 				from question
 				where q_unumber = #{qUnumber}
 				order by qdate desc

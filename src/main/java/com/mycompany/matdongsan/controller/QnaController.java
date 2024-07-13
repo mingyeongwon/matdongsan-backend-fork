@@ -184,7 +184,7 @@ public class QnaController {
 		int totalRows = qnaService.getQuestionCountByUnumber(memberService.getUnumberByUemail(authentication.getName()));
 		
 		// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
-		Pager pager= pagerService.preparePager(session, pageNo, totalRows, 5, 5, "myCustomerInquiry");
+		Pager pager= pagerService.preparePager(session, pageNo, totalRows, 3, 3, "myCustomerInquiry");
 		
 		
 		// 해당하는 유저의 페이지 불러오기 위한 Map 생성 (Mybatis는 parameter을 하나의 타입만 보낼 수 있어서 map에 담아서 매개변수를 넣는다.)
