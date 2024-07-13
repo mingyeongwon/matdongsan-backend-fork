@@ -294,8 +294,8 @@ public class PropertyService {
 	}
 
 	// 유저 허위 매물 리스트
-	public List<Report> getAllUserReportList(int unumber, Pager pager) {
-		return reportDao.getUserReportListByUnumber(unumber, pager);
+	public List<Report> getAllUserReportList(int unumber, Pager pager,String filterKeyword) {
+		return reportDao.getUserReportListByUnumber(unumber, pager,filterKeyword);
 	}
 
 	// 허위 매물 신고 삭제

@@ -29,7 +29,14 @@
 			select rnumber, rcontent, rdate, r_pnumber, r_unumber
 			from report
 			where r_unumber=#{unumber}
-			order by rnumber
+			order by rnumber	]]>
+		<if test="filterKeyword !=null and filterKeyword == 'desc'">
+			desc
+		</if>
+			<if test="filterKeyword !=null and filterKeyword == 'asc'">
+			asc
+		</if>
+<![CDATA[
 		)
 		where rownum <= #{pager.endRowNo}
 		)

@@ -17,7 +17,7 @@ public interface ReportDao {
 	public int getAllUserReportCountByUnumber(int unumber);
 	
 	// 유저 허위 매물 리스트
-	public List<Report> getUserReportListByUnumber(int unumber, Pager pager);
+	public List<Report> getUserReportListByUnumber(int unumber, Pager pager,String filterKeyword);
 	
 	// 허위 매물 신고 삭제
 	public int deleteUserReport(int pnumber, int unumber);

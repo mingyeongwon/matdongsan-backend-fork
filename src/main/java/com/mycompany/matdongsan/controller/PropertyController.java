@@ -489,7 +489,7 @@ public class PropertyController {
 
 //	유저 매물 신고 리스트
 	@GetMapping("/Mypage/ReportFalseListing")
-	public Map<String, Object> getUserReportList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+	public Map<String, Object> getUserReportList(@RequestParam(defaultValue = "1", required = false) String pageNo,@RequestParam(defaultValue = "desc", required = false) String filterKeyword,
 			Authentication authentication, HttpSession session) {
 
 		String uemail = authentication.getName();
@@ -497,7 +497,7 @@ public class PropertyController {
 
 		int totalUserReportRows = propertyService.getAllUserReportCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserReportRows, 4, 5, "userReportList");
-		List<Report> userReportList = propertyService.getAllUserReportList(unumber, pager);
+		List<Report> userReportList = propertyService.getAllUserReportList(unumber, pager,filterKeyword);
 		
 		Map<String, Object> userReportMap = new HashMap<>();
 		userReportMap.put("userReportList", userReportList);
