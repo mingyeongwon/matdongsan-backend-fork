@@ -90,16 +90,21 @@ public class PropertyController {
 
 //	유저 매물 리스트
 	@GetMapping("/Mypage/ManageMyProperty")
-	public List<Property> getUserPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+	public Map<String, Object> getUserPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
 			Authentication authentication, HttpSession session) {
 
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
 
 		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
-		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 9, 5, "userPropertyList");
+		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 3, 5, "userPropertyList");
 		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
-		return userPropertyList;
+		
+		Map<String, Object> userPropertyMap = new HashMap<>();
+		userPropertyMap.put("userPropertyList", userPropertyList);
+		userPropertyMap.put("pager", pager);
+		
+		return userPropertyMap;
 	}
 
 	// 좌표에 따른 pnumber 가져오기
@@ -124,15 +129,14 @@ public class PropertyController {
 	
 		// property Comment
 		int totalPropertyCommentRows = propertyService.getAllPropertyCommentCount(pnumber);
-		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 9, 5, "propertyComment");
+		Pager pager = pagerService.preparePager(session, pageNo, totalPropertyCommentRows, 5, 5, "propertyComment");
 		List<UserComment> propertyCommentList = propertyService.getCommentByPnumber(pnumber, date, pager);
 
 		Map<String, Object> propertyMap = new HashMap<>();
 		propertyMap.put("totalProperty", totalProperty);
 		propertyMap.put("propertyCommentList", propertyCommentList);
 		propertyMap.put("propertyPhotos", propertyPhotos);
-		
-		log.info("propertyMap : " + propertyMap.toString());
+		propertyMap.put("pager", pager);
 		
 		return propertyMap;
 	}
@@ -474,17 +478,21 @@ public class PropertyController {
 
 //	유저 매물 신고 리스트
 	@GetMapping("/Mypage/ReportFalseListing")
-	public List<Report> getUserReportList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+	public Map<String, Object> getUserReportList(@RequestParam(defaultValue = "1", required = false) String pageNo,
 			Authentication authentication, HttpSession session) {
 
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
 
 		int totalUserReportRows = propertyService.getAllUserReportCount(unumber);
-		Pager pager = pagerService.preparePager(session, pageNo, totalUserReportRows, 9, 5, "userReportList");
+		Pager pager = pagerService.preparePager(session, pageNo, totalUserReportRows, 4, 5, "userReportList");
 		List<Report> userReportList = propertyService.getAllUserReportList(unumber, pager);
-		log.info(userReportList.toString());
-		return userReportList;
+		
+		Map<String, Object> userReportMap = new HashMap<>();
+		userReportMap.put("userReportList", userReportList);
+		userReportMap.put("pager", pager);
+		
+		return userReportMap;
 	}
 
 //	등록권 구매
