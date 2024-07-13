@@ -61,12 +61,12 @@ public class PropertyController {
 			@RequestParam(required = false) String price, @RequestParam(required = false) String date,
 			@RequestParam(required = false) String rentType, @RequestParam(required = false) String floorType,
 			@RequestParam(required = false) String lat,@RequestParam(required = false) String lng) {
+		
 		// 검색 내용 찾기 : 주소, 필터 : price, date, rentType, floorType
 		int totalPropertyRows;
 		Pager pager;
 		List<Property> propertyList = new ArrayList<>();
-		log.info("Received filters: price={}, date={}, rentType={}, floorType={}", price, date, rentType, floorType);
-
+		
 		if (keyword != null || price != null || date != null || floorType != null || rentType != null || lat != "" || lng != "") {
 			totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType, floorType, lat, lng);
 			pager = new Pager(size, pageNo, totalPropertyRows);
