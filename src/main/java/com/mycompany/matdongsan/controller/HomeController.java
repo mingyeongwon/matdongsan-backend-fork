@@ -46,7 +46,7 @@ public class HomeController {
 	private UserCommonDataDao userCommonDataDao;
 	@Autowired
 	private PropertyService propertyService;
-	
+
 	@GetMapping("/")
 	public String home() {
 		log.info("실행");
@@ -125,139 +125,134 @@ public class HomeController {
 		UserCommonData userData = memberService.getUserDataByUemail(uemail);
 		return userData;
 	}
-	
+
 	// 유저정보 불러오기 by unumber
 	@GetMapping("/Home/getUserData/{unumber}")
 	public Map<String, Object> getUserDataByUnumber(@PathVariable int unumber) {
-		
+
 		Map<String, Object> userTotalInfo = new HashMap<>();
 		UserCommonData userCommonData = memberService.getUserDataByUnumber(unumber);
 		userTotalInfo.put("userCommonData", userCommonData);
-		
-		if(userCommonData.getUrole().equals("MEMBER")) {
+
+		if (userCommonData.getUrole().equals("MEMBER")) {
 			Member member = memberService.getMemberDataFullyByUserNumber(unumber);
 			userTotalInfo.put("member", member);
-		} else if(userCommonData.getUrole().equals("AGENT")) {
+		} else if (userCommonData.getUrole().equals("AGENT")) {
 			// 중개인일 경우
 			Agent agent = agentService.getAgentDataByUnumber(unumber);
-			log.info("agent: "+ agent.toString());
+			log.info("agent: " + agent.toString());
 			userTotalInfo.put("agent", agent);
 		}
 		return userTotalInfo;
-	}	
-	
-	
+	}
 
-	
 	// 중개인 아이디 찾기
 	@PostMapping("/Home/login/findAgentEmail")
-	public Map<String, String> getAgentEmail(Agent agent){
+	public Map<String, String> getAgentEmail(Agent agent) {
 		// 이메일 가져오기
 		String aemail = agentService.findEmail(agent);
-		
-		// 통신 결과를 map에 담아 보내기 
+
+		// 통신 결과를 map에 담아 보내기
 		Map<String, String> result = new HashMap<>();
-		
-		if(aemail != null) {
+
+		if (aemail != null) {
 			result.put("success", aemail);
 		} else {
 			result.put("fail", "이메일을 찾을 수 없습니다.");
 		}
 		return result;
 	}
-	
+
 	// 일반인 아이디 찾기 -> 개인 정보는 form데이터로 받기 위해 post매핑 함
 	@PostMapping("/Home/login/findMemberEmail")
-	public Map<String, String> getMemberEmail(Member member){
-		log.info("받아온 매개변수 없다고 뜬다."+member.toString());
-		
+	public Map<String, String> getMemberEmail(Member member) {
+		log.info("받아온 매개변수 없다고 뜬다." + member.toString());
+
 		// 이메일 가져오기
 		String memail = memberService.findEmail(member);
-		
+
 		// 통신 결과를 map에 담아 보내기
 		Map<String, String> result = new HashMap<>();
-		
+
 		// memail이 빈값이 아닐 경우 memail데이터를 반환
-		if(memail != null) {
+		if (memail != null) {
 			result.put("success", memail);
 		} else {
 			result.put("fail", "이메일을 찾을 수 없습니다.");
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 	// 비밀번호 찾기 위한 회원 인증
 	@PostMapping("/Home/canResetPassword")
-	public Map<String, String> canResetPassword(
-			@RequestParam("name") String name
-			, @RequestParam("phone") String phone
-			, @RequestParam("email") String email){
+	public Map<String, String> canResetPassword(@RequestParam("name") String name, @RequestParam("phone") String phone,
+			@RequestParam("email") String email) {
 		// 리턴 값 반환 할 map
 		Map<String, String> result = new HashMap<>();
-		
+
 		// 아이디가 존재 하는지 확인
 		UserCommonData userData = userCommonDataDao.getUserDataByUser(email);
-		
-		if(userData == null) {
+
+		if (userData == null) {
 			result.put("noUser", "해당 회원을 찾을 수 없습니다");
 			return result;
-		} 
-		
-		if(userData.getUemail() != null) {
+		}
+
+		if (userData.getUemail() != null) {
 			// 존재 한다면 입력한 정보가 맞는지 확인
-			if(userData.getUrole().equals("MEMBER")) {
+			if (userData.getUrole().equals("MEMBER")) {
 				// 일반 회원이면 member에서 찾기
 				Member member = new Member();
 				member.setMname(name);
 				member.setMphone(phone);
 				// 회원이 있다면
-				log.info("회원 존재 여부"+memberService.checkMember(member)+"");
-				if(memberService.checkMember(member) > 0) {
+				log.info("회원 존재 여부" + memberService.checkMember(member) + "");
+				if (memberService.checkMember(member) > 0) {
 					result.put("success", userData.getUemail());
 				} else {
 					result.put("notFoundUser", "아이디와 정보가 일치하지 않습니다.");
 				}
-			} else if(userData.getUrole().equals("AGENT")) {
+			} else if (userData.getUrole().equals("AGENT")) {
 				// 중개인 회원이면 agent에서 찾기
 				Agent agent = new Agent();
 				agent.setAname(name);
 				agent.setAphone(phone);
 				// 회원이 있다면
-				if(agentService.checkAgent(agent) > 0) {
+				if (agentService.checkAgent(agent) > 0) {
 					result.put("success", userData.getUemail());
 				} else {
 					result.put("notFoundUser", "아이디와 정보가 일치하지 않습니다.");
 				}
-			} 
-		} 
-		
+			}
+		}
+
 		return result;
 	}
-	
+
 	// 비밀번호 변경
 	@PutMapping("/Home/updatePassword")
 	public Map<String, String> updatePassword(UserCommonData userData) {
 		Map<String, String> map = new HashMap<>();
-		
+
 		// 비밀번호 암호화
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		userData.setUpassword(passwordEncoder.encode(userData.getUpassword()));
-		
+
 		// 비밀번호 변경
 		int result = userCommonDataDao.updatePassword(userData);
-		
+
 		// result가 0이면 수정 안됨, 1이면 된 것이다.
-		if(result>0) {
+		if (result > 0) {
 			map.put("success", "변경이 완료되었습니다.");
-		}else {
+		} else {
 			map.put("fail", "변경을 실패하였습니다.");
 		}
-		
+
 		return map;
 	}
-	
+
 	// 비밀번호 맞는지 확인
 	@PostMapping("/Home/checkOldPassword")
 	public Map<String, String> checkOldPassword(UserCommonData userData) {
@@ -266,27 +261,27 @@ public class HomeController {
 		// 비밀번호 체크
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		boolean checkResult = passwordEncoder.matches(userData.getUpassword(), userDetails.getUser().getUpassword());
-		
+
 		Map<String, String> map = new HashMap<>();
-		if(checkResult) {
+		if (checkResult) {
 			map.put("result", "맞음");
 		} else {
 			map.put("result", "틀림");
 		}
-		
+
 		return map;
 	}
-	
+
 	@GetMapping("/Home/getListingRemain")
 	public Map<String, Object> getListingRemain(Authentication authentication) {
 		Map<String, Object> map = new HashMap<>();
 		String userName = authentication.getName(); // 로그인 정보에서 이름 가져오기
-		if(userName == null || userName.equals("")) {
+		if (userName == null || userName.equals("")) {
 			map.put("result", "noUser");
 		} else {
-			int userNumber = userCommonDataDao.getUserIdByUsername(userName); // 가져온 이름으로 userNumber값 가져오기 
+			int userNumber = userCommonDataDao.getUserIdByUsername(userName); // 가져온 이름으로 userNumber값 가져오기
 			boolean hasPropertyListing = propertyService.checkPropertyCondition(userNumber); // 유저가 이전에 결제한 적 있는지
-			if(hasPropertyListing) {
+			if (hasPropertyListing) {
 				// 있다면 수량 정보 가져오기
 				int propertyListing = propertyService.getUserPropertyListingRemain(userNumber); // userNumber로 수량 가져오기
 				log.info("구매 한 적이 없으면");
@@ -294,14 +289,10 @@ public class HomeController {
 			} else {
 				map.put("result", "noRemain");
 			}
-			
+
 		}
-		
+
 		return map;
 	}
-
-
-	
-	
 
 }

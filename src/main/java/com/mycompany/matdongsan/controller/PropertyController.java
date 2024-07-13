@@ -99,7 +99,7 @@ public class PropertyController {
 		int unumber = memberService.getUnumberByUemail(uemail);
 
 		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
-		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 3, 5, "userPropertyList");
+		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 5, 5, "userPropertyList");
 		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
 		
 		Map<String, Object> userPropertyMap = new HashMap<>();
