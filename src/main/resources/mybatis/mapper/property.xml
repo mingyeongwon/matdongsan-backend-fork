@@ -213,6 +213,40 @@
 		where rnum >= #{pager.startRowNo}
 		]]>
 	</select>
+	
+	<!-- 유저 매물 리스트 -->
+	<select id="getUserPropertyListByUnumberAndFilter" parameterType="Pager"
+		resultType="Property">
+		<![CDATA[
+		select rnum, pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
+		from (
+				select rownum as rnum, pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
+		from(
+			select pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
+			from property ]]>
+		<where>
+			p_unumber=#{unumber}
+			<if test="filterKeyword != null and filterKeyword == '거래완료'">
+				and pstatus='거래완료'
+			</if>
+			<if test="filterKeyword != null and filterKeyword == '거래중'">
+				and pstatus='활성화'
+			</if>			
+		</where>
+			<![CDATA[order by pdate ]]>
+		<if test="filterKeyword !=null and filterKeyword == 'desc'">
+			desc
+		</if>
+		<if test="filterKeyword !=null and filterKeyword == 'asc'">
+			asc
+		</if>		
+		<![CDATA[	
+		)
+		where rownum <= #{pager.endRowNo}
+		)
+		where rnum >= #{pager.startRowNo}
+		]]>
+	</select>	
 
 	<!-- 유저 매물 총 개수 -->
 	<select id="getAllUserPropertyCountByUnumber" resultType="int">

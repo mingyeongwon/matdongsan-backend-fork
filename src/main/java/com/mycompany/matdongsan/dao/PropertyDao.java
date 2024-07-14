@@ -60,6 +60,8 @@ public interface PropertyDao {
 	public List<Property> getAllPropertyListWithoutPager();
 
 	public int getPnumberByPropertyPosition(String platitude, String plongitude);
+
+	public List<Property> getUserPropertyListByUnumberAndFilter(int unumber, Pager pager, String filterKeyword);
 	
 
 

@@ -92,7 +92,7 @@ public class PropertyController {
 
 //	유저 매물 리스트
 	@GetMapping("/Mypage/ManageMyProperty")
-	public Map<String, Object> getUserPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo,
+	public Map<String, Object> getUserPropertyList(@RequestParam(defaultValue = "1", required = false) String pageNo, @RequestParam(defaultValue = "desc", required = false) String filterKeyword,
 			Authentication authentication, HttpSession session) {
 
 		String uemail = authentication.getName();
@@ -100,7 +100,7 @@ public class PropertyController {
 
 		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 5, 5, "userPropertyList");
-		List<Property> userPropertyList = propertyService.getAllUserPropertyList(unumber, pager);
+		List<Property> userPropertyList = propertyService.getAllUserPropertyListByFilter(unumber, pager, filterKeyword);
 		
 		Map<String, Object> userPropertyMap = new HashMap<>();
 		userPropertyMap.put("userPropertyList", userPropertyList);
@@ -473,6 +473,24 @@ public class PropertyController {
 			return false;
 		}
 
+	}
+	
+
+//	매물 신고 여부
+	@GetMapping("/isReported/{pnumber}")
+	public Boolean isReported(@PathVariable int pnumber, Authentication authentication) {
+		String userEmail = authentication.getName();
+		int userNumber = memberService.getUnumberByUemail(userEmail);
+
+		// 유저가 이전에 신고한 적 있는지
+		boolean hasPropertyReport = propertyService.checkPropertyReport(userNumber, pnumber);
+
+		if (hasPropertyReport) { 
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
 //	매물 신고 삭제
