@@ -359,4 +359,8 @@ public class PropertyService {
 		return pnumber;
 	}
 
+	public List<Property> getAllUserPropertyListByFilter(int unumber, Pager pager, String filterKeyword) {
+		return propertyDao.getUserPropertyListByUnumberAndFilter(unumber, pager, filterKeyword);
+	}
+
 }
