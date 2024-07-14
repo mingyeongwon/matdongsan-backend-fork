@@ -209,10 +209,15 @@ public class QnaController {
 	// getList - all
 	// 고객 문의 사항 리스트 전부 가져오기(전체 문의 사항 - 관리자페이지)
 	@GetMapping("/CustomerInquiryList")
-	public Map<String, Object> CustomerInquiryList(@RequestParam(defaultValue = "1") String pageNo, @RequestParam(required = false) String type, HttpSession session, Authentication authentication){
+	public Map<String, Object> CustomerInquiryList(@RequestParam(defaultValue = "1") String pageNo, 
+			@RequestParam(required = false) String filter, 
+			@RequestParam(required = false) String isAnswer, 
+			@RequestParam(defaultValue = "desc", required = false) String sort, HttpSession session, Authentication authentication){
+		
 		// 유저 정보가 admin이면 리스트 가져오기
 //		if(memberService.getUserRole(authentication.getName()).equals("ADMIN")) {
-			if(type == null || type.equals("")) {
+			// 검색 조건이 아무것도 없을 때 
+			if((filter == null || filter.equals(""))&&(isAnswer == null || isAnswer.equals(""))&&(sort.equals(""))) {
 				// 공지사항 갯수
 				int totalRows = qnaService.getQuestionCount(); 
 				
@@ -235,18 +240,26 @@ public class QnaController {
 
 				
 				return map;
+				
+				
 			} 	// 타입별 공지사항 갯수
-				int totalRows = qnaService.getQuestionCountByType(type); 
+				Map<String, Object> mapForTotalRows = new HashMap<>();
+				mapForTotalRows.put("filter", filter);
+				mapForTotalRows.put("isAnswer", isAnswer);
+				
+				int totalRows = qnaService.getQuestionCountByfilter(mapForTotalRows); 
 				
 				// 페이저 객체 생성(페이지 당 행 수, 그룹 당 페이지 수, 전체 행 수, 현재 페이지 번호)
 				Pager pager= pagerService.preparePager(session, pageNo, totalRows, 10, 5, "adminCustomerInquiry");
 				
-				Map<String, Object> mapForFilter = new HashMap<>();
-				mapForFilter.put("pager",pager);
-				mapForFilter.put("type", type);
+				Map<String, Object> mapForList = new HashMap<>();
+				mapForList.put("pager",pager);
+				mapForList.put("filter", filter);
+				mapForList.put("sort", sort);
+				mapForList.put("isAnswer", isAnswer);
 				
 				// 해당 페이지의 게시물 목록 가져오기
-				List<Question> list = qnaService.getQuestionList(mapForFilter);
+				List<Question> list = qnaService.getQuestionList(mapForList);
 				
 				// 여러 객체를 리턴하기 위해 Map 객체 생성		
 				Map<String, Object> map = new HashMap<>();

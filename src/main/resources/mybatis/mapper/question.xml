@@ -78,14 +78,22 @@
 		]]>
 	</select>
 	
-	<!-- 해당하는 회원의 문의 갯수 가져오기 -->
+	<!-- 문의 갯수 가져오기 -->
 	<select id="getQuestionCount" resultType="int">
 		select count(*) from question 
 	</select>
 	
-	<!-- 해당하는 회원의 문의 갯수 가져오기 -->
-	<select id="getQuestionCountByType" parameterType="String" resultType="int">
-		select count(*) from question where qcategory = #{type}
+	<!-- 해당하는 조건의 문의 갯수 가져오기 -->
+	<select id="getQuestionCountByType" parameterType="map" resultType="int">
+		select count(*) from question
+		<where> 
+		<if test="filter != null and filter != ''">
+			and qcategory = #{filter}
+		</if>
+		<if test="isAnswer == 'noAnswer'">
+			and q_isanswer is null
+		</if>
+		</where>
 	</select>
 	
 	
@@ -99,14 +107,17 @@
 				select qtitle, qdate, qnumber, q_unumber, q_isanswer as qIsAnswer, qcategory
 				from question
 				]]>
-				<if test="type != null">
-					<![CDATA[
-					where qcategory = #{type}
-					]]>
-				</if>
+				<where> 
+					<if test="filter != null and filter != ''">
+						and qcategory = #{filter}
+					</if>
+					<if test="isAnswer == 'noAnswer'">
+						and q_isanswer is null
+					</if>
+				</where>
 				<![CDATA[
-				order by qdate desc
-				)
+				order by qdate ${sort == 'desc' ? 'desc' : 'asc'})
+				
 			where rownum <= #{pager.endRowNo}
 		)
 		where rnum >= #{pager.startRowNo}

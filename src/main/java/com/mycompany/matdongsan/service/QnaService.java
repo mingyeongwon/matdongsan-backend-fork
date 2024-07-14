@@ -67,8 +67,8 @@ public class QnaService {
 	}
 	
 	// 고객 문의 갯수 가져오기(타입별)
-	public int getQuestionCountByType(String type) {
-		return questionDao.getQuestionCountByType(type);
+	public int getQuestionCountByfilter(Map<String, Object> mapForTotalRows) {
+		return questionDao.getQuestionCountByType(mapForTotalRows);
 	}
 	
 	// 고객 문의 리스트 가져오기(전체)

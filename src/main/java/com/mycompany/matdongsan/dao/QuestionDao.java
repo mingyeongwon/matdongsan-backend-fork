@@ -24,5 +24,5 @@ public interface QuestionDao {
 	public int updateRemoveAnswer(int qnumber);
 	public Question getQuestionImgByQnumber(int qnumber);
 	public String getWriterByQunumber(int qUnumber);
-	public int getQuestionCountByType(String type);
+	public int getQuestionCountByType(Map<String, Object> mapForTotalRows);
 }
