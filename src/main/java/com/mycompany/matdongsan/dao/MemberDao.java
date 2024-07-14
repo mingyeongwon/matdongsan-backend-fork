@@ -25,5 +25,7 @@ public interface MemberDao {
 	public String findEmail(Member member);
 	
 	public int checkMember(Member member);
+	
+	public int getEmailUniqueCheck(String uemail);
 
 }

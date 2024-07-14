@@ -54,4 +54,9 @@
 	<select id="checkMember" parameterType="member" resultType="int">
 		select count(*) from member where mname = #{mname} and mphone =#{mphone}
 	</select>
+	
+	<!-- 아이디 중복 찾기 -->
+	<select id="getEmailUniqueCheck" parameterType="String" resultType="int">
+	select count(*) from user_common_data where uemail = #{uemail}
+	</select>
 </mapper>

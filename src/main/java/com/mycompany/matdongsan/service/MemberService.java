@@ -103,5 +103,9 @@ public class MemberService {
 	public int updatePassword(UserCommonData userData) {
 		return userEmailDao.updatePassword(userData);
 	}
+	
+	public int getEmailUniqueCheck(String uemail) {
+		return memberDao.getEmailUniqueCheck(uemail);
+	}
 
 }

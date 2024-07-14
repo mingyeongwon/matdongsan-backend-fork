@@ -429,6 +429,18 @@ public class MemberController {
 			return result;
 		}
 		
+		// 아이디 중복 확인
+		@GetMapping("/signup/emailUniqueCheck")
+		public int getEmailUniqueCheck(String uemail) {
+			log.info("이메일나와"+uemail);
+			if(memberService.getEmailUniqueCheck(uemail) > 0) {
+				return 1; // 중복이 있으면 1
+			} else {
+				return 0; // 없으면 0
+			}
+			
+		}
+		
 		
 		
 	// 비밀번호 수정
