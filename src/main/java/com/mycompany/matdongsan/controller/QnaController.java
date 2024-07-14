@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/Qna")
+@RequestMapping("/api/Qna")
 public class QnaController {
 	@Autowired 
 	private QnaService qnaService;

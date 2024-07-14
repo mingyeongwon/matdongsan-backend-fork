@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/Agent")
+@RequestMapping("/api/Agent")
 public class AgentController {
 
 	@Autowired

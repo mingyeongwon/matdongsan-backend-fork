@@ -47,7 +47,7 @@ public class HomeController {
 	@Autowired
 	private PropertyService propertyService;
 
-	@GetMapping("/")
+	@GetMapping("/api/")
 	public String home() {
 		log.info("실행");
 		return "restapi";

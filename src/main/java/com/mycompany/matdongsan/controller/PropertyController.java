@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/Property")
+@RequestMapping("/api/Property")
 public class PropertyController {
 	@Autowired
 	private PropertyService propertyService;

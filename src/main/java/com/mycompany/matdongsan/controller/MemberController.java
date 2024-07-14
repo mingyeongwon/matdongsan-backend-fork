@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/Member")
+@RequestMapping("/api/Member")
 public class MemberController {
 	@Autowired
 	private MemberService memberService;
