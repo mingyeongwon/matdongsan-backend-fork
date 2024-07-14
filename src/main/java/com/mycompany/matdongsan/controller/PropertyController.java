@@ -97,10 +97,14 @@ public class PropertyController {
 
 		String uemail = authentication.getName();
 		int unumber = memberService.getUnumberByUemail(uemail);
-
-		int totalUserPropertyRows = propertyService.getAllUserPropertyCount(unumber);
+		
+		log.info("received keyword : " + filterKeyword);
+		
+		int totalUserPropertyRows = propertyService.getAllUserPropertyCountByFilter(unumber, filterKeyword);
 		Pager pager = pagerService.preparePager(session, pageNo, totalUserPropertyRows, 5, 5, "userPropertyList");
 		List<Property> userPropertyList = propertyService.getAllUserPropertyListByFilter(unumber, pager, filterKeyword);
+		
+		log.info("size : " + totalUserPropertyRows);
 		
 		Map<String, Object> userPropertyMap = new HashMap<>();
 		userPropertyMap.put("userPropertyList", userPropertyList);

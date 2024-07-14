@@ -363,4 +363,8 @@ public class PropertyService {
 		return propertyDao.getUserPropertyListByUnumberAndFilter(unumber, pager, filterKeyword);
 	}
 
+	public int getAllUserPropertyCountByFilter(int unumber, String filterKeyword) {
+		return propertyDao.getAllUserPropertyCountByUnumberAndFilter(unumber, filterKeyword);
+	}
+
 }
