@@ -100,7 +100,7 @@ public class MemberController {
 
 	//일반 유저 프로필 사진
 	@GetMapping("/mattach/{mnumber}")
-	public void downloadAgentProfile(@PathVariable int mnumber, HttpServletResponse response) {
+	public void downloadMemberProfile(@PathVariable int mnumber, HttpServletResponse response) {
 		
 		// 해당 게시물 가져오기
 		Member memeber = memberService.getMemberDataByMemberNumber(mnumber);
