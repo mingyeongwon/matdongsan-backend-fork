@@ -33,7 +33,7 @@
     <![CDATA[
     SELECT *
     FROM (
-        SELECT a.*, 
+        SELECT a.anumber,abrand,aphone,aaddress,alatitude,alongitude,apostcode,a_unumber,aname,aaddressdetail, 
                COALESCE(ar.commentCount, 0) AS commentCount, 
                COALESCE(ar.arrate, 0) AS arrate,
                ROW_NUMBER() OVER (
