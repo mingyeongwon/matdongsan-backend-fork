@@ -78,7 +78,7 @@ public class PropertyService {
 	}
 
 	// 읽기 - property
-	public Property getProperty(int pnumber) {
+	public Property getPropertyDataByPnumber(int pnumber) {
 		Property property = propertyDao.selectByPnumber(pnumber);
 		propertyDao.updatePhitcount(pnumber);
 		return property;

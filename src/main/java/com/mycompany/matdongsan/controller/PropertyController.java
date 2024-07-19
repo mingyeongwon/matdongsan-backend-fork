@@ -118,7 +118,7 @@ public class PropertyController {
 	public Property getPropertyDataByPnumber(@PathVariable int pnumber) {
 		log.info("실행");
 		log.info("pnumber: "+pnumber+"");
-		Property propertyData = propertyService.getProperty(pnumber);
+		Property propertyData = propertyService.getPropertyDataByPnumber(pnumber);
 		log.info(propertyData.getPtitle());
 		return propertyData;
 	}
@@ -136,7 +136,7 @@ public class PropertyController {
 			@RequestParam(defaultValue = "desc", required = false) String date, HttpSession session) {
 
 		// property 정보
-		totalProperty.setProperty(propertyService.getProperty(pnumber));
+		totalProperty.setProperty(propertyService.getPropertyDataByPnumber(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetailByPdPnumber(pnumber));
 		
 		// photos는 여러 개라서 따로 리스트 설정
@@ -281,7 +281,7 @@ public class PropertyController {
 		}
 
 		// totalProperty 객체에 수정된 내용 다시 설정
-		totalProperty.setProperty(propertyService.getProperty(pnumber));
+		totalProperty.setProperty(propertyService.getPropertyDataByPnumber(pnumber));
 		totalProperty.setPropertyDetail(propertyService.getPropertyDetail(propertyDetail.getPdnumber()));
 
 
@@ -567,7 +567,7 @@ public class PropertyController {
 	public void downloadPropertyThumbnail(@PathVariable int pnumber, HttpServletResponse response) {
 
 		// 해당 게시물 가져오기
-		Property property = propertyService.getProperty(pnumber);
+		Property property = propertyService.getPropertyDataByPnumber(pnumber);
 		// 파일 이름이 한글일 경우, 브라우저에서 한글 이름으로 다운로드 받기 위한 코드
 		try {
 			String fileName = new String(property.getPthumbnailoname().getBytes("UTF-8"), "ISO-8859-1");

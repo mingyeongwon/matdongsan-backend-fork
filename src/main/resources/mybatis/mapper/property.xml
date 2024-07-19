@@ -97,7 +97,8 @@
 	<select id="getAllPropertyList" parameterType="map"
 		resultType="Property">
 		<![CDATA[
-		    select *
+		    select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
+		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
 		    from (
 		        select p.*, row_number() over (order by p.pnumber desc) as rnum
 		        from property p
@@ -113,7 +114,8 @@
 	<select id="getPropertyListByFilter" parameterType="map"
 		resultType="Property">
     <![CDATA[
-        select *
+        select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
+		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
         from (
             select p.*, row_number() over (order by p.pnumber desc) as rnum
             from property p 
