@@ -201,7 +201,7 @@
 	<select id="getUserPropertyListByUnumber" parameterType="Pager"
 		resultType="Property">
 		<![CDATA[
-		select rnum, pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
+		select rnum, pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber
 		from (
 				select rownum as rnum, pnumber,pdeposite,prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
 		from(
@@ -279,7 +279,8 @@
 	<select id="getPopularPropertyListByHitcount"
 		resultType="Property">
 	<![CDATA[
-		select * 
+		select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
+		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
 		from (
 				select * 
 				from property 
