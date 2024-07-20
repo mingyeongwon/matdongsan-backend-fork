@@ -280,7 +280,7 @@
 		resultType="Property">
 	<![CDATA[
 		select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
-		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
+		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber,PTHUMBNAILONAME
 		from (
 				select * 
 				from property 
