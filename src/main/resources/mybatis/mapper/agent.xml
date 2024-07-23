@@ -38,29 +38,42 @@
                COALESCE(ar.arrate, 0) AS arrate,
                ROW_NUMBER() OVER (
     ]]>
-    <choose>
-        <when test="byComment == 'many'">
-            <![CDATA[ORDER BY COALESCE(ar.commentCount, 0) DESC]]>
-        </when>
-        <when test="byComment == 'less'">
-            <![CDATA[ORDER BY COALESCE(ar.commentCount, 0) ASC]]>
-        </when>
-        <when test="byRate == 'high'">
-            <![CDATA[ORDER BY COALESCE(ar.arrate, 0) DESC]]>
-        </when>
-        <when test="byRate == 'low'">
-            <![CDATA[ORDER BY COALESCE(ar.arrate, 0) ASC]]>
-        </when>
-        <when test="byDate == 'desc'">
-            <![CDATA[ORDER BY a.anumber DESC]]>
-        </when>
-        <when test="byDate == 'asc'">
-            <![CDATA[ORDER BY a.anumber ASC]]>
-        </when>
-        <otherwise>
-            <![CDATA[ORDER BY a.anumber DESC]]>
-        </otherwise>
-    </choose>
+    <trim prefix="ORDER BY" suffixOverrides=",">
+        <if test="byComment == 'many'">
+            <![CDATA[
+                COALESCE(ar.commentCount, 0) DESC,
+            ]]>
+        </if>
+        <if test="byComment == 'less'">
+            <![CDATA[
+                COALESCE(ar.commentCount, 0) ASC,
+            ]]>
+        </if>
+        <if test="byRate == 'high'">
+            <![CDATA[
+                COALESCE(ar.arrate, 0) DESC,
+            ]]>
+        </if>
+        <if test="byRate == 'low'">
+            <![CDATA[
+                COALESCE(ar.arrate, 0) ASC,
+            ]]>
+        </if>
+        <if test="byDate == 'desc'">
+            <![CDATA[
+                a.anumber DESC,
+            ]]>
+        </if>
+        <if test="byDate == 'asc'">
+            <![CDATA[
+                a.anumber ASC,
+            ]]>
+        </if>
+        <!-- 기본 정렬 조건을 설정 -->
+        <![CDATA[
+            a.anumber DESC
+        ]]>
+    </trim>
     <![CDATA[
                ) AS rnum
         FROM Agent a
@@ -83,6 +96,7 @@
     WHERE rnum BETWEEN #{offset} + 1 AND #{offset} + #{limit}
     ]]>
 </select>
+
 
 
 
