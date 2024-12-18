@@ -4,15 +4,11 @@
 
 	<!-- 중개인 회원가입 -->
 	<insert id="joinByAgent" parameterType="Agent">
-		<selectKey keyProperty="anumber" resultType="int"
-			order="BEFORE">
-			select seq_anumber.nextval from dual
-		</selectKey>
-		insert into agent(anumber,aname, abrand, aphone,
+		insert into agent(aname, abrand, aphone,
 		aaddress,APROFILEDATA,APROFILEONAME,APROFILETYPE,
 		ALATITUDE,ALONGITUDE,APOSTCODE,AADDRESSDETAIL,A_UNUMBER)
 		values
-		(#{anumber},#{aname}, #{abrand}, #{aphone}, #{aaddress},
+		(#{aname}, #{abrand}, #{aphone}, #{aaddress},
 		#{aprofiledata},#{aprofileoname},#{aprofiletype},#{alatitude},#{alongitude},#{apostcode},#{aaddressdetail},#{aUnumber})
 	</insert>
 	<select id="getAgentNumberByUserNumber" parameterType="int"

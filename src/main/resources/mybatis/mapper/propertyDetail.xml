@@ -3,15 +3,12 @@
 <mapper namespace="com.mycompany.matdongsan.dao.PropertyDetailDao">
 	<!-- 생성 -->
 	<insert id="createPropertyByPropertyDetail" parameterType="PropertyDetail">
-		<selectKey keyProperty="pdnumber" resultType="int" order="BEFORE">
-			select seq_pdnumber.nextval from dual
-		</selectKey>	
 		<!-- pdmoveindate 수정하기 -->
-		insert into property_detail(pdnumber, pdcontent, pdmoveindate, pdbath, pdlift, pdbed, 
+		insert into property_detail(pdcontent, pdbath, pdlift, pdbed,
 		pdlot, pdheating, pdcooling, pdmicrowave, pdburner, pdfridge, pdshoecloset, pdtv, pdcloset, 
 		pddinningtable, pdtable, pdwasher, pdinduction, pd_pnumber)
 		
-		values(#{pdnumber}, #{pdcontent}, sysdate, #{pdbath}, #{pdlift}, #{pdbed},
+		values(#{pdcontent}, #{pdbath}, #{pdlift}, #{pdbed},
 				#{pdlot}, #{pdheating}, #{pdcooling}, #{pdmicrowave}, #{pdburner}, #{pdfridge}, #{pdshoecloset},
 				#{pdtv}, #{pdcloset}, #{pddinningtable}, #{pdtable}, #{pdwasher}, #{pdinduction}, #{pdPnumber})
 	</insert>

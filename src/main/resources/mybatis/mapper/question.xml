@@ -3,15 +3,12 @@
 <mapper namespace="com.mycompany.matdongsan.dao.QuestionDao">
 	<!-- 고객 문의 생성 -->
 	<insert id="insertQuestion" parameterType="question">
-		<selectKey keyProperty="qnumber" resultType="int" order="BEFORE">
-			select SEQ_QNUMBER.nextval from dual
-		</selectKey>
 		insert into question(
-			qnumber, qcategory, qtitle, qcontent, qattachoname, qattachdata, 
-			qattachtype, qdate, q_unumber 
+			qcategory, qtitle, qcontent, qattachoname, qattachdata,
+			qattachtype, q_unumber
 		) values(
-			#{qnumber}, #{qcategory}, #{qtitle}, #{qcontent}, #{qattachoname},
-			#{qattachdata}, #{qattachtype}, sysdate, #{ qUnumber }
+			#{qcategory}, #{qtitle}, #{qcontent}, #{qattachoname},
+			#{qattachdata}, #{qattachtype}, #{ qUnumber }
 		)
 	</insert>
 	
@@ -40,7 +37,7 @@
 	<!-- 문의 수정하기 -->
 	<update id="updateQuestion" parameterType="question">
 		update question set qcategory = #{qcategory}, qtitle = #{qtitle}, 
-		qcontent = #{qcontent}, qdate = sysdate
+		qcontent = #{qcontent}
 		<if test="qattachdata != null">
 		, qattachoname = #{qattachoname}
 		, qattachtype = #{qattachtype}

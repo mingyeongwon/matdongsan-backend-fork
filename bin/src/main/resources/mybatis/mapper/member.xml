@@ -3,10 +3,7 @@
 
 <mapper namespace="com.mycompany.matdongsan.dao.MemberDao">
 	<insert id="insertMemberData" parameterType="Member">
-		<selectKey keyProperty="mnumber" resultType="int" order="BEFORE">
-			select seq_mnumber.nextval from dual
-		</selectKey>	
-		insert into member(mnumber, mname, mphone, mprofileoname, mprofiledata, mprofiletype, m_unumber)
-		values (#{mnumber}, #{mname}, #{mphone}, #{mprofileoname}, #{mprofiledata}, #{mprofiletype}, #{mUnumber})
+		insert into member(mname, mphone, mprofileoname, mprofiledata, mprofiletype, m_unumber)
+		values (#{mname}, #{mphone}, #{mprofileoname}, #{mprofiledata}, #{mprofiletype}, #{mUnumber})
 	</insert>
 </mapper>

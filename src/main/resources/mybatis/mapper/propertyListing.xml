@@ -3,18 +3,9 @@
 <mapper
 	namespace="com.mycompany.matdongsan.dao.PropertyListingDao">
 
-	<insert id="createPropertyListing"
-		parameterType="PropertyListing">
-		<selectKey keyProperty="plnumber" resultType="int"
-			order="BEFORE">
-			select seq_plnumber.nextval from dual
-		</selectKey>
-		insert into property_listing(plnumber, plprice,pldate,
-		plquantity,pl_unumber, plremain)
-		values
-		(#{plnumber}, #{plprice},
-		sysdate, #{plquantity},
-		#{plUnumber}, #{plremain})
+	<insert id="createPropertyListing" parameterType="PropertyListing">
+		insert into property_listing(plprice,plquantity,pl_unumber, plremain)
+		values (#{plprice}, #{plquantity}, #{plUnumber}, #{plremain})
 	</insert>
 
 	<select id="checkPropertyListingByUserNumber"

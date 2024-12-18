@@ -3,11 +3,8 @@
 <mapper namespace="com.mycompany.matdongsan.dao.PropertyPhotoDao">
 	<!-- 생성 -->
 	<insert id="createPropertyByPropertyPhoto" parameterType="PropertyPhoto">
-		<selectKey keyProperty="ppnumber" resultType="int" order="BEFORE">
-			select seq_ppnumber.nextval from dual
-		</selectKey>	
-		insert into property_photo(ppnumber, ppattachoname, ppattachdata, ppattachtype, pp_pnumber)
-		values(#{ppnumber}, #{ppattachoname}, #{ppattachdata}, #{ppattachtype}, #{ppPnumber})
+		insert into property_photo(ppattachoname, ppattachdata, ppattachtype, pp_pnumber)
+		values(#{ppattachoname}, #{ppattachdata}, #{ppattachtype}, #{ppPnumber})
 	</insert>
 	
 	<!-- 수정 -->

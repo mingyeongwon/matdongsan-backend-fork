@@ -4,12 +4,8 @@
 
 	<!-- 생성 -->
 	<insert id="createPropertyComment" parameterType="UserComment">
-		<selectKey keyProperty="ucnumber" resultType="int" order="BEFORE">
-			select seq_ucnumber.nextval from dual
-		</selectKey>	
-		insert into user_comment (ucnumber, uccomment, ucdate, uc_unumber, ucparentnumber, uc_pnumber, ucremoved)
-		
-		values(#{ucnumber}, #{uccomment}, sysdate, #{ucUnumber}, #{ucparentnumber}, #{ucPnumber}, #{ucremoved})
+		insert into user_comment (uccomment, uc_unumber, ucparentnumber, uc_pnumber, ucremoved)
+		values(#{uccomment}, #{ucUnumber}, #{ucparentnumber}, #{ucPnumber}, #{ucremoved})
 	</insert>	
 	
 	<!-- 자식 댓글 여부 -->

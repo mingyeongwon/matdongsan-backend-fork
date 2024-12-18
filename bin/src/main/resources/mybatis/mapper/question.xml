@@ -3,15 +3,12 @@
 <mapper namespace="com.mycompany.matdongsan.dao.QuestionDao">
 
 	<insert id="insert" parameterType="question">
-		<selectKey keyProperty="qnumber" resultType="int" order="BEFORE">
-			select SEQ_QNUMBER.nextval from dual
-		</selectKey>
 		insert into question(
-			qnumber, qcategory, qtitle, qcontent, qattachoname, qattachdata, 
-			qattachtype, qdate, q_email, qroletype 
+			qcategory, qtitle, qcontent, qattachoname, qattachdata,
+			qattachtype, q_email, qroletype
 		) values(
-			#{qnumber}, #{qcategory}, #{qtitle}, #{qcontent}, #{qattachoname},
-			#{qattachdata}, #{qattachtype}, sysdate, #{ qEmail }, #{qroletype}
+			#{qcategory}, #{qtitle}, #{qcontent}, #{qattachoname},
+			#{qattachdata}, #{qattachtype}, #{ qEmail }, #{qroletype}
 		)
 	</insert>
 	

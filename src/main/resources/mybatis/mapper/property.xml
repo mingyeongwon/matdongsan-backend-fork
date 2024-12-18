@@ -3,19 +3,15 @@
 <mapper namespace="com.mycompany.matdongsan.dao.PropertyDao">
 	<!-- 생성 -->
 	<insert id="createPropertyByProperty" parameterType="Property">
-		<selectKey keyProperty="pnumber" resultType="int"
-			order="BEFORE">
-			select seq_pnumber.nextval from dual
-		</selectKey>
-		insert into property(pnumber, pdeposite, prentalfee, pfloortype,
+		insert into property(pdeposite, prentalfee, pfloortype,
 		pfloor, psize, pmaintenance,
-		phitcount, pdate, pstatus, ptitle, pcategory, paddress, paddressdetail,
+		phitcount, pstatus, ptitle, pcategory, paddress, paddressdetail,
 		ppostcode, platitude,
 		plongitude, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype)
 
-		values(#{pnumber}, #{pdeposite}, #{prentalfee}, #{pfloortype},
+		values(#{pdeposite}, #{prentalfee}, #{pfloortype},
 		#{pfloor}, #{psize}, #{pmaintenance},
-		0, sysdate, #{pstatus}, #{ptitle}, #{pcategory}, #{paddress},
+		0, #{pstatus}, #{ptitle}, #{pcategory}, #{paddress},
 		#{paddressdetail},
 		#{ppostcode}, #{platitude}, #{plongitude}, #{pUnumber}, #{pthumbnaildata},
 		#{pthumbnailoname}, #{pthumbnailtype})

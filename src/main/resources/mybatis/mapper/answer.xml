@@ -5,19 +5,16 @@
 	<!-- 고객문의 답변 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<!-- 문의 답변 생성 -->
 	<insert id="insertAnswer" parameterType="answer">
-		<selectKey keyProperty="anumber" resultType="int" order="BEFORE">
-			select SEQ_ANSNUMBER.nextval from dual
-		</selectKey>
 		insert into answer(
-			anumber, a_qnumber, adate, acontent 
+			a_qnumber, acontent
 		) values(
-			#{anumber}, #{aQnumber}, sysdate, #{acontent}
+			#{aQnumber}, #{acontent}
 		)
 	</insert>
 	
 	<!-- 문의 답변 수정 -->
 	<update id="updateAnswer" parameterType="answer">
-		update answer set acontent = #{acontent}, adate = sysdate
+		update answer set acontent = #{acontent}
 		where a_qnumber = #{aQnumber} 
 	</update>
 	

@@ -4,14 +4,9 @@
 
 	<insert id="insertNewAgentDetailData"
 		parameterType="AgentDetail">
-		<selectKey keyProperty="adnumber" resultType="int"
-			order="BEFORE">
-			select seq_adnumber.nextval from dual
-		</selectKey>
-		insert into agent_detail(adnumber, adattachoname,
-		adattachdata,adattachtype,adbrandnumber,AD_ANUMBER)
+		insert into agent_detail(adattachoname, adattachdata,adattachtype,adbrandnumber,AD_ANUMBER)
 		values
-		(#{adnumber},  #{adattachoname}, #{adattachdata},
+		(#{adattachoname}, #{adattachdata},
 		#{adattachtype},#{adbrandnumber},#{adAnumber})
 	</insert>
 	<select id="getAgentDetailDataByAgentNumber" parameterType="int"
