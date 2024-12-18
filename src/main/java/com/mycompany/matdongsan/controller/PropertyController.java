@@ -552,7 +552,6 @@ public class PropertyController {
 			} else {
 				propertyListing.setPlprice(price);
 			}
-			log.info(propertyListing.toString());
 			propertyService.purchasePropertyListing(propertyListing);
 			return true; // 등록권이 없는 유저나 처음 구매하는 유저라면 true
 		} else {
