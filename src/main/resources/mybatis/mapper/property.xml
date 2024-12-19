@@ -268,22 +268,18 @@
 				and pstatus='활성화'
 			</if>	
 		</where>
-	</select>	
-	
+	</select>
+
 
 	<!-- 인기 매물 -->
 	<select id="getPopularPropertyListByHitcount"
 		resultType="Property">
 	<![CDATA[
-		select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
-		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber,PTHUMBNAILONAME
-		from (
-				select * 
-				from property 
-				where pstatus='활성화'
-				order by phitcount desc
-		)
-		where rownum <= 4
+		select *
+		from property
+		where pstatus='활성화'
+		order by phitcount desc
+		limit 4
 	]]>
 	</select>
 
