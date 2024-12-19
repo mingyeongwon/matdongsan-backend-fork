@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.PropertyDao">
 	<!-- 생성 -->
-	<insert id="createPropertyByProperty" parameterType="Property">
+	<insert id="createPropertyByProperty" parameterType="Property" useGeneratedKeys="true" keyProperty="pnumber">
 		insert into property(pdeposite, prentalfee, pfloortype,
 		pfloor, psize, pmaintenance,
 		phitcount, pstatus, ptitle, pcategory, paddress, paddressdetail,
