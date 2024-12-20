@@ -2,10 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.UserEmailDao">
 	<insert id="insertUserDataByMember" parameterType="UserEmail">
-		<selectKey keyProperty="unumber" resultType="int" order="BEFORE">
-			select seq_unumber.nextval from dual
-		</selectKey>
-		insert into user_email(unumber, uemail, upassword, urole, uremoved)
-		values (#{unumber}, #{uemail}, #{upassword}, #{urole}, #{uremoved})
+		insert into user_email(uemail, upassword, urole, uremoved)
+		values (#{uemail}, #{upassword}, #{urole}, #{uremoved})
 	</insert>
 </mapper>

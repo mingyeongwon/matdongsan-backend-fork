@@ -156,7 +156,6 @@ public class MemberController {
 		// 유저정보 불러오기
 		@GetMapping("/Mypage/MyInfomation/{uemail}")
 		public UserCommonData getUserDataByUemail(@PathVariable String uemail) {
-			log.info(uemail);
 			UserCommonData userData = memberService.getUserDataByUemail(uemail);
 			return userData;
 		}	
@@ -257,12 +256,8 @@ public class MemberController {
 				String userRole = memberService.getUserRole(uemail);
 				if (userRole.equals("AGENT")) {
 					int userNum = agentService.getUserIdByUserName(uemail);
-
-					log.info("유저넘버: " + agentService.getAgentNumberByUserNumber(userNum) + "");
 					map.put("userRoleNumber", agentService.getAgentNumberByUserNumber(userNum) + "");
 				} else if (userRole.equals("MEMBER")) {
-					log.info("멤버입니다.");
-					log.info(memberService.getMemberNumberByMemberEmail(uemail) + "");
 					map.put("userRoleNumber", memberService.getMemberNumberByMemberEmail(uemail) + "");
 				}
 				// JSON 응답
@@ -432,7 +427,6 @@ public class MemberController {
 		// 아이디 중복 확인
 		@GetMapping("/signup/emailUniqueCheck")
 		public int getEmailUniqueCheck(String uemail) {
-			log.info("이메일나와"+uemail);
 			if(memberService.getEmailUniqueCheck(uemail) > 0) {
 				return 1; // 중복이 있으면 1
 			} else {

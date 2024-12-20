@@ -4,13 +4,10 @@
 	<!-- 공지사항 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<!-- 공지사항 생성 -->
 	<insert id="insertNotice" parameterType="notice">
-		<selectKey keyProperty="nnumber" resultType="int" order="BEFORE">
-			select SEQ_NNUMBER.nextval from dual
-		</selectKey>
 		insert into notice(
-			nnumber, ntitle, ncontent, ndate 
+			ntitle, ncontent
 		) values(
-			#{nnumber}, #{ntitle}, #{ncontent}, sysdate
+			#{ntitle}, #{ncontent}
 		)
 	</insert>
 	
@@ -28,7 +25,7 @@
 	
 	<!-- 공지사항 수정하기 -->
 	<update id="updateNotice" parameterType="notice">
-		update notice set ncontent = #{ncontent}, ndate =sysdate, ntitle =#{ntitle}
+		update notice set ncontent = #{ncontent}, ntitle =#{ntitle}
 		where nnumber = #{nnumber}
 	</update>
 	

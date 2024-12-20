@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.AgentReviewDao">
+
 	<insert id="createAgentReviewByMember"
 		parameterType="AgentReview">
-		<selectKey keyProperty="arnumber" resultType="int"
-			order="BEFORE">
-			select seq_arnumber.nextval from dual
-		</selectKey>
-		insert into agent_Review(arnumber, arcontent, arrate,
-		ardate,ar_anumber,ar_mnumber)
+		insert into agent_Review(arcontent, arrate, ar_anumber,ar_mnumber)
 		values
-		(#{arnumber}, #{arcontent},
-		#{arrate}, sysdate,
-		#{arAnumber},#{arMnumber})
+		(#{arcontent}, #{arrate}, #{arAnumber},#{arMnumber})
 	</insert>
+
 	<select id="getAgentReviewByAnumber" parameterType="Pager"
 		resultType="AgentReview">
 		<![CDATA[

@@ -3,11 +3,8 @@
 <mapper namespace="com.mycompany.matdongsan.dao.ReportDao">
 	<!-- 생성 -->
 	<insert id="createPropertyReport" parameterType="Report">
-		<selectKey keyProperty="rnumber" resultType="int" order="BEFORE">
-			select seq_rnumber.nextval from dual
-		</selectKey>	
-		insert into report (rnumber, rcontent, rdate, r_pnumber, r_unumber)
-		values(#{rnumber}, #{rcontent}, sysdate, #{rPnumber}, #{rUnumber})
+		insert into report (rcontent, r_pnumber, r_unumber)
+		values(#{rcontent}, #{rPnumber}, #{rUnumber})
 	</insert>	
 	
    <!-- 유저 허위 신고 총 개수 -->

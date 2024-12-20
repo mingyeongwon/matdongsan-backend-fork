@@ -2,16 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper
 	namespace="com.mycompany.matdongsan.dao.UserCommonDataDao">
-	<insert id="insertUserDataByUser" parameterType="UserCommonData">
-		<selectKey keyProperty="unumber" resultType="int"
-			order="BEFORE">
-			select seq_unumber.nextval from dual
-		</selectKey>
-		insert into USER_COMMON_DATA(unumber, uemail, upassword, urole,
-		uremoved)
-		values (#{unumber}, #{uemail}, #{upassword}, #{urole},
-		#{uremoved})
+
+	<!-- 회원가입 -->
+	<insert id="insertUserDataByUser" parameterType="UserCommonData" useGeneratedKeys="true" keyProperty="unumber">
+		insert into USER_COMMON_DATA(uemail, upassword, urole, uremoved)
+		values (#{uemail}, #{upassword}, #{urole}, #{uremoved})
+		RETURNING unumber
 	</insert>
+
+
 	<select id="getUserIdByUsername" parameterType="String"
 		resultType="int">
 		select unumber from USER_COMMON_DATA where uemail =

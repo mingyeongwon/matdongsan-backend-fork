@@ -2,20 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mycompany.matdongsan.dao.PropertyDao">
 	<!-- 생성 -->
-	<insert id="createPropertyByProperty" parameterType="Property">
-		<selectKey keyProperty="pnumber" resultType="int"
-			order="BEFORE">
-			select seq_pnumber.nextval from dual
-		</selectKey>
-		insert into property(pnumber, pdeposite, prentalfee, pfloortype,
+	<insert id="createPropertyByProperty" parameterType="Property" useGeneratedKeys="true" keyProperty="pnumber">
+		insert into property(pdeposite, prentalfee, pfloortype,
 		pfloor, psize, pmaintenance,
-		phitcount, pdate, pstatus, ptitle, pcategory, paddress, paddressdetail,
+		phitcount, pstatus, ptitle, pcategory, paddress, paddressdetail,
 		ppostcode, platitude,
 		plongitude, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype)
 
-		values(#{pnumber}, #{pdeposite}, #{prentalfee}, #{pfloortype},
+		values(#{pdeposite}, #{prentalfee}, #{pfloortype},
 		#{pfloor}, #{psize}, #{pmaintenance},
-		0, sysdate, #{pstatus}, #{ptitle}, #{pcategory}, #{paddress},
+		0, #{pstatus}, #{ptitle}, #{pcategory}, #{paddress},
 		#{paddressdetail},
 		#{ppostcode}, #{platitude}, #{plongitude}, #{pUnumber}, #{pthumbnaildata},
 		#{pthumbnailoname}, #{pthumbnailtype})
@@ -272,22 +268,18 @@
 				and pstatus='활성화'
 			</if>	
 		</where>
-	</select>	
-	
+	</select>
+
 
 	<!-- 인기 매물 -->
 	<select id="getPopularPropertyListByHitcount"
 		resultType="Property">
 	<![CDATA[
-		select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
-		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber,PTHUMBNAILONAME
-		from (
-				select * 
-				from property 
-				where pstatus='활성화'
-				order by phitcount desc
-		)
-		where rownum <= 4
+		select *
+		from property
+		where pstatus='활성화'
+		order by phitcount desc
+		limit 4
 	]]>
 	</select>
 
