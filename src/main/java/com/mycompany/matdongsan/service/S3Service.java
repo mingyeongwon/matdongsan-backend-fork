@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Utilities;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.UUID;
 
 @Service
@@ -24,7 +27,7 @@ public class S3Service {
         return UUID.randomUUID() + "_" + originalFileName;
     }
 
-    public void uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file) {
         String fileName = createFileName(file.getOriginalFilename());
         try {
             PutObjectRequest objectRequest = PutObjectRequest.builder()
@@ -35,13 +38,19 @@ public class S3Service {
                     .build();
             s3Client.putObject(objectRequest, RequestBody.fromBytes(file.getBytes()));
 
-            //return getFileUrl(String fileName);
+            return getFileUrl(fileName);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-//    private String getFileUrl(String fileName) {
-//        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, s3Client.get, fileName);
-//    }
+    private String getFileUrl(String fileName) {
+        GetUrlRequest request = GetUrlRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+        URL url = s3Client.utilities().getUrl(request);
+        return url.toString();
+    }
 }

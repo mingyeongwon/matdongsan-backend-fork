@@ -17,11 +17,12 @@ public class S3Controller {
     private final S3Service s3Service;
 
     @PostMapping("/upload")
-    public void uploadFile(@RequestParam("file")MultipartFile file) {
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            s3Service.uploadFile(file);
+            String fileUrl = s3Service.uploadFile(file);
+            return fileUrl;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
