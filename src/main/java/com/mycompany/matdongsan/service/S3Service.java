@@ -3,13 +3,14 @@ package com.mycompany.matdongsan.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,16 +20,28 @@ public class S3Service {
     @Value("${aws.s3.bucketName}")
     private String bucketName;
 
-    public String uploadFile(MultipartFile multipartFile, String fileName) {
+    private String createFileName(String originalFileName) {
+        return UUID.randomUUID() + "_" + originalFileName;
+    }
+
+    public void uploadFile(MultipartFile file) {
+        String fileName = createFileName(file.getOriginalFilename());
         try {
-            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+            PutObjectRequest objectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileName)
-                    .contentType(multipartFile.getContentType())
-                    .contentLength(multipartFile.getSize())
+                    .contentType(file.getContentType())
+                    .contentLength(file.getSize())
                     .build();
+            s3Client.putObject(objectRequest, RequestBody.fromBytes(file.getBytes()));
+
+            //return getFileUrl(String fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
+
+//    private String getFileUrl(String fileName) {
+//        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, s3Client.get, fileName);
+//    }
 }
