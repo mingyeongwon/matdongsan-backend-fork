@@ -45,3 +45,4 @@ jobs:
           sudo docker stop ${{ secrets.DOCKER_REPOSITORY }}
           sudo docker rm ${{ secrets.DOCKER_REPOSITORY }}
           sudo docker image prune -f
+          sudo docker run -d -p 8080:8080 --name matdongsan_app ${{ secrets.DOCKER_REPOSITORY }}
