@@ -45,4 +45,13 @@ jobs:
           sudo docker stop ${{ secrets.DOCKER_REPOSITORY }}
           sudo docker rm ${{ secrets.DOCKER_REPOSITORY }}
           sudo docker image prune -f
-          sudo docker run -d -p 8080:8080 --name matdongsan_app ${{ secrets.DOCKER_REPOSITORY }}
+          sudo docker run -d -p 8080:8080 --name matdongsan_app \
+            -e SPRING_PROFILES_ACTIVE=private \
+            -e ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
+            -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            -e BUCKET_NAME=${{ secrets.BUCKET_NAME }} \
+            -e REGION=${{ secrets.REGION }} \
+            -e DB_URL=${{ secrets.DB_URL }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            ${{ secrets.DOCKER_REPOSITORY }}
