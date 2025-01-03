@@ -44,8 +44,8 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_REPOSITORY }}
           sudo docker stop matdongsan_app
           sudo docker rm matdongsan_app
-          sudo docker stop matdongsan_container
-          sudo docker rm matdongsan_container
+          sudo docker stop matdongsan-container
+          sudo docker rm matdongsan-container
           sudo docker image prune -f
           sudo docker run -d -p 8080:8080 --name matdongsan_app \
             -e SPRING_PROFILES_ACTIVE=private \
