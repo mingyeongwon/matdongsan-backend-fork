@@ -208,7 +208,6 @@ public class HomeController {
 				member.setMname(name);
 				member.setMphone(phone);
 				// 회원이 있다면
-				log.info("회원 존재 여부" + memberService.checkMember(member) + "");
 				if (memberService.checkMember(member) > 0) {
 					result.put("success", userData.getUemail());
 				} else {
@@ -284,7 +283,6 @@ public class HomeController {
 			if (hasPropertyListing) {
 				// 있다면 수량 정보 가져오기
 				int propertyListing = propertyService.getUserPropertyListingRemain(userNumber); // userNumber로 수량 가져오기
-				log.info("구매 한 적이 없으면");
 				map.put("remain", propertyListing);
 			} else {
 				map.put("result", "noRemain");

@@ -272,7 +272,6 @@ public class MemberController {
 			} else { // 로그인에 실패한 경우(비밀번호 문제) fail 표시
 				map.put("result", "fail");
 			}
-			log.info(map + "");
 			return map;
 		}		
 

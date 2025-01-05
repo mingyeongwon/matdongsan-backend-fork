@@ -164,7 +164,6 @@ public class AgentController {
 	@GetMapping("/Mypage/MyInfomation")
 	public Map<String, Object> getMypagePropertyInfo(Authentication autentication) {
 		String userName = autentication.getName();
-		log.info("username이다: " + userName);
 		// 로그인한 중개인의 데이터 수정
 		// 아이디로 중개인의 정보 가져옴
 		int userNumber = agentService.getUserIdByUserName(userName);

@@ -81,7 +81,6 @@ public class PropertyController {
         }
         // 지도 표시를 위한 전체 매물 리스트 ( 페이저 & 페이지네이션 )
         List<Property> propertyTotalList = propertyService.getAllPropertyListWithoutPager();
-        log.info(propertyTotalList.size() + ": 전체 개수");
         // 여러 객체를 리턴하기 위해 map 객체 생성 (property, pager)
         Map<String, Object> map = new HashMap<>();
         map.put("propertyTotalList", propertyTotalList);
@@ -632,7 +631,6 @@ public class PropertyController {
             if (hasPropertyListing) {
                 // 있다면 수량 정보 가져오기
                 int propertyListing = propertyService.getUserPropertyListingRemain(userNumber); // userNumber로 수량 가져오기
-                log.info("구매 한 적이 없으면");
                 map.put("remain", propertyListing);
             } else {
                 map.put("result", "noRemain");
