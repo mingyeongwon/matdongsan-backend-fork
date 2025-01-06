@@ -70,14 +70,14 @@ public class PropertyController {
         if (keyword != null || price != null || date != null || floorType != null || rentType != null || lat != "" || lng != "") {
             totalPropertyRows = propertyService.getPropertyCountByFilter(keyword, price, date, rentType, floorType, lat, lng);
             pager = new Pager(size, pageNo, totalPropertyRows);
-            propertyList = propertyService.getPropertyListByFilter(pager.getStartRowIndex(), pager.getRowsPerPage(),
+            propertyList = propertyService.getPropertyListByFilter(pager.getOffset(), pager.getLimit(),
                     keyword, price, date, rentType, floorType, lat, lng);
             log.info("propertyList.size() : " + propertyList.size());
 
         } else { // 전체 리스트
             totalPropertyRows = propertyService.getAllPropertyCount();
             pager = new Pager(size, pageNo, totalPropertyRows);
-            propertyList = propertyService.getAllPropertyList(pager.getStartRowIndex(), pager.getRowsPerPage());
+            propertyList = propertyService.getAllPropertyList(pager.getOffset(), pager.getLimit());
         }
         // 지도 표시를 위한 전체 매물 리스트 ( 페이저 & 페이지네이션 )
         List<Property> propertyTotalList = propertyService.getAllPropertyListWithoutPager();
@@ -419,8 +419,8 @@ public class PropertyController {
         int mnumber = member.getMnumber();
         int totalFavoriteRows = propertyService.getAllFavoriteCount(mnumber);
         Pager pager = new Pager(size, pageNo, totalFavoriteRows);
-        List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(mnumber, pager.getStartRowIndex(),
-                pager.getRowsPerPage());
+        List<Favorite> favoritePropertyList = propertyService.getAllUserFavoriteList(mnumber, pager.getOffset(),
+                pager.getLimit());
         Map<String, Object> map = new HashMap<>();
         map.put("favorite", favoritePropertyList);
         map.put("pager", pager);
