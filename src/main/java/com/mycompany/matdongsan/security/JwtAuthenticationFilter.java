@@ -24,60 +24,60 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //클라이언트 측에서 넘어온 토큰이 유효한지 확인
 
-   @Autowired
-   private JwtProvider jwtProvider;
+    @Autowired
+    private JwtProvider jwtProvider;
 
-   @Autowired
-   private AppUserDetailsService userDetailsService;
+    @Autowired
+    private AppUserDetailsService userDetailsService;
 
-   @Override
-   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-         throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-      String accessToken = null;
+        String accessToken = null;
 
-      //요청 헤더에서 AccessToken 얻기
-      HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-      String headerValue = httpServletRequest.getHeader("Authorization");
-      if (headerValue != null && headerValue.startsWith("Bearer")) {
-         accessToken = headerValue.substring(7);
-         //log.info(accessToken);
-      }
-      
-      //쿼리스트링으로 전달될 AccessToken 얻기
-      //<img src+"/board/battach/1?accessToken=xxx
-      if(accessToken == null) {
-         if(request.getParameter("accessToken") != null) {
-            accessToken = request.getParameter("accessToken");
-         }
-      }
-      
-      if (accessToken != null) {
-         // AccessToken 유효성 검사
-         Jws<Claims> jws = jwtProvider.validateToken(accessToken);
-         if (jws != null) {
-            // 유효한 경우
-            //log.info("AccessToken 유효함");
-            String userId = jwtProvider.getUserId(jws);
-            //log.info("user ID: " + userId);
-            
-            //사용자 상세 정보 얻기
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-            // AppUserDetails userDetails = (AppUserDetails)
-            //인증 객체 얻기
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            //스프링 시큐리티에 인증 객체 설정
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        //요청 헤더에서 AccessToken 얻기
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String headerValue = httpServletRequest.getHeader("Authorization");
+        if (headerValue != null && headerValue.startsWith("Bearer")) {
+            accessToken = headerValue.substring(7);
+            //log.info(accessToken);
+        }
 
-         } else {
-            // 유효하지 않을 경우
-            log.info("AccessToken 유효하지 않음");
-         }
+        //쿼리스트링으로 전달될 AccessToken 얻기
+        //<img src+"/board/battach/1?accessToken=xxx
+        if (accessToken == null) {
+            if (request.getParameter("accessToken") != null) {
+                accessToken = request.getParameter("accessToken");
+            }
+        }
 
-      }
+        if (accessToken != null) {
+            // AccessToken 유효성 검사
+            Jws<Claims> jws = jwtProvider.validateToken(accessToken);
+            if (jws != null) {
+                // 유효한 경우
+                //log.info("AccessToken 유효함");
+                String userId = jwtProvider.getUserId(jws);
+                //log.info("user ID: " + userId);
 
-      // 다음 필터를 실행
-      filterChain.doFilter(request, response);
-   }
+                //사용자 상세 정보 얻기
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+                // AppUserDetails userDetails = (AppUserDetails)
+                //인증 객체 얻기
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                //스프링 시큐리티에 인증 객체 설정
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            } else {
+                // 유효하지 않을 경우
+                log.info("AccessToken 유효하지 않음");
+            }
+
+        }
+
+        // 다음 필터를 실행
+        filterChain.doFilter(request, response);
+    }
 
 }

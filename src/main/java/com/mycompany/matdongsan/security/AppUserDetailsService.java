@@ -15,21 +15,21 @@ import com.mycompany.matdongsan.dto.UserCommonData;
 
 @Service
 public class AppUserDetailsService implements UserDetailsService {
-	@Autowired
-	private UserCommonDataDao userCommonDataDao;
+    @Autowired
+    private UserCommonDataDao userCommonDataDao;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserCommonData userCommonData = userCommonDataDao.selectByUnumber(username);
-		
-		if (userCommonData == null) {
-			throw new UsernameNotFoundException(username);
-		}
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserCommonData userCommonData = userCommonDataDao.selectByUnumber(username);
 
-		List<GrantedAuthority> authorities = new ArrayList<>();
+        if (userCommonData == null) {
+            throw new UsernameNotFoundException(username);
+        }
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
 //      authorities.add(new SimpleGrantedAuthority(member.getMrole()));
 
-		AppUserDetails userDetails = new AppUserDetails(userCommonData, authorities);
-		return userDetails;
-	}
+        AppUserDetails userDetails = new AppUserDetails(userCommonData, authorities);
+        return userDetails;
+    }
 }
