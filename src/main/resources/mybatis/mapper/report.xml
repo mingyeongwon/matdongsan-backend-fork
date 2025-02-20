@@ -17,21 +17,17 @@
 
     <!-- 유저 매물 리스트 -->
     <select id="getUserReportListByUnumber" parameterType="Pager" resultType="Report">
-        <![CDATA[
-    SELECT rnumber, rcontent, rdate, r_pnumber, r_unumber
-    FROM report
-    WHERE r_unumber = #{unumber}
-    ORDER BY rnumber
-    ]]>
+        SELECT rnumber, rcontent, rdate, r_pnumber, r_unumber
+        FROM report
+        WHERE r_unumber = #{unumber}
+        ORDER BY rnumber
         <if test="filterKeyword != null and filterKeyword == 'desc'">
-            <![CDATA[DESC]]>
+            DESC
         </if>
         <if test="filterKeyword != null and filterKeyword == 'asc'">
-            <![CDATA[ASC]]>
+            ASC
         </if>
-        <![CDATA[
-    LIMIT #{pager.limit} OFFSET #{pager.offset}
-    ]]>
+        LIMIT #{pager.limit} OFFSET #{pager.offset}
     </select>
 
 

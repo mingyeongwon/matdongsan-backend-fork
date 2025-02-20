@@ -58,13 +58,11 @@
 
     <!-- 해당하는 회원의 문의 리스트 가져오기 -->
     <select id="getUsersQuestionList" parameterType="Map" resultType="question">
-        <![CDATA[
-    SELECT qtitle, qdate, qnumber, q_unumber, qcontent, q_isanswer AS qIsAnswer, qcategory, qattachoname
-    FROM question
-    WHERE q_unumber = #{qUnumber}
-    ORDER BY qdate DESC
-    LIMIT #{pager.limit} OFFSET #{pager.offset}
-    ]]>
+        SELECT qtitle, qdate, qnumber, q_unumber, qcontent, q_isanswer AS qIsAnswer, qcategory, qattachoname
+        FROM question
+        WHERE q_unumber = #{qUnumber}
+        ORDER BY qdate DESC
+        LIMIT #{pager.limit} OFFSET #{pager.offset}
     </select>
 
     <!-- 문의 갯수 가져오기 -->
@@ -88,38 +86,24 @@
 
     <!-- 문의 리스트 가져오기 -->
     <select id="getQuestionList" parameterType="Map" resultType="question">
-        <![CDATA[
-    SELECT qtitle, qdate, qnumber, q_unumber, q_isanswer AS qIsAnswer, qcategory
-    FROM question
-    ]]>
+        SELECT qtitle, qdate, qnumber, q_unumber, q_isanswer AS qIsAnswer, qcategory
+        FROM question
         <where>
             <if test="filter != null and filter != ''">
-                <![CDATA[
-            AND qcategory = #{filter}
-            ]]>
+                AND qcategory = #{filter}
             </if>
             <if test="isAnswer == 'noAnswer'">
-                <![CDATA[
-            AND q_isanswer IS NULL
-            ]]>
+                AND q_isanswer IS NULL
             </if>
         </where>
-        <![CDATA[
-    ORDER BY qdate
-    ]]>
+        ORDER BY qdate
         <if test="sort == 'desc'">
-            <![CDATA[
-        DESC
-        ]]>
+            DESC
         </if>
         <if test="sort == 'asc'">
-            <![CDATA[
-        ASC
-        ]]>
+            ASC
         </if>
-        <![CDATA[
-    LIMIT #{pager.limit} OFFSET #{pager.offset}
-    ]]>
+        LIMIT #{pager.limit} OFFSET #{pager.offset}
     </select>
 
 

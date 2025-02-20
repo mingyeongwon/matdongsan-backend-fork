@@ -41,33 +41,21 @@
 
 
     <select id="getSearchedNoticeList" parameterType="Map" resultType="notice">
-        <![CDATA[
-    SELECT ntitle, ndate, nnumber
-    FROM notice
-    ]]>
+        SELECT ntitle, ndate, nnumber
+        FROM notice
         <where>
             <if test="searchKeyword != null">
-                <![CDATA[
-            AND ntitle LIKE '%' || #{searchKeyword} || '%'
-            ]]>
+                AND ntitle LIKE '%' || #{searchKeyword} || '%'
             </if>
         </where>
-        <![CDATA[
-    ORDER BY ndate
-    ]]>
+        ORDER BY ndate
         <if test="sort == 'desc'">
-            <![CDATA[
-        DESC
-        ]]>
+            DESC
         </if>
         <if test="sort == 'asc'">
-            <![CDATA[
-        ASC
-        ]]>
+            ASC
         </if>
-        <![CDATA[
-    LIMIT #{pager.limit} OFFSET #{pager.offset}
-    ]]>
+        LIMIT #{pager.limit} OFFSET #{pager.offset}
     </select>
 
 </mapper>

@@ -92,29 +92,25 @@
     <!-- property 전체 리스트 -->
     <select id="getAllPropertyList" parameterType="map"
             resultType="Property">
-        <![CDATA[
-		    select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
-		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
-		    from (
-		        select p.*, row_number() over (order by p.pnumber desc) as rnum
-		        from property p
-		        where pstatus='활성화'
-		    )
-		    where rnum between #{offset} + 1 and #{offset} + #{limit}
-	    ]]>
+        select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus,
+        ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
+        from (
+        select p.*, row_number() over (order by p.pnumber desc) as rnum
+        from property p
+        where pstatus='활성화'
+        )
+        where rnum between #{offset} + 1 and #{offset} + #{limit}
     </select>
 
 
     <!-- property 리스트 by filter and keyword -->
     <select id="getPropertyListByFilter" parameterType="map"
             resultType="Property">
-        <![CDATA[
-        select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus, 
-		    ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
+        select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, phitcount, pdate, pstatus,
+        ptitle, pcategory, paddress, paddressdetail, ppostcode, platitude, plongitude, p_unumber
         from (
-            select p.*, row_number() over (order by p.pnumber desc) as rnum
-            from property p 
-    ]]>
+        select p.*, row_number() over (order by p.pnumber desc) as rnum
+        from property p
         <where>
             pstatus='활성화'
             <if test="rentType != null and rentType != ''">
@@ -172,9 +168,8 @@
             </if>
         </trim>
 
-        <![CDATA[ )
+        )
         where rnum between #{offset} + 1 and #{offset} + #{limit}
-    ]]>
     </select>
 
     <!-- 삭제 -->
@@ -195,26 +190,22 @@
     <!-- 유저 매물 리스트 -->
     <select id="getUserPropertyListByUnumber" parameterType="Pager"
             resultType="Property">
-        <![CDATA[
-    SELECT pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize,
-           pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber,
-           pthumbnaildata, pthumbnailoname, pthumbnailtype
-    FROM property
-    WHERE p_unumber = #{unumber}
-    ORDER BY pnumber DESC
-    LIMIT #{pager.pageSize} OFFSET #{pager.offset}
-    ]]>
+        SELECT pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize,
+        pmaintenance, pdate, pstatus, ptitle, pcategory, p_unumber,
+        pthumbnaildata, pthumbnailoname, pthumbnailtype
+        FROM property
+        WHERE p_unumber = #{unumber}
+        ORDER BY pnumber DESC
+        LIMIT #{pager.pageSize} OFFSET #{pager.offset}
     </select>
 
 
     <!-- 유저 매물 리스트 by filter -->
     <select id="getUserPropertyListByUnumberAndFilter" parameterType="Pager"
             resultType="Property">
-        <![CDATA[
-    select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle,
-           pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
-    from property
-    ]]>
+        select pnumber, pdeposite, prentalfee, pfloortype, pfloor, psize, pmaintenance, pdate, pstatus, ptitle,
+        pcategory, p_unumber, pthumbnaildata, pthumbnailoname, pthumbnailtype
+        from property
         <where>
             p_unumber = #{unumber}
             <if test="filterKeyword != null and filterKeyword == '거래완료'">
@@ -224,16 +215,14 @@
                 and pstatus = '활성화'
             </if>
         </where>
-        <![CDATA[order by pdate ]]>
+        order by pdate
         <if test="filterKeyword != null and filterKeyword == 'desc'">
             desc
         </if>
         <if test="filterKeyword != null and filterKeyword == 'asc'">
             asc
         </if>
-        <![CDATA[
-    limit #{limit} offset #{offset}
-    ]]>
+        limit #{limit} offset #{offset}
     </select>
 
 
@@ -265,13 +254,11 @@
     <!-- 인기 매물 -->
     <select id="getPopularPropertyListByHitcount"
             resultType="Property">
-        <![CDATA[
-		select *
-		from property
-		where pstatus='활성화'
-		order by phitcount desc
-		limit 4
-	]]>
+        select *
+        from property
+        where pstatus='활성화'
+        order by phitcount desc
+        limit 4
     </select>
 
     <!-- 완료된 거래 개수 -->

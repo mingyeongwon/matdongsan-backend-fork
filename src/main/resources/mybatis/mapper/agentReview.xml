@@ -10,34 +10,22 @@
     </insert>
 
     <select id="getAgentReviewByAnumber" parameterType="Pager" resultType="AgentReview">
-        <![CDATA[
-    SELECT arnumber, arcontent, arrate, ardate, ar_anumber, ar_mnumber
-    FROM agent_review
-    WHERE ar_anumber = #{anumber}
-    ]]>
+        SELECT arnumber, arcontent, arrate, ardate, ar_anumber, ar_mnumber
+        FROM agent_review
+        WHERE ar_anumber = #{anumber}
         <if test="sort == 'lowRate'">
-            <![CDATA[
-        ORDER BY arrate ASC
-        ]]>
+            ORDER BY arrate ASC
         </if>
         <if test="sort == 'highRate'">
-            <![CDATA[
-        ORDER BY arrate DESC
-        ]]>
+            ORDER BY arrate DESC
         </if>
         <if test="sort == 'desc'">
-            <![CDATA[
-        ORDER BY arnumber DESC
-        ]]>
+            ORDER BY arnumber DESC
         </if>
         <if test="sort == 'asc'">
-            <![CDATA[
-        ORDER BY arnumber ASC
-        ]]>
+            ORDER BY arnumber ASC
         </if>
-        <![CDATA[
-    LIMIT #{pager.limit} OFFSET #{pager.offset}
-    ]]>
+        LIMIT #{pager.limit} OFFSET #{pager.offset}
     </select>
 
     <select id="getTotalReviewRows" resultType="int">
@@ -55,7 +43,7 @@
     </delete>
     <select id="getAgentReviewRateAvgByAnumber" parameterType="int"
             resultType="int">
-        <![CDATA[SELECT COALESCE(SUM(arrate), 0) FROM agent_review WHERE ar_anumber = #{anumber}]]>
+        SELECT COALESCE(SUM(arrate), 0) FROM agent_review WHERE ar_anumber = #{anumber}
     </select>
     <update id="updateAgentReview" parameterType="AgentReview">
         update agent_review

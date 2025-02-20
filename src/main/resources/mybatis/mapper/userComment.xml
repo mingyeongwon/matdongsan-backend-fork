@@ -47,40 +47,32 @@
 
     <!-- 댓글 리스트 -->
     <select id="getCommentByPager" parameterType="Map" resultType="UserComment">
-        <![CDATA[
-    WITH RECURSIVE comment_tree AS (
+        WITH RECURSIVE comment_tree AS (
         SELECT
-            ucnumber, uccomment, ucdate, uc_unumber, ucparentnumber, uc_pnumber, ucremoved,
-            ROW_NUMBER() OVER (
-                ORDER BY
-                ]]>
+        ucnumber, uccomment, ucdate, uc_unumber, ucparentnumber, uc_pnumber, ucremoved,
+        ROW_NUMBER() OVER (
+        ORDER BY
         <if test="date == 'desc'">
-            <![CDATA[
-                    CASE WHEN ucparentnumber = 0 THEN ucnumber ELSE NULL END DESC,
-                    CASE WHEN ucparentnumber = 0 THEN NULL ELSE ucnumber END ASC
-                ]]>
+            CASE WHEN ucparentnumber = 0 THEN ucnumber ELSE NULL END DESC,
+            CASE WHEN ucparentnumber = 0 THEN NULL ELSE ucnumber END ASC
         </if>
         <if test="date == 'asc'">
-            <![CDATA[
-                    ucnumber ASC
-                ]]>
+            ucnumber ASC
         </if>
-        <![CDATA[
-            ) AS rnum
+        ) AS rnum
         FROM user_comment
         WHERE uc_pnumber = #{pnumber}
         UNION ALL
         SELECT
-            c.ucnumber, c.uccomment, c.ucdate, c.uc_unumber, c.ucparentnumber, c.uc_pnumber, c.ucremoved,
-            t.rnum
+        c.ucnumber, c.uccomment, c.ucdate, c.uc_unumber, c.ucparentnumber, c.uc_pnumber, c.ucremoved,
+        t.rnum
         FROM user_comment c
         INNER JOIN comment_tree t ON c.ucparentnumber = t.ucnumber
-    )
-    SELECT *
-    FROM comment_tree
-    ORDER BY rnum
-    LIMIT #{pager.limit} OFFSET #{pager.offset}
-    ]]>
+        )
+        SELECT *
+        FROM comment_tree
+        ORDER BY rnum
+        LIMIT #{pager.limit} OFFSET #{pager.offset}
     </select>
 
 
