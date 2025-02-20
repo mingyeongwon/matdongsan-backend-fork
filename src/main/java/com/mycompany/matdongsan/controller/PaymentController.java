@@ -32,5 +32,10 @@ public class PaymentController {
         this.iamportClient = new IamportClient(apiKey, secretKey);
     }
 
-
+    @PostMapping("/validate/{imp_uid}")
+    public IamportResponse<Payment> validateIamport(@PathVariable String imp_uid) throws IamportResponseException, IOException {
+        IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
+        log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", payment.getResponse().getMerchantUid());
+        return payment;
+    }
 }
