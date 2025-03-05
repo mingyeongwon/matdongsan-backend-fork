@@ -55,6 +55,12 @@
         </dependency>
 
         <dependency>
+            <groupId>net.nurigo</groupId>
+            <artifactId>sdk</artifactId>
+            <version>4.3.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.iamport</groupId>
             <artifactId>iamport-rest-client-java</artifactId>
             <version>0.2.23</version>
