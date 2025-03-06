@@ -16,4 +16,9 @@ public class SmsController {
     @Value("${coolsms.fromnumber}")
     private String fromnumber;
 
+    private final SmsService smsService;
+
+    public SmsController() {
+        this.smsService = NurigoApp.INSTANCE.initialize(apiKey, apisecret, "https://api.coolsms.co.kr");
+    }
 }
