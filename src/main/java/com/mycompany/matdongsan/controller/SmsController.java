@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/sms")
 public class SmsController {
@@ -25,7 +27,7 @@ public class SmsController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendSms(@RequestBody SmsRequest requestDto) {
+    public ResponseEntity<?> sendSms(@RequestBody @Valid SmsRequest requestDto) {
         smsService.sendSms(requestDto);
         return ResponseEntity.ok("문자를 전송했습니다.");
     }
